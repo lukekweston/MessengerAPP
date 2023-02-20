@@ -14,6 +14,7 @@ namespace MessengerAPI.DataAccess
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserConversation> UserConversation { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,6 +44,7 @@ namespace MessengerAPI.DataAccess
         public List<Message> GetMessagesForAConversation(int conversationId) => Messages.Where(m => m.ConversationId == conversationId).ToList();
         public List<Conversation> GetConversationsForAUser(int userId) => Conversations.Where(u => u.Id== userId).ToList();
         public User? GetUserIdForUserName(string userName) => Users.Where(u => u.UserName == userName).FirstOrDefault();
+        public List<UserConversation> GetUserConversationsForUser(int userID) => UserConversation.Where(uc => uc.UserId ==userID).ToList();
 
     }
 }
