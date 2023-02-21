@@ -25,11 +25,17 @@ SELECT TOP (1000) [Id]
 
   insert into Users (UserName, UserEmail, Password) values ('Luke', 'luke@weston.net.nz', 'password')
   insert into Users (UserName, UserEmail, Password) values ('Luke2', 'luke+1@weston.net.nz', 'password')
+  insert into Users (UserName, UserEmail, Password) values ('Jeff', 'luke+2@weston.net.nz', 'password')
 
   insert into Conversations (ConversationName) values ('Lukes Chat')
+  insert into Conversations (ConversationName) values ('')
 
   insert into UserConversation (ConversationId, UserId, id) values(1, 1, 1)
   insert into UserConversation (ConversationId, UserId, id) values(1, 2, 2)
+
+  insert into UserConversation (ConversationId, UserId, id) values(2, 1, 3)
+  insert into UserConversation (ConversationId, UserId, id) values(2, 2, 4)
+  insert into UserConversation (ConversationId, UserId, id) values(2, 3, 5)
 
 
   insert into [Messages] ([UserId], [TextMessage], [TimeSent], [ConversationId]) values (1, 'Hey', GETDATE(), 1) 
