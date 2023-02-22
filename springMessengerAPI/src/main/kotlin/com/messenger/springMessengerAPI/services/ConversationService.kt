@@ -1,9 +1,6 @@
 package com.messenger.springMessengerAPI.services
 
-import com.messenger.springMessengerAPI.repositories.UsersRepository
-import com.messenger.springMessengerAPI.models.User
 import com.messenger.springMessengerAPI.repositories.ConversationRepository
-import com.messenger.springMessengerAPI.repositories.UserConversationRepository
 import org.springframework.stereotype.Service
 
 
