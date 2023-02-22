@@ -20,11 +20,11 @@ class UserConversation {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "userid", referencedColumnName = "id", nullable = false)
     var user: User? = null
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "conversation_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "conversationid", referencedColumnName = "id", nullable = false)
     var conversation: Conversation? = null
 }
