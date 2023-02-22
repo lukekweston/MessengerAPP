@@ -1,7 +1,6 @@
 package com.messenger.springMessengerAPI.models
 
 import com.fasterxml.jackson.annotation.JsonBackReference
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
 import java.io.Serializable
 
@@ -21,6 +20,11 @@ class UserConversation {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
-    var user: Users? = null
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    var user: User? = null
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "conversation_id", referencedColumnName = "id", nullable = false)
+    var conversation: Conversation? = null
 }

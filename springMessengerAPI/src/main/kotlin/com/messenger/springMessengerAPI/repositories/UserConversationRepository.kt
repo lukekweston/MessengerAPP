@@ -2,7 +2,6 @@ package com.messenger.springMessengerAPI.repositories
 
 import com.messenger.springMessengerAPI.models.UserConversation
 import com.messenger.springMessengerAPI.models.UserConversationId
-import com.messenger.springMessengerAPI.models.Users
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

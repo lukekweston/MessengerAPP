@@ -5,21 +5,17 @@ import jakarta.persistence.*
 
 
 @Entity
-class Users(
+@Table(name = "Conversations")
+class Conversation(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int = 0,
 
-        @Column(name = "UserName", unique = true, nullable = false)
-        val username: String = "",
+        @Column(name = "ConversationName")
+        val conversationName: String? = null,
 
-        @Column(name = "UserEmail", unique = true, nullable = false)
-        val useremail: String = "",
-
-        @Column(name = "Password", nullable = false)
-        val password: String = "",
 
         @JsonManagedReference
-        @OneToMany(mappedBy = "user")
+        @OneToMany(mappedBy = "conversation")
         val userConversation: MutableList<UserConversation> = mutableListOf()
 )
