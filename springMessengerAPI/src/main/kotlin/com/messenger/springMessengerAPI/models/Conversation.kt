@@ -2,6 +2,7 @@ package com.messenger.springMessengerAPI.models
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
+import org.hibernate.annotations.Fetch
 
 
 @Entity
@@ -16,6 +17,6 @@ class Conversation(
 
 
         @JsonManagedReference
-        @OneToMany(mappedBy = "conversation")
+        @OneToMany(mappedBy = "conversation", fetch = FetchType.LAZY)
         val userConversation: MutableList<UserConversation> = mutableListOf()
 )

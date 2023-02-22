@@ -24,4 +24,6 @@ class UsersController(private val usersService: UsersService) {
     @PostMapping("/loginUser")
     fun verifyAndLogInUser(@RequestBody userLoginRequest: UserLoginRequest) : UserLoginResponse  = usersService.loginAndVerifyUser(userLoginRequest)
 
+    //Todo get Username from userId
+
 }

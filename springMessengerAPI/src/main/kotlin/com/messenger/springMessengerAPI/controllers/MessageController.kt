@@ -14,4 +14,9 @@ class MessageController(private val messageService: MessageService) {
     fun getAllMessagesForConversation(@PathVariable conversationId: Int): List<Message> =
             messageService.getAllMessagesForConversation(conversationId = conversationId)
 
+
+    //Todo - get all messages for a user
+
+    //Todo - get all messages after a dateTime
+
 }
