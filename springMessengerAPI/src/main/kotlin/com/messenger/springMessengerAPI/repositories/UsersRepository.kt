@@ -11,4 +11,6 @@ interface UsersRepository : JpaRepository<User, Int>{
 
     //Login method with no auth, this is for local test purposes only - the whole login process is basic
     fun findUsersByUsernameAndPassword(username: String, password:String): User?
+
+    fun findUsersById(id: Int): User?
 }

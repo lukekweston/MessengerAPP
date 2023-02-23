@@ -17,4 +17,6 @@ class UsersService(private val usersRepository: UsersRepository) {
         val userId = usersRepository.findUsersByUsernameAndPassword(userLoginRequest.userName, userLoginRequest.password)?.id
         return UserLoginResponse(successfulLogin = userId != null, userId = userId)
     }
+
+    fun findUserById(id: Int): String? { return  usersRepository.findUsersById(id)?.username}
 }

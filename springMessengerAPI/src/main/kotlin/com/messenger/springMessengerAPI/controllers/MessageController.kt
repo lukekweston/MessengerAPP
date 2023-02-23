@@ -1,10 +1,17 @@
 package com.messenger.springMessengerAPI.controllers
 
 import com.messenger.springMessengerAPI.models.Message
+import com.messenger.springMessengerAPI.models.request.MessagesForUserAfterDateRequest
+import com.messenger.springMessengerAPI.models.request.NewMessageRequest
+import com.messenger.springMessengerAPI.models.request.UpdateMessageRequest
 import com.messenger.springMessengerAPI.services.ConversationService
 import com.messenger.springMessengerAPI.services.MessageService
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 
@@ -14,9 +21,25 @@ class MessageController(private val messageService: MessageService) {
     fun getAllMessagesForConversation(@PathVariable conversationId: Int): List<Message> =
             messageService.getAllMessagesForConversation(conversationId = conversationId)
 
+    @GetMapping("/allMessagesForUser/{userId}")
+    fun getAllMessagesForUser(@PathVariable userId: Int): List<Message> =
+            messageService.getAllMessagesForUser(userId)
 
-    //Todo - get all messages for a user
+    @GetMapping("/getMessagesAfter")
+    fun getAllMessagesForUserAfterDateTime(@RequestBody messagesForUserAfterDateRequest: MessagesForUserAfterDateRequest): List<Message> =
+            messageService.getAllMessagesForUserAfterDateTime(messagesForUserAfterDateRequest.userId, messagesForUserAfterDateRequest.lastUpdateDateTime)
 
-    //Todo - get all messages after a dateTime
+
+    @PostMapping("/sendMessage")
+    fun sendMessage(@RequestBody messageRequest: NewMessageRequest) = messageService.newMessage(messageRequest)
+
+    //This method should really have auth as only the user who created this message should be able to update it
+    @PutMapping("/updateMessage")
+    fun updateMessage(@RequestBody messageRequest: UpdateMessageRequest) = messageService.updateMessage(messageRequest)
+
+
+    //This method should really have auth as only the user who created this message should be able to delete it
+    @DeleteMapping("/deleteMessage/{messageId}")
+    fun deleteMessage(@PathVariable messageId: Int) = messageService.deleteMessage(messageId)
 
 }

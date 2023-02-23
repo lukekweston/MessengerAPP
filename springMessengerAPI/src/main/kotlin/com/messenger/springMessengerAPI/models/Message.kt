@@ -2,6 +2,7 @@ package com.messenger.springMessengerAPI.models
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -18,10 +19,12 @@ class Message(
         @Column(name = "TextMessage")
         val textMessage: String? = "",
 
+        //Default to max, so never get a message that has no timesent
         @Column(name = "TimeSent")
-        @Temporal(TemporalType.DATE)
-        val timeSent: Date? = null,
+        val timeSent: LocalDateTime = LocalDateTime.MAX,
 
+        @Column(name = "UpdatedTime")
+        val updatedTime: LocalDateTime? = null,
 
         @Column(name = "ConversationId")
         val conversationId: Int = 0,

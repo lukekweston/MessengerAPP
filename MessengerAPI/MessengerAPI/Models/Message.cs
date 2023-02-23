@@ -7,6 +7,7 @@
 #nullable enable
         public string? TextMessage { get; set; }
         public DateTime TimeSent { get; set; }
+        public DateTime? UpdatedTime { get; set; }
 #nullable disable
 
         public int ConversationId { get; set; }
