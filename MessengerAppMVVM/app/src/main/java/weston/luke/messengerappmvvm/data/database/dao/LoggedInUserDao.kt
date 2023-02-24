@@ -4,17 +4,18 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 
 @Dao
 interface LoggedInUserDao {
 
     @Insert
-    suspend fun logInUser(user: LoggedInUser)
+    suspend fun loginUser(user: LoggedInUser)
 
-    @Query("Delete from LOGGED_IN_USER")
+    @Query("Delete from logged_in_user")
     suspend fun logoutUser()
 
-    @Query("select * from LOGGED_IN_USER Limit 1")
-    suspend fun getLoggedInUser() : LoggedInUser
+    @Query("select * from logged_in_user Limit 1")
+    fun getLoggedInUser() : Flow<LoggedInUser?>
 }

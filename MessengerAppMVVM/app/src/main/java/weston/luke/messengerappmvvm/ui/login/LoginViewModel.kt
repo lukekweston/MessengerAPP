@@ -1,10 +1,31 @@
 package weston.luke.messengerappmvvm.ui.login
 
-import androidx.lifecycle.ViewModel
+import androidx.annotation.WorkerThread
+import androidx.lifecycle.*
+import kotlinx.coroutines.launch
+import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
+import weston.luke.messengerappmvvm.data.repository.LoggedInUserRepository
+import java.lang.IllegalArgumentException
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(private val repository: LoggedInUserRepository) : ViewModel() {
 
-    //Todo add method to check user is logged in and return user details
+    val loggedInUser: LiveData<LoggedInUser?> = repository.loggedInUser.asLiveData()
 
-    //Add method to login user and post it to database or return an error
+
+    @WorkerThread
+    fun loginUser() = viewModelScope.launch {
+        repository.loginUser(LoggedInUser(userId = 1, userName = "Luke", userEmail = "hello@gmail.com"))
+    }
+
+}
+
+class LoginViewModelFactory(private val repository: LoggedInUserRepository) : ViewModelProvider.Factory{
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if(modelClass.isAssignableFrom(LoginViewModel::class.java)){
+            @Suppress("UNCHECKED_CAST")
+            return LoginViewModel(repository) as T
+
+        }
+        throw IllegalArgumentException("Unknown ViewModel Class")
+    }
 }

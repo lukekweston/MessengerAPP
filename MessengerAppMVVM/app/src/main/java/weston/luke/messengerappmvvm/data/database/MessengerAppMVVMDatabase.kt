@@ -7,7 +7,8 @@ import androidx.room.RoomDatabase
 import weston.luke.messengerappmvvm.data.database.dao.LoggedInUserDao
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 
-
+//Version will need to be bumped after every database change
+//Keeps track of migrations
 @Database(entities = [LoggedInUser::class], version = 1)
 abstract class MessengerAppMVVMDatabase : RoomDatabase() {
 
