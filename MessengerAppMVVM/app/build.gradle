@@ -1,6 +1,11 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+//Kotlin anotation processing tool - needed for room
+    id 'kotlin-kapt'
+
+    //Reduces complex data to easily pass objects
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -26,8 +31,18 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+
+    //Exclude this to stop conflicts with building app
+    packagingOptions{
+        exclude 'META-INF/atomicfu.kotlin_module'
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -40,6 +55,19 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-//library containing scalable size units
+
+    //library containing scalable size units
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
+
+    //Add viewmodel and livedata
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+
+    //Room - local database
+    def room_version = '2.4.3'
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    //Easy permissions handler
+    implementation 'com.karumi:dexter:6.2.2'
 }
