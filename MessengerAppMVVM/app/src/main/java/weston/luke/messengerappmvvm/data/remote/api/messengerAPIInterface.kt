@@ -16,7 +16,7 @@ interface messengerAPIInterface {
 
 
     @POST(Constants.API_ENDPOINT_LOGIN_USER)
-    suspend fun loginUser(
+    fun loginUser(
         @Body loginRequest: LoginRequest
-    ) : LoginResponse
+    ) : Single<LoginResponse>
 }

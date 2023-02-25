@@ -18,4 +18,9 @@ class LoggedInUserRepository(private val loggedInUserDao: LoggedInUserDao) {
 
     val loggedInUser: Flow<LoggedInUser?> = loggedInUserDao.getLoggedInUser()
 
+    @WorkerThread
+    suspend fun awaitGettingLoggedInUser() : LoggedInUser? {
+        return loggedInUserDao.awaitGetLoggedInUser()
+    }
+
 }

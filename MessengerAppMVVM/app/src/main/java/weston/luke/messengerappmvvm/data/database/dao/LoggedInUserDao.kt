@@ -18,4 +18,7 @@ interface LoggedInUserDao {
 
     @Query("select * from logged_in_user Limit 1")
     fun getLoggedInUser() : Flow<LoggedInUser?>
+
+    @Query("select * from logged_in_user Limit 1")
+    suspend fun awaitGetLoggedInUser() : LoggedInUser?
 }

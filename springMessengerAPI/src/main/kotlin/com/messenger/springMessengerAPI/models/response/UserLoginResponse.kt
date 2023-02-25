@@ -7,5 +7,11 @@ data class UserLoginResponse(
         val successfulLogin: Boolean,
 
         @JsonProperty("UserId")
-        val userId: Int?
+        val userId: Int?,
+
+        @JsonProperty("UserName")
+        val userName: String?,
+
+        @JsonProperty("UserEmail")
+        val userEmail: String?
 )

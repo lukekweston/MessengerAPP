@@ -14,8 +14,8 @@ class UsersService(private val usersRepository: UsersRepository) {
     fun getUserByUserName(userName: String): User = usersRepository.findUsersByUsername(username = userName)
 
     fun loginAndVerifyUser(userLoginRequest: UserLoginRequest): UserLoginResponse {
-        val userId = usersRepository.findUsersByUsernameAndPassword(userLoginRequest.userName, userLoginRequest.password)?.id
-        return UserLoginResponse(successfulLogin = userId != null, userId = userId)
+        val user = usersRepository.findUserByUsernameAndPassword(userLoginRequest.userName, userLoginRequest.password)
+        return UserLoginResponse(successfulLogin = user != null, userId = user?.id, userName = user?.username, userEmail = user?.useremail)
     }
 
     fun findUserById(id: Int): String? { return  usersRepository.findUsersById(id)?.username}
