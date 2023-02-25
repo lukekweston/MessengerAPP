@@ -39,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
 
         mBinding.btnLogin.setOnClickListener {
             mLoginViewModel.loginUser()
+            val users = mLoginViewModel.getAllUsers()
            // Log.d("logged in user", mLoginViewModel.loggedInUser.value?.userName ?: "nada")
            // Log.d("logged in user", mLoginViewModel.loggedInUsers.value?.size.toString())
         }

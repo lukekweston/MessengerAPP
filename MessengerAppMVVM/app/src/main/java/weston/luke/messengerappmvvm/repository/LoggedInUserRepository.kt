@@ -1,4 +1,4 @@
-package weston.luke.messengerappmvvm.data.repository
+package weston.luke.messengerappmvvm.repository
 
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.Flow

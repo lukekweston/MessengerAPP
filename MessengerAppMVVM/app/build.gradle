@@ -78,4 +78,14 @@ dependencies {
     implementation 'com.karumi:dexter:6.2.2'
 
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'
+
+    //Add retrofit for querying an API
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
+
+    //gson for serializing/deserializing json for retrofit requests
+    implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
+
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
 }
