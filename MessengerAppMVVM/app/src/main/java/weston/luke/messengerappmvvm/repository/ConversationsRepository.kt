@@ -1,6 +1,7 @@
 package weston.luke.messengerappmvvm.repository
 
 import androidx.annotation.WorkerThread
+import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import weston.luke.messengerappmvvm.data.database.dao.ConversationDao
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
@@ -18,4 +19,11 @@ class ConversationsRepository(private val conversationDao: ConversationDao) {
     suspend fun insertConversations(conversations : List<Conversation>){
         return conversationDao.insertConversations(conversations)
     }
+
+    @WorkerThread
+    suspend fun deleteConversationData(){
+        conversationDao.deleteAllConversationData()
+    }
+
+
 }

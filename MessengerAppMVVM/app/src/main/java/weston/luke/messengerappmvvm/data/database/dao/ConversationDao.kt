@@ -16,4 +16,7 @@ interface ConversationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertConversations(conversations: List<Conversation>)
 
+    @Query("Delete from conversation")
+    suspend fun deleteAllConversationData()
+
 }

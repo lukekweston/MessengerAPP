@@ -6,7 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.databinding.ItemConversationBinding
 
-class ConversationsAdapter(private val conversations: List<Conversation>) : RecyclerView.Adapter<ConversationViewHolder>() {
+class ConversationsAdapter() : RecyclerView.Adapter<ConversationViewHolder>() {
+
+    private var conversations: List<Conversation> = emptyList()
+
+    fun setData(conversations: List<Conversation>) {
+        this.conversations = conversations
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConversationViewHolder {
         val inflater = LayoutInflater.from(parent.context)

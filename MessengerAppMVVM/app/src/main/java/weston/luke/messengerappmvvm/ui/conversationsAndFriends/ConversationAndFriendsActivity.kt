@@ -7,6 +7,8 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +21,7 @@ import weston.luke.messengerappmvvm.util.toast
 class ConversationAndFriendsActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityConversationAndFriendsBinding
+    private lateinit var mNavController: NavController
     private val mConversationAndFriendsViewModel: ConversationAndFriendsViewModel by viewModels {
         ConversationAndFriendsViewModelFactory(
             (application as MessengerAppMVVMApplication).loggedInUserRepository,
@@ -31,7 +34,18 @@ class ConversationAndFriendsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = ActivityConversationAndFriendsBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+        mNavController = findNavController(R.id.nav_host_conversation_and_friends)
 
+
+//        val appBarConfiguration = AppBarConfiguration(
+//            setOf(
+//                R.id.navigation_all_dishes,
+//                R.id.navigation_favourite_dishes,
+//                R.id.navigation_random_dish
+//            )
+//        )
+//
+//        setupActionBarWithNavController(mNavController, appBarConfiguration)
         setSupportActionBar(mBinding.toolbar)
 
         //Observe the logged in user, if its null return to login screen and clear the backstack
@@ -43,11 +57,11 @@ class ConversationAndFriendsActivity : AppCompatActivity() {
             }
         }
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, ConversationFragment.newInstance())
-                .commitNow()
-        }
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.container, ConversationFragment.newInstance())
+//                .commitNow()
+//        }
 
     }
 

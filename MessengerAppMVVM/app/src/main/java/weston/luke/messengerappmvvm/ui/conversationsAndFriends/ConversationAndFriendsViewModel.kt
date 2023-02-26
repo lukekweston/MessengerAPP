@@ -11,14 +11,17 @@ import weston.luke.messengerappmvvm.repository.ConversationsRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
 import java.lang.IllegalArgumentException
 
-class ConversationAndFriendsViewModel(private val loggedInUserRepository: LoggedInUserRepository, conversationsRepository: ConversationsRepository) : ViewModel(){
+class ConversationAndFriendsViewModel(private val loggedInUserRepository: LoggedInUserRepository, private val conversationsRepository: ConversationsRepository) : ViewModel(){
 
     val loggedInUser: LiveData<LoggedInUser?> = loggedInUserRepository.loggedInUser.asLiveData()
 
     val conversations: LiveData<List<Conversation>> = conversationsRepository.conversations.asLiveData()
 
     @WorkerThread
-    suspend fun logoutUser() = loggedInUserRepository.logoutUser()
+    suspend fun logoutUser(){
+        loggedInUserRepository.logoutUser()
+        conversationsRepository.deleteConversationData()
+    }
 }
 
 

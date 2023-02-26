@@ -42,30 +42,26 @@ class ConversationFragment: Fragment() {
         mBinding = FragmentConversationsBinding.inflate(inflater, container, false)
 
 
+        conversationsAdapter = ConversationsAdapter()
+        conversationRecyclerView = mBinding!!.recyclerViewConversations
+        conversationRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        conversationRecyclerView.adapter = conversationsAdapter
 
         //When conversations are updated the conversationItems are updated which updates the data in the recyclerview
         //then notify the adapter to update the view
         mViewModel.conversations.observe(viewLifecycleOwner) { conversations ->
-            if(conversations != null){
-                //Todo - change this so the recycler view isnt recreated everytime
-                conversationsAdapter = ConversationsAdapter(conversationItems)
-                conversationRecyclerView = mBinding!!.recyclerViewConversations
-                conversationRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-                conversationRecyclerView.adapter = conversationsAdapter
+            if (conversations != null) {
+                conversationsAdapter.setData(conversations)
+
             }
 
         }
-
 
         return mBinding!!.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-
-
-
     }
 
 }
