@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "8627964be02344273a1945051a5ebf0e",
+    "version": 2,
+    "identityHash": "8db639d7787dd4a69a3b42a2853f1e4b",
     "entities": [
       {
         "tableName": "logged_in_user",
@@ -44,7 +44,7 @@
       },
       {
         "tableName": "conversation",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`conversationId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `conversationName` TEXT, `LastUpdatedDateTime` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`conversationId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `conversationName` TEXT, `lastUpdatedDateTime` INTEGER)",
         "fields": [
           {
             "fieldPath": "conversationId",
@@ -59,8 +59,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "LastUpdatedDateTime",
-            "columnName": "LastUpdatedDateTime",
+            "fieldPath": "lastUpdatedDateTime",
+            "columnName": "lastUpdatedDateTime",
             "affinity": "INTEGER",
             "notNull": false
           }
@@ -78,7 +78,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8627964be02344273a1945051a5ebf0e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8db639d7787dd4a69a3b42a2853f1e4b')"
     ]
   }
 }

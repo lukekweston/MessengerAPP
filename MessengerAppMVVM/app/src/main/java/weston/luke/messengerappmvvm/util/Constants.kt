@@ -6,4 +6,5 @@ object Constants {
 
     const val API_ENDPOINT_LOGIN_USER = "loginUser"
     const val API_ENDPOINT_ALL_USERS = "userlist"
+    const val API_ENDPOINT_GET_CONVERSATIONS_FOR_USER = "getConversationsForUser/"
 }

@@ -3,6 +3,7 @@ package com.messenger.springMessengerAPI.models
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
 import org.hibernate.annotations.Fetch
+import java.time.LocalDateTime
 
 
 @Entity
@@ -15,6 +16,8 @@ class Conversation(
         @Column(name = "ConversationName")
         val conversationName: String? = null,
 
+        @Column(name = "LastUpdated")
+        val lastUpdated: LocalDateTime? = null,
 
         @JsonManagedReference
         @OneToMany(mappedBy = "conversation", fetch = FetchType.LAZY)

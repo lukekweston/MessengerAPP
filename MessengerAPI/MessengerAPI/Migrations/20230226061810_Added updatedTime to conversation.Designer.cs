@@ -4,6 +4,7 @@ using MessengerAPI.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MessengerAPI.Migrations
 {
     [DbContext(typeof(MessengerDataContext))]
-    partial class MessengerDataContextModelSnapshot : ModelSnapshot
+    [Migration("20230226061810_Added updatedTime to conversation")]
+    partial class AddedupdatedTimetoconversation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +36,7 @@ namespace MessengerAPI.Migrations
                     b.Property<string>("ConversationName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LastUpdated")
+                    b.Property<DateTime?>("UpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

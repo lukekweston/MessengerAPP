@@ -5,6 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
+import weston.luke.messengerappmvvm.data.remote.response.ConversationResponse
 import weston.luke.messengerappmvvm.data.remote.response.LoginResponse
 import weston.luke.messengerappmvvm.data.remote.response.UserResponse
 import weston.luke.messengerappmvvm.util.Constants
@@ -18,11 +19,11 @@ class MessengerAPIService {
         .build()
         .create(messengerAPIInterface::class.java)
 
-    fun getAllUsers(): Single<List<UserResponse>> {
-        return api.getAllUsers()
-    }
-
     fun loginUser(loginRequest: LoginRequest): Single<LoginResponse>{
         return api.loginUser(loginRequest)
+    }
+
+    fun getAllConversationsForUser(userId: Int): Single<ConversationResponse>{
+        return api.getAllConversationsForUser(userId)
     }
 }

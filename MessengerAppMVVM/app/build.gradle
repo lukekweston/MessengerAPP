@@ -8,12 +8,13 @@ plugins {
     id 'kotlin-parcelize'
 }
 
+
 android {
     compileSdk 32
 
     defaultConfig {
         applicationId "weston.luke.messengerappmvvm"
-        minSdk 21
+        minSdk 26
         targetSdk 32
         versionCode 1
         versionName "1.0"

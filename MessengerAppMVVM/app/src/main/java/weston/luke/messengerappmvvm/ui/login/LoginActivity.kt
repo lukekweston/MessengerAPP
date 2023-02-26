@@ -3,9 +3,10 @@ package weston.luke.messengerappmvvm.ui.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,10 @@ class LoginActivity : AppCompatActivity() {
 
     lateinit var mBinding: ActivityLoginBinding
     private val mLoginViewModel: LoginViewModel by viewModels {
-        LoginViewModelFactory((application as MessengerAppMVVMApplication).repository)
+        LoginViewModelFactory(
+            (application as MessengerAppMVVMApplication).loggedInUserRepository,
+            (application as MessengerAppMVVMApplication).conversationsRepository
+        )
     }
     private val activityScope = CoroutineScope(lifecycleScope.coroutineContext + Dispatchers.Main)
 
@@ -35,6 +39,13 @@ class LoginActivity : AppCompatActivity() {
         //Check for logged in user
         checkForAlreadyLoggedInUser()
 
+        mLoginViewModel.loggedInUser.observe(this) { loggedInUser ->
+            if (loggedInUser != null) {
+                mBinding.loadingSpinner.visibility = View.VISIBLE
+                mBinding.content.visibility = View.GONE
+                endLoginScreenAndGoToConversations()
+            }
+        }
 
         mLoginViewModel.toastMessage.observe(this) { message ->
             Toast.makeText(this, message, Toast.LENGTH_LONG).show()
@@ -59,46 +70,38 @@ class LoginActivity : AppCompatActivity() {
             }
 
         }
-        
+
 
         mBinding.btnLogin.setOnClickListener {
-            mBinding.btnLogin.isEnabled = false
-            val successfulLogin = mLoginViewModel.loginUser(
+            mLoginViewModel.loginUser(
                 userName = mBinding.etUsername.text.toString(),
                 password = mBinding.etPassword.text.toString()
             )
-            if (successfulLogin) {
-                //Goto next screen
-                //endLoginScreenAndGoToConversations()
-            }
 //          Else stay here - error login message will work with live data
-
-
-            mBinding.btnLogin.isEnabled = true
         }
     }
 
     //Check user is already logged in, if they are, skip to the next screen
     //Todo, go to last opened screen?
 
-    fun checkForAlreadyLoggedInUser(){
+    private fun checkForAlreadyLoggedInUser() {
         activityScope.launch {
+            Log.d("loggedIn", mLoginViewModel.checkUserAlreadyLoggedIn().toString())
             if (mLoginViewModel.checkUserAlreadyLoggedIn()) {
                 endLoginScreenAndGoToConversations()
             } else {
-                mBinding.loadingSpinner.hide()
-                mBinding.content.show()
+                mBinding.loadingSpinner.visibility = View.GONE
+                mBinding.content.visibility = View.VISIBLE
             }
         }
     }
 
-    fun endLoginScreenAndGoToConversations() {
+    private fun endLoginScreenAndGoToConversations() {
         val intent = Intent(this, ConversationAndFriendsActivity::class.java)
         startActivity(intent)
         //Close this activity, should only be able to get back here if you log out
         finish()
     }
-
 
 
 }

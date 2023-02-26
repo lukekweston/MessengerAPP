@@ -1,6 +1,8 @@
 package weston.luke.messengerappmvvm.util
 
+import android.content.Context
 import android.view.View
+import android.widget.Toast
 
 
 fun View.show() {
@@ -13,4 +15,9 @@ fun View.hide() {
 
 fun View.invisible() {
     View.INVISIBLE
+}
+
+
+fun Context.toast(message: String){
+    Toast.makeText(this, message, android.widget.Toast.LENGTH_LONG).show()
 }

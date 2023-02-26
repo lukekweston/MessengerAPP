@@ -2,6 +2,7 @@ package com.messenger.springMessengerAPI.services
 
 import com.messenger.springMessengerAPI.models.Conversation
 import com.messenger.springMessengerAPI.models.UserConversation
+import com.messenger.springMessengerAPI.models.response.ConversationResponse
 import com.messenger.springMessengerAPI.repositories.ConversationRepository
 import com.messenger.springMessengerAPI.repositories.UserConversationRepository
 import org.springframework.stereotype.Service
@@ -10,13 +11,13 @@ import org.springframework.stereotype.Service
 @Service
 class ConversationService(private val conversationRepository: ConversationRepository, private val userConversationRepository: UserConversationRepository) {
 
-    fun getConversationsForUser(userId: Int): List<Conversation> {
+    fun getConversationsForUser(userId: Int): List<ConversationResponse> {
         val conversations = userConversationRepository.findAllById_UserId(userId).map { it.conversation!! }
         return conversations.map {
-            Conversation(
-                    id = it!!.id,
+            ConversationResponse(
+                    id = it.id,
                     conversationName = getConversationName(it, userId),
-                    userConversation = it.userConversation
+                    lastUpdated = it.lastUpdated
             )
         }
     }
