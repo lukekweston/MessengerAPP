@@ -6,14 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
-import weston.luke.messengerappmvvm.databinding.FragmentConversationsBinding
 import weston.luke.messengerappmvvm.databinding.FragmentFriendsBinding
-import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationsAdapter
-import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModelFactory
-import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModel
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.FriendsViewModel
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.FriendsViewModelFactory
 
@@ -23,7 +17,7 @@ class FriendFragment: Fragment() {
 
     private val mViewModel: FriendsViewModel by viewModels {
         FriendsViewModelFactory(
-            (requireActivity().application as MessengerAppMVVMApplication).conversationsRepository
+            (requireActivity().application as MessengerAppMVVMApplication).conversationRepository
         )
     }
 

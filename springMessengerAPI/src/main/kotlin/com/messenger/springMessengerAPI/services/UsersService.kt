@@ -18,5 +18,5 @@ class UsersService(private val usersRepository: UsersRepository) {
         return UserLoginResponse(successfulLogin = user != null, userId = user?.id, userName = user?.username, userEmail = user?.useremail)
     }
 
-    fun findUserById(id: Int): String? { return  usersRepository.findUsersById(id)?.username}
+    fun findUsernameById(id: Int): String? { return  usersRepository.findUsersById(id)?.username}
 }

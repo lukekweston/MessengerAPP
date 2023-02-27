@@ -22,7 +22,8 @@ class ConversationFragment: Fragment() {
 
     private val mViewModel: ConversationsViewModel by viewModels {
         ConversationsViewModelFactory(
-            (requireActivity().application as MessengerAppMVVMApplication).conversationsRepository
+            (requireActivity().application as MessengerAppMVVMApplication).conversationRepository,
+            (requireActivity().application as MessengerAppMVVMApplication).messageRepository
         )
     }
 

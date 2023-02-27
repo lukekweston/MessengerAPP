@@ -18,20 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class UsersController(private val usersService: UsersService) {
-
-    @GetMapping("/userlist")
-    fun getAllUsers(): List<User> = usersService.getAllUsers()
-
-    @GetMapping("/findUser/{userName}")
-    fun findByUserName(@PathVariable userName: String): User =
-        usersService.getUserByUserName(userName = userName)
-
+    
     @PostMapping("/loginUser")
     fun verifyAndLogInUser(@RequestBody userLoginRequest: UserLoginRequest) : UserLoginResponse  = usersService.loginAndVerifyUser(userLoginRequest)
 
    @GetMapping("/getUsername/{id}")
     fun getUsernameById(@PathVariable id: Int): String {
-        val userName = usersService.findUserById(id)
+        val userName = usersService.findUsernameById(id)
        if(userName.isNullOrEmpty()){
            throw ResourceNotFoundException("Username not found for user $id")
        }

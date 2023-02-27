@@ -4,6 +4,7 @@ import com.messenger.springMessengerAPI.models.Message
 import com.messenger.springMessengerAPI.models.request.MessagesForUserAfterDateRequest
 import com.messenger.springMessengerAPI.models.request.NewMessageRequest
 import com.messenger.springMessengerAPI.models.request.UpdateMessageRequest
+import com.messenger.springMessengerAPI.models.response.MessageResponse
 import com.messenger.springMessengerAPI.services.ConversationService
 import com.messenger.springMessengerAPI.services.MessageService
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -18,15 +19,15 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class MessageController(private val messageService: MessageService) {
     @GetMapping("/getAllMessagesForConversation/{conversationId}")
-    fun getAllMessagesForConversation(@PathVariable conversationId: Int): List<Message> =
+    fun getAllMessagesForConversation(@PathVariable conversationId: Int): List<MessageResponse> =
             messageService.getAllMessagesForConversation(conversationId = conversationId)
 
     @GetMapping("/allMessagesForUser/{userId}")
-    fun getAllMessagesForUser(@PathVariable userId: Int): List<Message> =
+    fun getAllMessagesForUser(@PathVariable userId: Int): List<MessageResponse> =
             messageService.getAllMessagesForUser(userId)
 
     @GetMapping("/getMessagesAfter")
-    fun getAllMessagesForUserAfterDateTime(@RequestBody messagesForUserAfterDateRequest: MessagesForUserAfterDateRequest): List<Message> =
+    fun getAllMessagesForUserAfterDateTime(@RequestBody messagesForUserAfterDateRequest: MessagesForUserAfterDateRequest): List<MessageResponse> =
             messageService.getAllMessagesForUserAfterDateTime(messagesForUserAfterDateRequest.userId, messagesForUserAfterDateRequest.lastUpdateDateTime)
 
 

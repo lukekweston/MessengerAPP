@@ -6,15 +6,15 @@ import android.widget.Toast
 
 
 fun View.show() {
-    View.VISIBLE
+    this.visibility = View.VISIBLE
 }
 
 fun View.hide() {
-    View.GONE
+    this.visibility = View.GONE
 }
 
 fun View.invisible() {
-    View.INVISIBLE
+    this.visibility = View.INVISIBLE
 }
 
 

@@ -1,9 +1,8 @@
 package weston.luke.messengerappmvvm.ui.login
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
+import androidx.room.ColumnInfo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
@@ -11,18 +10,23 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
+import weston.luke.messengerappmvvm.data.database.entities.Message
+import weston.luke.messengerappmvvm.data.database.entities.SentStatus
 import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
 import weston.luke.messengerappmvvm.data.remote.response.ConversationResponse
 import weston.luke.messengerappmvvm.data.remote.response.LoginResponse
-import weston.luke.messengerappmvvm.repository.ConversationsRepository
+import weston.luke.messengerappmvvm.data.remote.response.MessageResponse
+import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
+import weston.luke.messengerappmvvm.repository.MessageRepository
 import java.lang.IllegalArgumentException
 import java.time.LocalDateTime
 
 class LoginViewModel(
     private val loginRepository: LoggedInUserRepository,
-    private val conversationsRepository: ConversationsRepository
+    private val conversationRepository: ConversationRepository,
+    private val messageRepository: MessageRepository
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -68,13 +72,32 @@ class LoginViewModel(
     @WorkerThread
     fun insertConversationsIntoDatabase(conversationResponse: ConversationResponse) =
         viewModelScope.launch {
-            conversationsRepository.insertConversations(
+            conversationRepository.insertConversations(
                 conversationResponse.map {
                     Conversation(
                         conversationId = it.id,
                         conversationName = it.conversationName,
                         lastUpdatedDateTime = if (it.lastUpdated != null) LocalDateTime.parse(it.lastUpdated) else null
 
+                    )
+                }
+            )
+        }
+
+    @WorkerThread
+    fun insertMessagesIntoDatabase(messageResponse: MessageResponse) =
+        viewModelScope.launch {
+            messageRepository.insertMessages(
+                messageResponse.map {
+                    Message(
+                        messageId = it.id,
+                        userId = it.userId,
+                        conversationId = it.conversationId,
+                        userName = it.username,
+                        message = it.message,
+                        timeSent = LocalDateTime.parse(it.timeSent),
+                        timeUpdated = if (it.timeUpdated != null) LocalDateTime.parse(it.timeUpdated) else null,
+                        status = SentStatus.RECEIVED_FROM_API
                     )
                 }
             )
@@ -99,15 +122,15 @@ class LoginViewModel(
                             //If either of these methods fail - do not log in user
 //                          Load conversations to local database
                             getConversationsForUser(loginResponse.UserId)
-
 //                          Load messages to local database
+                            getMessagesForUser(loginResponse.UserId)
 
                             //Login user
                             if (!failedLogin) {
                                 addUserToBeLoggedInLocally(loginResponse)
                             } else {
                                 _toastMessage.value = "Error logging in, please try again"
-                                //Clear converations
+                                //Clear conversations
 
                                 //Clear messages
                             }
@@ -137,6 +160,26 @@ class LoginViewModel(
                         //Insert conversations into local database
                         insertConversationsIntoDatabase(conversationResponse)
                     }
+
+                    override fun onError(e: Throwable) {
+                        //Set failed to true
+                        failedLogin = true
+                    }
+                })
+        )
+    }
+
+    fun getMessagesForUser(userId: Int) {
+
+        compositeDisposable.add(
+            api.getAllMessagesForUser(userId)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<MessageResponse>() {
+                    override fun onSuccess(messageResponse: MessageResponse) {
+                        //Insert messages into local database
+                        insertMessagesIntoDatabase(messageResponse)
+                    }
                     override fun onError(e: Throwable) {
                         //Set failed to true
                         failedLogin = true
@@ -149,13 +192,14 @@ class LoginViewModel(
 
 class LoginViewModelFactory(
     private val loginRepository: LoggedInUserRepository,
-    private val conversationsRepository: ConversationsRepository
+    private val conversationRepository: ConversationRepository,
+    private val messageRepository: MessageRepository
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LoginViewModel(loginRepository, conversationsRepository) as T
+            return LoginViewModel(loginRepository, conversationRepository, messageRepository) as T
 
         }
         throw IllegalArgumentException("Unknown ViewModel Class")

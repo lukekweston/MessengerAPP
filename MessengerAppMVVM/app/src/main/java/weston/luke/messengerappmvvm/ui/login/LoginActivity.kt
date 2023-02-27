@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -25,7 +24,8 @@ class LoginActivity : AppCompatActivity() {
     private val mLoginViewModel: LoginViewModel by viewModels {
         LoginViewModelFactory(
             (application as MessengerAppMVVMApplication).loggedInUserRepository,
-            (application as MessengerAppMVVMApplication).conversationsRepository
+            (application as MessengerAppMVVMApplication).conversationRepository,
+            (application as MessengerAppMVVMApplication).messageRepository
         )
     }
     private val activityScope = CoroutineScope(lifecycleScope.coroutineContext + Dispatchers.Main)
@@ -41,8 +41,8 @@ class LoginActivity : AppCompatActivity() {
 
         mLoginViewModel.loggedInUser.observe(this) { loggedInUser ->
             if (loggedInUser != null) {
-                mBinding.loadingSpinner.visibility = View.VISIBLE
-                mBinding.content.visibility = View.GONE
+                mBinding.loadingSpinner.show()
+                mBinding.content.hide()
                 endLoginScreenAndGoToConversations()
             }
         }
@@ -90,8 +90,8 @@ class LoginActivity : AppCompatActivity() {
             if (mLoginViewModel.checkUserAlreadyLoggedIn()) {
                 endLoginScreenAndGoToConversations()
             } else {
-                mBinding.loadingSpinner.visibility = View.GONE
-                mBinding.content.visibility = View.VISIBLE
+                mBinding.loadingSpinner.hide()
+                mBinding.content.show()
             }
         }
     }

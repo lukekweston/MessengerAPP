@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
 import weston.luke.messengerappmvvm.data.remote.response.ConversationResponse
 import weston.luke.messengerappmvvm.data.remote.response.LoginResponse
+import weston.luke.messengerappmvvm.data.remote.response.MessageResponse
 import weston.luke.messengerappmvvm.data.remote.response.UserResponse
 import weston.luke.messengerappmvvm.util.Constants
 import java.util.concurrent.TimeUnit
@@ -53,5 +54,9 @@ class MessengerAPIService {
 
     fun getAllConversationsForUser(userId: Int): Single<ConversationResponse> {
         return api.getAllConversationsForUser(userId)
+    }
+
+    fun getAllMessagesForUser(userId: Int): Single<MessageResponse>{
+        return api.getAllMessagesForUser(userId)
     }
 }

@@ -30,7 +30,8 @@ class ConversationAndFriendsActivity : AppCompatActivity() {
     private val mConversationAndFriendsViewModel: ConversationAndFriendsViewModel by viewModels {
         ConversationAndFriendsViewModelFactory(
             (application as MessengerAppMVVMApplication).loggedInUserRepository,
-            (application as MessengerAppMVVMApplication).conversationsRepository
+            (application as MessengerAppMVVMApplication).conversationRepository,
+            (application as MessengerAppMVVMApplication).messageRepository
         )
     }
     private val activityScope = CoroutineScope(lifecycleScope.coroutineContext + Dispatchers.Main)
