@@ -9,12 +9,17 @@ import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityConversationAndFriendsBinding
+import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationAndFriendsViewModel
+import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationAndFriendsViewModelFactory
 import weston.luke.messengerappmvvm.ui.login.LoginActivity
 import weston.luke.messengerappmvvm.util.toast
 
@@ -34,19 +39,22 @@ class ConversationAndFriendsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = ActivityConversationAndFriendsBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+
+        setSupportActionBar(mBinding.toolbar)
+
         mNavController = findNavController(R.id.nav_host_conversation_and_friends)
 
 
-//        val appBarConfiguration = AppBarConfiguration(
-//            setOf(
-//                R.id.navigation_all_dishes,
-//                R.id.navigation_favourite_dishes,
-//                R.id.navigation_random_dish
-//            )
-//        )
-//
-//        setupActionBarWithNavController(mNavController, appBarConfiguration)
-        setSupportActionBar(mBinding.toolbar)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_conversation,
+                R.id.navigation_friends
+            )
+        )
+
+        setupActionBarWithNavController(mNavController, appBarConfiguration)
+        mBinding.navBottomNavigation.setupWithNavController(mNavController)
+
 
         //Observe the logged in user, if its null return to login screen and clear the backstack
         mConversationAndFriendsViewModel.loggedInUser.observe(this) { loggedInUser ->
@@ -56,12 +64,6 @@ class ConversationAndFriendsActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
-
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction()
-//                .replace(R.id.container, ConversationFragment.newInstance())
-//                .commitNow()
-//        }
 
     }
 

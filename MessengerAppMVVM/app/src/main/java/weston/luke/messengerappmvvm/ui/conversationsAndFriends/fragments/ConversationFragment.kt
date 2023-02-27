@@ -1,46 +1,36 @@
-package weston.luke.messengerappmvvm.ui.conversationsAndFriends
+package weston.luke.messengerappmvvm.ui.conversationsAndFriends.fragments
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
-import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.databinding.FragmentConversationsBinding
+import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationsAdapter
+import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModelFactory
+import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModel
 
 class ConversationFragment: Fragment() {
 
     private var mBinding: FragmentConversationsBinding? = null
     private lateinit var conversationsAdapter: ConversationsAdapter
-    private var conversationItems: List<Conversation> = listOf()
     private lateinit var conversationRecyclerView: RecyclerView
 
-    private val mViewModel: ConversationAndFriendsViewModel by viewModels {
-        ConversationAndFriendsViewModelFactory(
-            (requireActivity().application as MessengerAppMVVMApplication).loggedInUserRepository,
+    private val mViewModel: ConversationsViewModel by viewModels {
+        ConversationsViewModelFactory(
             (requireActivity().application as MessengerAppMVVMApplication).conversationsRepository
         )
     }
-
-    companion object {
-        fun newInstance() = ConversationFragment()
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentConversationsBinding.inflate(inflater, container, false)
-
 
         conversationsAdapter = ConversationsAdapter()
         conversationRecyclerView = mBinding!!.recyclerViewConversations
@@ -52,16 +42,9 @@ class ConversationFragment: Fragment() {
         mViewModel.conversations.observe(viewLifecycleOwner) { conversations ->
             if (conversations != null) {
                 conversationsAdapter.setData(conversations)
-
             }
 
         }
-
         return mBinding!!.root
     }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
 }

@@ -17,20 +17,4 @@ class MessengerAppMVVMApplication : Application() {
     val loggedInUserRepository by lazy { LoggedInUserRepository(database.loggedInUserDao()) }
     val conversationsRepository by lazy { ConversationsRepository(database.conversationDao()) }
 
-
-
-
-
-
-    object RetrofitClient {
-        private val retrofit by lazy {
-            Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        }
-        val messengerApi: messengerAPIInterface by lazy {
-            retrofit.create(messengerAPIInterface::class.java)
-        }
-    }
 }
