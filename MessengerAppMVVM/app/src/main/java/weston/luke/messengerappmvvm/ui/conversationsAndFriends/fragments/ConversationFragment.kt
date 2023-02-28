@@ -1,26 +1,23 @@
 package weston.luke.messengerappmvvm.ui.conversationsAndFriends.fragments
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.FragmentConversationsBinding
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationsAdapter
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModelFactory
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModel
-import weston.luke.messengerappmvvm.util.hide
-import weston.luke.messengerappmvvm.util.show
+import weston.luke.messengerappmvvm.ui.messages.MessagesActivity
+import weston.luke.messengerappmvvm.util.Constants
 
 class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener {
 
@@ -66,6 +63,11 @@ class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener
 
     override fun onCardClick(conversationId: Int) {
         Toast.makeText(requireContext(), "go to conversation $conversationId", Toast.LENGTH_SHORT).show()
+
+        val intent = Intent(requireActivity(), MessagesActivity::class.java)
+        intent.putExtra(Constants.CONVERSATION_ID, conversationId)
+        startActivity(intent)
+        activity?.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
 }

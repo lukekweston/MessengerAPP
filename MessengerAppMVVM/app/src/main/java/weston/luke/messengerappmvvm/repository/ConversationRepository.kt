@@ -11,6 +11,11 @@ class ConversationRepository(private val conversationDao: ConversationDao) {
     val conversations: Flow<List<Conversation>> = conversationDao.getAllConversations()
 
     @WorkerThread
+    fun getConversation(conversationId: Int): Flow<Conversation>{
+        return conversationDao.getConversation(conversationId)
+    }
+
+    @WorkerThread
     fun updateConversation(conversation: Conversation){
         return conversationDao.updateConversation(conversation)
     }

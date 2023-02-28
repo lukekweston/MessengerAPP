@@ -10,6 +10,9 @@ interface ConversationDao {
     @Query("select * from conversation")
     fun getAllConversations() : Flow<List<Conversation>>
 
+    @Query("select * from conversation where conversationId = :conversationId")
+    fun getConversation(conversationId :Int) : Flow<Conversation>
+
     @Update
     fun updateConversation(conversation: Conversation)
 

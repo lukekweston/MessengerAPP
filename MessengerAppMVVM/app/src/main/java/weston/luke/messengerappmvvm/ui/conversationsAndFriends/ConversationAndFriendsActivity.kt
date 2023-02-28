@@ -41,6 +41,8 @@ class ConversationAndFriendsActivity : AppCompatActivity() {
         mBinding = ActivityConversationAndFriendsBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
+
+
         setSupportActionBar(mBinding.toolbar)
 
         mNavController = findNavController(R.id.nav_host_conversation_and_friends)

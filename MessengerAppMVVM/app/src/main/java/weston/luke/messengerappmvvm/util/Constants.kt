@@ -8,4 +8,6 @@ object Constants {
     const val API_ENDPOINT_GET_CONVERSATIONS_FOR_USER = "getConversationsForUser/"
 
     const val API_ENDPOINT_GET_ALL_MESSAGES_FOR_USER = "allMessagesForUser/"
+
+    const val CONVERSATION_ID = "conversationId"
 }
