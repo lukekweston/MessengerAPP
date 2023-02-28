@@ -8,5 +8,5 @@ data class ConversationWithLatestMessage(
     val conversationName: String,
     val userName: String,
     val message: String,
-    val lastMessageTime: LocalDateTime
+    val lastMessageTime: LocalDateTime?
 )

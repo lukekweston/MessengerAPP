@@ -37,4 +37,5 @@ class UsersController(private val usersService: UsersService) {
     fun handleResourceNotFoundException(ex: ResourceNotFoundException): ErrorResponse {
         return ErrorResponse("Resource not found", ex.message)
     }
+
 }

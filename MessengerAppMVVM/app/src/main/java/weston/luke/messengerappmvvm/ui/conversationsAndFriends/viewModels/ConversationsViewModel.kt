@@ -1,35 +1,63 @@
 package weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.repository.ConversationRepository
+import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
 import weston.luke.messengerappmvvm.repository.MessageRepository
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.data.ConversationWithLatestMessage
 import java.lang.IllegalArgumentException
+import java.time.LocalDateTime
 
 class ConversationsViewModel(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository
 ) : ViewModel() {
 
-    val conversations: LiveData<List<Conversation>> =
-        conversationRepository.conversations.asLiveData()
+    // private var conversations :List<Conversation> = listOf()
 
 
+    private val _conversationsWithLatestMessages =
+        MutableLiveData<List<ConversationWithLatestMessage>>()
 
-    private fun conversationsWithMessages(): LiveData<List<ConversationWithLatestMessage>>{
+    val conversationsWithLatestMessages: LiveData<List<ConversationWithLatestMessage>>
+        get() = _conversationsWithLatestMessages
 
-        val conversations = conversationRepository.conversations
 
-        //Get the latest message for a conversation
+    private val _conversations = MutableLiveData<List<Conversation>>()
+    val conversations: LiveData<List<Conversation>> = _conversations
 
-        //Order conversations by these messages
 
-        return conversationRepository.conversations.asLiveData()
+    fun loadConversations() {
+        viewModelScope.launch {
+            conversationRepository.conversations.collect { conversations ->
+                _conversations.value = conversations
+
+                val conversationsWithLatestMessageTemp: MutableList<ConversationWithLatestMessage> =
+                    mutableListOf()
+
+                for (conversation in conversations) {
+                    val latestMessage =
+                        messageRepository.getLatestMessageForConversation(conversation.conversationId)
+
+
+                    conversationsWithLatestMessageTemp += ConversationWithLatestMessage(
+                        conversationId = conversation.conversationId,
+                        conversationName = conversation.conversationName ?: "Unnamed Conversation",
+                        userName = latestMessage.userName ?: "",
+                        message = latestMessage.message ?: "",
+                        lastMessageTime = latestMessage.latestTime
+                    )
+                }
+
+                _conversationsWithLatestMessages.value = conversationsWithLatestMessageTemp
+            }
+        }
     }
+
+
 }
 
 
