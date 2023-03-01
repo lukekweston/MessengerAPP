@@ -1,27 +1,30 @@
 package weston.luke.messengerappmvvm.ui.messages
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityMessagesBinding
-import weston.luke.messengerappmvvm.ui.login.LoginViewModel
-import weston.luke.messengerappmvvm.ui.login.LoginViewModelFactory
 import weston.luke.messengerappmvvm.util.Constants
 import weston.luke.messengerappmvvm.util.toast
 
 
-//Got messaging UI from here
+//Got messaging UI from here - modified a lot from this
 //https://sendbird.com/developer/tutorials/android-chat-tutorial-building-a-messaging-ui
 
 class MessagesActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityMessagesBinding
+    private lateinit var messagesAdapter: MessagesAdapter
+    private lateinit var messagesRecyclerView: RecyclerView
+    private var firstLoad: Boolean = true
+
     private val mMessageViewModel: MessagesViewModel by viewModels {
         MessagesViewModelFactory(
             (application as MessengerAppMVVMApplication).loggedInUserRepository,
@@ -36,20 +39,50 @@ class MessagesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMessagesBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
-        setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        //Get conversationId passed in when starting activity
         conversationId = intent.getIntExtra(Constants.CONVERSATION_ID, -1)
         if(conversationId == -1){
             this.toast("Error getting conversation")
+            onBackPressed()
         }
 
+        //Set up support bar
+        setSupportActionBar(mBinding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        //Set the support bars name
         lifecycleScope.launch {
             mMessageViewModel.getConversation(conversationId).collect { conversation ->
                 supportActionBar!!.title = conversation.conversationName
-
             }
         }
+
+
+        //Set up the displaying messages recyclerview
+        messagesAdapter = MessagesAdapter()
+        messagesRecyclerView = mBinding.recyclerGchat
+        messagesRecyclerView.layoutManager = LinearLayoutManager(this)
+        messagesRecyclerView.adapter = messagesAdapter
+        (messagesRecyclerView.layoutManager as LinearLayoutManager).stackFromEnd = true
+
+        //Load the data in the viewModel
+        mMessageViewModel.loadData(conversationId)
+
+        //Update the recyclerview when the messages are received/updated
+        mMessageViewModel.loggedInUserAndMessages.observe(this){(messages, loggedInUserId) ->
+            messagesAdapter.setData(loggedInUserId = loggedInUserId, messages = messages)
+            //On initial load scroll the recyclerview to the bottom when there are messages loaded
+            if(firstLoad && messages.isNotEmpty()){
+                messagesRecyclerView.scrollToPosition(messages.size - 1)
+            }
+        }
+
+
+        mBinding.buttonGchatSend.setOnClickListener{
+            mMessageViewModel.sendMessage("test", conversationId)
+        }
+
     }
 
 
@@ -67,4 +100,6 @@ class MessagesActivity : AppCompatActivity() {
         super.onBackPressed()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
+
+
 }

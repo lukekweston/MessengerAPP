@@ -3,12 +3,11 @@ package weston.luke.messengerappmvvm.ui.conversationsAndFriends
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.databinding.ItemConversationBinding
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.data.ConversationWithLatestMessage
-import weston.luke.messengerappmvvm.util.utils
+import weston.luke.messengerappmvvm.util.Utils
 
-class ConversationsAdapter() : RecyclerView.Adapter<ConversationViewHolder>() {
+class ConversationsAdapter : RecyclerView.Adapter<ConversationViewHolder>() {
 
     private var conversationsAndMessages: List<ConversationWithLatestMessage> = emptyList()
     private var onItemClickListener: onCardClickListener? = null
@@ -52,7 +51,7 @@ class ConversationViewHolder(private val mBinding: ItemConversationBinding) :
         mBinding.tvConversationTitle.text = conversationsAndMessage.conversationName
         mBinding.tvLastMessageBy.text = conversationsAndMessage.userName
         mBinding.tvLastMessageText.text = conversationsAndMessage.message
-        mBinding.tvLastMessageTime.text = conversationsAndMessage.lastMessageTime?.format(utils.formatter) ?: ""
+        mBinding.tvLastMessageTime.text = conversationsAndMessage.lastMessageTime?.format(Utils.formatDayMonthHourMin) ?: ""
     }
 }
 

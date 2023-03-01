@@ -8,10 +8,11 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
+import weston.luke.messengerappmvvm.data.remote.request.MessageSendRequest
 import weston.luke.messengerappmvvm.data.remote.response.ConversationResponse
 import weston.luke.messengerappmvvm.data.remote.response.LoginResponse
 import weston.luke.messengerappmvvm.data.remote.response.MessageResponse
-import weston.luke.messengerappmvvm.data.remote.response.UserResponse
+import weston.luke.messengerappmvvm.data.remote.response.SuccessResponse
 import weston.luke.messengerappmvvm.util.Constants
 import java.util.concurrent.TimeUnit
 
@@ -46,7 +47,7 @@ class MessengerAPIService {
         .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         .client(httpClient)
         .build()
-        .create(messengerAPIInterface::class.java)
+        .create(MessengerAPIInterface::class.java)
 
     fun loginUser(loginRequest: LoginRequest): Single<LoginResponse> {
         return api.loginUser(loginRequest)
@@ -58,5 +59,9 @@ class MessengerAPIService {
 
     fun getAllMessagesForUser(userId: Int): Single<MessageResponse>{
         return api.getAllMessagesForUser(userId)
+    }
+
+    fun sendMessage(messageRequest: MessageSendRequest) : Single<SuccessResponse>{
+        return api.sendMessage(messageRequest)
     }
 }

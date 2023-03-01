@@ -5,6 +5,7 @@ import com.messenger.springMessengerAPI.models.request.MessagesForUserAfterDateR
 import com.messenger.springMessengerAPI.models.request.NewMessageRequest
 import com.messenger.springMessengerAPI.models.request.UpdateMessageRequest
 import com.messenger.springMessengerAPI.models.response.MessageResponse
+import com.messenger.springMessengerAPI.models.response.SuccessResponse
 import com.messenger.springMessengerAPI.services.ConversationService
 import com.messenger.springMessengerAPI.services.MessageService
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -32,7 +33,9 @@ class MessageController(private val messageService: MessageService) {
 
 
     @PostMapping("/sendMessage")
-    fun sendMessage(@RequestBody messageRequest: NewMessageRequest) = messageService.newMessage(messageRequest)
+    fun sendMessage(@RequestBody messageRequest: NewMessageRequest): SuccessResponse {
+        return messageService.newMessage(messageRequest)
+    }
 
     //This method should really have auth as only the user who created this message should be able to update it
     @PutMapping("/updateMessage")

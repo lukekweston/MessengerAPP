@@ -7,7 +7,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.database.entities.Message
@@ -121,18 +121,21 @@ class LoginViewModel(
 
                             //If either of these methods fail - do not log in user
 //                          Load conversations to local database
-                            getConversationsForUser(loginResponse.UserId)
+                            CoroutineScope(Dispatchers.Main).launch {
+                                async { getConversationsForUser(loginResponse.UserId) }.await()
 //                          Load messages to local database
-                            getMessagesForUser(loginResponse.UserId)
+                                async { getMessagesForUser(loginResponse.UserId) }.await()
 
-                            //Login user
-                            if (!failedLogin) {
-                                addUserToBeLoggedInLocally(loginResponse)
-                            } else {
-                                _toastMessage.value = "Error logging in, please try again"
-                                //Clear conversations
 
-                                //Clear messages
+                                //Login user
+                                if (!failedLogin) {
+                                    async {addUserToBeLoggedInLocally(loginResponse)}.await()
+                                } else {
+                                    _toastMessage.value = "Error logging in, please try again"
+                                    //Clear conversations
+
+                                    //Clear messages
+                                }
                             }
 //                            Start worker to poll and get messages/conversations
                         } else {
@@ -149,7 +152,7 @@ class LoginViewModel(
     }
 
 
-    fun getConversationsForUser(userId: Int) {
+     fun getConversationsForUser(userId: Int) {
 
         compositeDisposable.add(
             api.getAllConversationsForUser(userId)
@@ -158,7 +161,10 @@ class LoginViewModel(
                 .subscribeWith(object : DisposableSingleObserver<ConversationResponse>() {
                     override fun onSuccess(conversationResponse: ConversationResponse) {
                         //Insert conversations into local database
-                        insertConversationsIntoDatabase(conversationResponse)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            async { insertConversationsIntoDatabase(conversationResponse) }.await()
+                        }
+
                     }
 
                     override fun onError(e: Throwable) {
@@ -178,7 +184,9 @@ class LoginViewModel(
                 .subscribeWith(object : DisposableSingleObserver<MessageResponse>() {
                     override fun onSuccess(messageResponse: MessageResponse) {
                         //Insert messages into local database
-                        insertMessagesIntoDatabase(messageResponse)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            async { insertMessagesIntoDatabase(messageResponse) }.await()
+                        }
                     }
                     override fun onError(e: Throwable) {
                         //Set failed to true

@@ -4,6 +4,7 @@ import com.messenger.springMessengerAPI.models.Message
 import com.messenger.springMessengerAPI.models.request.NewMessageRequest
 import com.messenger.springMessengerAPI.models.request.UpdateMessageRequest
 import com.messenger.springMessengerAPI.models.response.MessageResponse
+import com.messenger.springMessengerAPI.models.response.SuccessResponse
 import com.messenger.springMessengerAPI.repositories.MessageRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -29,12 +30,14 @@ class MessageService(private val messageRepository: MessageRepository, private v
         return getAllMessagesForUser(userId).filter { it.timeSent > dateTime  || (it.updatedTime != null &&  it.updatedTime> dateTime)}
     }
 
-    fun newMessage(newMessageRequest: NewMessageRequest) {
+    fun newMessage(newMessageRequest: NewMessageRequest) : SuccessResponse {
         messageRepository.save(Message(
                 userId = newMessageRequest.userId,
                 textMessage = newMessageRequest.message,
                 timeSent = LocalDateTime.now(),
                 conversationId = newMessageRequest.conversationId))
+
+        return SuccessResponse(success = true)
     }
 
     fun updateMessage(messageToUpdate: UpdateMessageRequest){

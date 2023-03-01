@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="greyLikeText">#FF808080</color>
     <color name="offWhite">#FFF5F5F5</color>
+    <color name="itemBackgroundColor">#FFEEF1F6</color>
 </resources>

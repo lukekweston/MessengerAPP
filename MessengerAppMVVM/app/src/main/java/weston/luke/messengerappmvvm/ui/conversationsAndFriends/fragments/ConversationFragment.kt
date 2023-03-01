@@ -21,7 +21,7 @@ import weston.luke.messengerappmvvm.util.Constants
 
 class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener {
 
-    private var mBinding: FragmentConversationsBinding? = null
+    private lateinit var mBinding: FragmentConversationsBinding
     private lateinit var conversationsAdapter: ConversationsAdapter
     private lateinit var conversationRecyclerView: RecyclerView
 
@@ -38,9 +38,8 @@ class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentConversationsBinding.inflate(inflater, container, false)
-
         conversationsAdapter = ConversationsAdapter()
-        conversationRecyclerView = mBinding!!.recyclerViewConversations
+        conversationRecyclerView = mBinding.recyclerViewConversations
         conversationRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         conversationRecyclerView.adapter = conversationsAdapter
 
@@ -50,6 +49,9 @@ class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener
 
         //When conversations/Messages are updated the conversationsWithLatestMessages are updated which updates the data in the recyclerview
         //then notify the adapter to update the view
+
+        //Todo, fix this so the latest messages actually show on start up
+        //Not sure if a task hasnt finished before trying to load this
         mViewModel.conversationsWithLatestMessages.observe(viewLifecycleOwner) { conversationsWithLatestMessages ->
             if (conversationsWithLatestMessages != null) {
                 conversationsAdapter.setData(conversationsWithLatestMessages)
@@ -62,8 +64,6 @@ class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener
 
 
     override fun onCardClick(conversationId: Int) {
-        Toast.makeText(requireContext(), "go to conversation $conversationId", Toast.LENGTH_SHORT).show()
-
         val intent = Intent(requireActivity(), MessagesActivity::class.java)
         intent.putExtra(Constants.CONVERSATION_ID, conversationId)
         startActivity(intent)

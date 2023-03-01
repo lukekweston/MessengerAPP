@@ -26,5 +26,9 @@ class MessageRepository(private val messageDao: MessageDao) {
         return messageDao.getLatestMessageForConversation(conversationId = conversationId)
     }
 
+    @WorkerThread
+    fun getAllMessagesForAConversation(conversationId: Int): Flow<List<Message>>{
+        return messageDao.getAllMessagesForAConversation(conversationId)
+    }
 
 }
