@@ -48,9 +48,6 @@ class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener
 
         //When conversations/Messages are updated the conversationsWithLatestMessages are updated which updates the data in the recyclerview
         //then notify the adapter to update the view
-
-        //Todo, fix this so the latest messages actually show on start up
-        //Not sure if a task hasnt finished before trying to load this
         mViewModel.conversationsWithLatestMessages.observe(viewLifecycleOwner) { conversationsWithLatestMessages ->
             if (conversationsWithLatestMessages != null) {
                 conversationsAdapter.setData(conversationsWithLatestMessages)

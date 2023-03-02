@@ -42,9 +42,9 @@ class ConversationsViewModel(
                     conversationsWithLatestMessageTemp += ConversationWithLatestMessage(
                         conversationId = conversation.conversationId,
                         conversationName = conversation.conversationName ?: "Unnamed Conversation",
-                        userName = latestMessage.userName ?: "",
-                        message = latestMessage.message ?: "",
-                        lastMessageTime = latestMessage.latestTime
+                        userName = latestMessage?.userName ?: "",
+                        message = latestMessage?.message ?: "",
+                        lastMessageTime = latestMessage?.latestTime
                     )
                 }
 

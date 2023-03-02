@@ -33,7 +33,7 @@ class MessageRepository(private val messageDao: MessageDao, private val api: Mes
     }
 
     @WorkerThread
-    suspend fun getLatestMessageForConversation(conversationId: Int): LatestMessage {
+    suspend fun getLatestMessageForConversation(conversationId: Int): LatestMessage? {
         return messageDao.getLatestMessageForConversation(conversationId = conversationId)
     }
 

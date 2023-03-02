@@ -20,12 +20,12 @@ interface MessageDao {
     @Query("Delete from message")
     suspend fun deleteAllMessages()
 
-    @Query("SELECT id, userName, message, MAX(CASE WHEN timeSent > timeUpdated THEN timeSent ELSE timeUpdated END) AS latestTime " +
-            "FROM message " +
-            "WHERE conversationId = :conversationId " +
+    @Query("SELECT id, userName, message, MAX(timeSent, COALESCE(timeUpdated, timeSent)) AS latestTime "+
+            "FROM message "+
+            "WHERE ConversationId = :conversationId " +
             "ORDER BY latestTime DESC " +
             "LIMIT 1;")
-    suspend fun getLatestMessageForConversation(conversationId: Int) : LatestMessage
+    suspend fun getLatestMessageForConversation(conversationId: Int) : LatestMessage?
 
     @Query("select * from message where conversationId = :conversationId")
     fun getAllMessagesForAConversation(conversationId: Int): Flow<List<Message>>
