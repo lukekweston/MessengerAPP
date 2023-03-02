@@ -7,7 +7,7 @@ import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
 import java.time.LocalDateTime
 
-class ConversationRepository(private val conversationDao: ConversationDao, private val api: MessengerAPIService) {
+class ConversationRepository(private val conversationDao: ConversationDao, private val apiService: MessengerAPIService) {
 
     val conversations: Flow<List<Conversation>> = conversationDao.getAllConversations()
 
@@ -33,7 +33,7 @@ class ConversationRepository(private val conversationDao: ConversationDao, priva
 
     suspend fun getAllConversationsForUser(userId: Int){
         //Get all the conversations for a user from the api
-        val conversationResponse = api.getAllConversationsForUser(userId)
+        val conversationResponse = apiService.getAllConversationsForUser(userId)
         //Insert them into the database
         insertConversations(
             conversationResponse.map {

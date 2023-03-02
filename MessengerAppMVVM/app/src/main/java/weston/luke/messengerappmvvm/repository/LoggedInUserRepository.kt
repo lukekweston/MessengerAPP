@@ -8,7 +8,7 @@ import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
 import weston.luke.messengerappmvvm.data.remote.response.LoginResponse
 
-class LoggedInUserRepository(private val loggedInUserDao: LoggedInUserDao, private val api: MessengerAPIService) {
+class LoggedInUserRepository(private val loggedInUserDao: LoggedInUserDao, private val apiService: MessengerAPIService) {
     @WorkerThread
     suspend fun loginUser(user: LoggedInUser){
         loggedInUserDao.loginUser(user)
@@ -27,7 +27,7 @@ class LoggedInUserRepository(private val loggedInUserDao: LoggedInUserDao, priva
     }
 
     suspend fun loginUser(loginRequest: LoginRequest): LoginResponse {
-        return api.loginUser(loginRequest)
+        return apiService.loginUser(loginRequest)
     }
 
 }

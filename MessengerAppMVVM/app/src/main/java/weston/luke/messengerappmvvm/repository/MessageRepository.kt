@@ -10,7 +10,7 @@ import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
 import weston.luke.messengerappmvvm.data.remote.request.MessageSendRequest
 import java.time.LocalDateTime
 
-class MessageRepository(private val messageDao: MessageDao, private val api: MessengerAPIService) {
+class MessageRepository(private val messageDao: MessageDao, private val apiService: MessengerAPIService) {
 
     @WorkerThread
     suspend fun insertMessages(messages: List<Message>) {
@@ -43,7 +43,7 @@ class MessageRepository(private val messageDao: MessageDao, private val api: Mes
     }
 
     suspend fun getAllMessagesForUser(userId: Int){
-        val messageResponse = api.getAllMessagesForUser(userId)
+        val messageResponse = apiService.getAllMessagesForUser(userId)
         insertMessages(
             messageResponse.map {
                 Message(
@@ -67,7 +67,7 @@ class MessageRepository(private val messageDao: MessageDao, private val api: Mes
 
         try {
             //Send the message to the server
-            val messageResponse = api.sendMessage(
+            val messageResponse = apiService.sendMessage(
                 MessageSendRequest(
                     userId = message.userId,
                     message = message.message,
