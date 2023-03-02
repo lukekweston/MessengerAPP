@@ -13,7 +13,7 @@ class MessengerAppMVVMApplication : Application() {
     private val database by lazy { MessengerAppMVVMDatabase.getDatabase(this@MessengerAppMVVMApplication)}
 
     val loggedInUserRepository by lazy { LoggedInUserRepository(database.loggedInUserDao(), MessengerAPIService()) }
-    val conversationRepository by lazy { ConversationRepository(database.conversationDao()) }
+    val conversationRepository by lazy { ConversationRepository(database.conversationDao(), MessengerAPIService()) }
     val messageRepository by lazy { MessageRepository(database.messageDao(), MessengerAPIService()) }
 
 }

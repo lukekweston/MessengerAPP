@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.Flow
 import weston.luke.messengerappmvvm.data.database.dao.LoggedInUserDao
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
+import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
+import weston.luke.messengerappmvvm.data.remote.response.LoginResponse
 
 class LoggedInUserRepository(private val loggedInUserDao: LoggedInUserDao, private val api: MessengerAPIService) {
     @WorkerThread
@@ -22,6 +24,10 @@ class LoggedInUserRepository(private val loggedInUserDao: LoggedInUserDao, priva
     @WorkerThread
     suspend fun awaitGettingLoggedInUser() : LoggedInUser? {
         return loggedInUserDao.awaitGetLoggedInUser()
+    }
+
+    suspend fun loginUser(loginRequest: LoginRequest): LoginResponse {
+        return api.loginUser(loginRequest)
     }
 
 }

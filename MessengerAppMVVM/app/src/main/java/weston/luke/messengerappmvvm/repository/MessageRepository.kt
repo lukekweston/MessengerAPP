@@ -42,6 +42,25 @@ class MessageRepository(private val messageDao: MessageDao, private val api: Mes
         return messageDao.getAllMessagesForAConversation(conversationId)
     }
 
+    suspend fun getAllMessagesForUser(userId: Int){
+        val messageResponse = api.getAllMessagesForUser(userId)
+        insertMessages(
+            messageResponse.map {
+                Message(
+                    messageId = it.id,
+                    userId = it.userId,
+                    conversationId = it.conversationId,
+                    userName = it.username,
+                    message = it.message,
+                    timeSent = LocalDateTime.parse(it.timeSent),
+                    timeUpdated = if (it.timeUpdated != null) LocalDateTime.parse(it.timeUpdated) else null,
+                    status = SentStatus.SUCCESS
+                )
+            }
+        )
+
+    }
+
     suspend fun sendMessage(message: Message): Boolean{
         //Insert a new message and get its local id
         val messageId = insertMessage(message)

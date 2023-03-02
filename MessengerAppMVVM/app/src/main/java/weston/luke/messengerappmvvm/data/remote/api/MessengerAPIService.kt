@@ -49,15 +49,15 @@ class MessengerAPIService {
         .build()
         .create(MessengerAPIInterface::class.java)
 
-    fun loginUser(loginRequest: LoginRequest): Single<LoginResponse> {
+    suspend fun loginUser(loginRequest: LoginRequest): LoginResponse {
         return api.loginUser(loginRequest)
     }
 
-    fun getAllConversationsForUser(userId: Int): Single<ConversationResponse> {
+    suspend fun getAllConversationsForUser(userId: Int): ConversationResponse {
         return api.getAllConversationsForUser(userId)
     }
 
-    fun getAllMessagesForUser(userId: Int): Single<MessageResponseList>{
+    suspend fun getAllMessagesForUser(userId: Int): MessageResponseList{
         return api.getAllMessagesForUser(userId)
     }
 

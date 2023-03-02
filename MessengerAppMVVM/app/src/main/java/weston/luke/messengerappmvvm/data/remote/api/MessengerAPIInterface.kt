@@ -1,6 +1,5 @@
 package weston.luke.messengerappmvvm.data.remote.api
 
-import io.reactivex.rxjava3.core.Single
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -17,19 +16,19 @@ interface MessengerAPIInterface {
 
 
     @POST(Constants.API_ENDPOINT_LOGIN_USER)
-    fun loginUser(
+    suspend fun loginUser(
         @Body loginRequest: LoginRequest
-    ): Single<LoginResponse>
+    ): LoginResponse
 
     @GET(Constants.API_ENDPOINT_GET_CONVERSATIONS_FOR_USER + "{userId}")
-    fun getAllConversationsForUser(
+    suspend fun getAllConversationsForUser(
         @Path("userId") userId: Int
-    ): Single<ConversationResponse>
+    ): ConversationResponse
 
     @GET(Constants.API_ENDPOINT_GET_ALL_MESSAGES_FOR_USER + "{userId}")
-    fun getAllMessagesForUser(
+    suspend fun getAllMessagesForUser(
         @Path("userId") userId: Int
-    ): Single<MessageResponseList>
+    ): MessageResponseList
 
     @POST(Constants.API_ENDPOINT_SEND_MESSAGE)
     suspend fun sendMessage(
