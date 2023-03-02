@@ -10,4 +10,6 @@ object Utils {
     val formatDayMonthHourMin: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM HH:mm", Locale.getDefault())
     @SuppressLint("ConstantLocale")
     val formatHourMin: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+    @SuppressLint("ConstantLocale")
+    val formatDayMonth: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM", Locale.getDefault())
 }
