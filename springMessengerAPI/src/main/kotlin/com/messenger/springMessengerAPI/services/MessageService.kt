@@ -11,9 +11,13 @@ import java.time.LocalDateTime
 
 
 @Service
-class MessageService(private val messageRepository: MessageRepository, private val conversationService: ConversationService, private val userService: UsersService) {
+class MessageService(
+    private val messageRepository: MessageRepository,
+    private val conversationService: ConversationService,
+    private val userService: UsersService
+) {
     fun getAllMessagesForConversation(conversationId: Int): List<MessageResponse> {
-        return messageRepository.findAllByConversationId(conversationId).map{ mapMessageToMessageResponse(it)}
+        return messageRepository.findAllByConversationId(conversationId).map { mapMessageToMessageResponse(it) }
     }
 
     fun getAllMessagesForUser(userId: Int): List<MessageResponse> {
@@ -21,29 +25,42 @@ class MessageService(private val messageRepository: MessageRepository, private v
 
         val messages = mutableListOf<MessageResponse>()
         for (conversation in conversationsUserBelongsToo) {
-            messages += messageRepository.findAllByConversationId(conversationId = conversation.id).map{ mapMessageToMessageResponse(it)}
+            messages += messageRepository.findAllByConversationId(conversationId = conversation.id)
+                .map { mapMessageToMessageResponse(it) }
         }
         return messages
     }
 
     fun getAllMessagesForUserAfterDateTime(userId: Int, dateTime: LocalDateTime): List<MessageResponse> {
-        return getAllMessagesForUser(userId).filter { it.timeSent > dateTime  || (it.updatedTime != null &&  it.updatedTime> dateTime)}
+        return getAllMessagesForUser(userId).filter { it.timeSent > dateTime || (it.updatedTime != null && it.updatedTime > dateTime) }
     }
 
-    fun newMessage(newMessageRequest: NewMessageRequest) : SuccessResponse {
-        messageRepository.save(Message(
+    fun newMessage(newMessageRequest: NewMessageRequest): MessageResponse {
+        val message = messageRepository.save(
+            Message(
                 userId = newMessageRequest.userId,
                 textMessage = newMessageRequest.message,
                 timeSent = LocalDateTime.now(),
-                conversationId = newMessageRequest.conversationId))
+                conversationId = newMessageRequest.conversationId
+            )
+        )
 
-        return SuccessResponse(success = true)
+        return MessageResponse(
+            id = message.id,
+            userId = message.userId,
+            conversationId = message.conversationId,
+            username = userService.findUsernameById(message.userId)!!,
+            textMessage = message.textMessage,
+            timeSent = message.timeSent,
+            updatedTime = message.updatedTime
+        )
     }
 
-    fun updateMessage(messageToUpdate: UpdateMessageRequest){
+    fun updateMessage(messageToUpdate: UpdateMessageRequest) {
         val messageOld = messageRepository.findById(messageToUpdate.messageId)
-        if(messageOld.isPresent){
-            messageRepository.save( Message(
+        if (messageOld.isPresent) {
+            messageRepository.save(
+                Message(
                     //New values
                     textMessage = messageToUpdate.message,
                     updatedTime = LocalDateTime.now(),
@@ -51,17 +68,19 @@ class MessageService(private val messageRepository: MessageRepository, private v
                     id = messageOld.get().id,
                     userId = messageOld.get().userId,
                     timeSent = messageOld.get().timeSent,
-                    conversationId = messageOld.get().conversationId))
+                    conversationId = messageOld.get().conversationId
+                )
+            )
         }
     }
 
-    fun deleteMessage(messageId: Int){
+    fun deleteMessage(messageId: Int) {
         messageRepository.deleteById(messageId)
     }
 
 
     //Map to object that app expects
-    fun mapMessageToMessageResponse(message: Message): MessageResponse{
+    fun mapMessageToMessageResponse(message: Message): MessageResponse {
         return MessageResponse(
             id = message.id,
             userId = message.userId,

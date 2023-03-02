@@ -1,19 +1,20 @@
 package weston.luke.messengerappmvvm.ui.messages
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import weston.luke.messengerappmvvm.data.database.entities.Message
-import weston.luke.messengerappmvvm.databinding.ItemConversationBinding
 import weston.luke.messengerappmvvm.databinding.ItemMessageRecievedBinding
 import weston.luke.messengerappmvvm.databinding.ItemMessageSentBinding
 import weston.luke.messengerappmvvm.util.Utils
 
-class MessagesAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MessagesAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_TYPE_SENT = 1
     private val VIEW_TYPE_RECEIVED = 2
+
 
     private var messages: List<Message> = emptyList()
     private var loggedInUserId: Int = 0
@@ -21,13 +22,14 @@ class MessagesAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun setData(loggedInUserId: Int, messages: List<Message>) {
         this.messages = messages
         this.loggedInUserId = loggedInUserId
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == VIEW_TYPE_SENT) {
             val mBinding = ItemMessageSentBinding.inflate(inflater, parent, false)
-            SentMessageHolder(mBinding)
+            SentMessageHolder(mBinding, context)
         } else {
             val mBinding = ItemMessageRecievedBinding.inflate(inflater, parent, false)
             ReceivedMessageHolder(mBinding)
@@ -36,7 +38,7 @@ class MessagesAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = messages[position]
-        var showDate: Boolean = false
+        var showDate = false
         //Shoe message if it is the first message in a conversation
         if (position == 0) {
             showDate = true
@@ -93,7 +95,7 @@ class ReceivedMessageHolder(private val mBinding: ItemMessageRecievedBinding) :
 }
 
 
-class SentMessageHolder(private val mBinding: ItemMessageSentBinding) :
+class SentMessageHolder(private val mBinding: ItemMessageSentBinding, private val context: Context) :
     RecyclerView.ViewHolder(mBinding.root) {
     fun bind(message: Message, showDate: Boolean) {
 
@@ -101,12 +103,26 @@ class SentMessageHolder(private val mBinding: ItemMessageSentBinding) :
             Utils.formatHourMin
         )
 
+
+
         mBinding.textGchatDateMe.visibility = if (showDate) View.VISIBLE else View.GONE
         mBinding.textGchatDateMe.text = message.timeSent.format(Utils.formatDayMonth)
 
         mBinding.textGchatMessageMe.text = message.message
         mBinding.textGchatTimestampMe.text =
             if (message.timeUpdated != null) "Updated: $timestamp" else timestamp
+
+
+        //TODO update this so that messages that are only created display differently
+//        if (message.status == SentStatus.CREATED) {
+//            mBinding.textGchatDateMe.text = "Not sent"
+//            mBinding.cardGchatMessageMe.setCardBackgroundColor(
+//                ContextCompat.getColor(
+//                    context,
+//                    R.color.purple_200
+//                )
+//            )
+//        }
 
     }
 }

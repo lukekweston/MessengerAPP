@@ -2,11 +2,10 @@ package weston.luke.messengerappmvvm.ui.conversationsAndFriends.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,8 +13,8 @@ import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.FragmentConversationsBinding
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationsAdapter
-import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModelFactory
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModel
+import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModelFactory
 import weston.luke.messengerappmvvm.ui.messages.MessagesActivity
 import weston.luke.messengerappmvvm.util.Constants
 
@@ -58,7 +57,7 @@ class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener
             }
 
         }
-        return mBinding!!.root
+        return mBinding.root
     }
 
 

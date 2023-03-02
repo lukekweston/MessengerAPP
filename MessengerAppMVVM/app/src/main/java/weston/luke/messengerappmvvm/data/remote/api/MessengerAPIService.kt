@@ -12,7 +12,7 @@ import weston.luke.messengerappmvvm.data.remote.request.MessageSendRequest
 import weston.luke.messengerappmvvm.data.remote.response.ConversationResponse
 import weston.luke.messengerappmvvm.data.remote.response.LoginResponse
 import weston.luke.messengerappmvvm.data.remote.response.MessageResponse
-import weston.luke.messengerappmvvm.data.remote.response.SuccessResponse
+import weston.luke.messengerappmvvm.data.remote.response.MessageResponseList
 import weston.luke.messengerappmvvm.util.Constants
 import java.util.concurrent.TimeUnit
 
@@ -57,11 +57,11 @@ class MessengerAPIService {
         return api.getAllConversationsForUser(userId)
     }
 
-    fun getAllMessagesForUser(userId: Int): Single<MessageResponse>{
+    fun getAllMessagesForUser(userId: Int): Single<MessageResponseList>{
         return api.getAllMessagesForUser(userId)
     }
 
-    fun sendMessage(messageRequest: MessageSendRequest) : Single<SuccessResponse>{
+    suspend fun sendMessage(messageRequest: MessageSendRequest) : MessageResponse {
         return api.sendMessage(messageRequest)
     }
 }

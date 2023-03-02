@@ -2,12 +2,14 @@ package weston.luke.messengerappmvvm.ui.login
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
-import androidx.room.ColumnInfo
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.database.entities.Message
@@ -16,11 +18,10 @@ import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
 import weston.luke.messengerappmvvm.data.remote.response.ConversationResponse
 import weston.luke.messengerappmvvm.data.remote.response.LoginResponse
-import weston.luke.messengerappmvvm.data.remote.response.MessageResponse
+import weston.luke.messengerappmvvm.data.remote.response.MessageResponseList
 import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
 import weston.luke.messengerappmvvm.repository.MessageRepository
-import java.lang.IllegalArgumentException
 import java.time.LocalDateTime
 
 class LoginViewModel(
@@ -32,8 +33,6 @@ class LoginViewModel(
     private val compositeDisposable = CompositeDisposable()
 
     private var failedLogin = false
-
-    private val api = MessengerAPIService()
 
     val loggedInUser: LiveData<LoggedInUser?> = loginRepository.loggedInUser.asLiveData()
 
@@ -85,7 +84,7 @@ class LoginViewModel(
         }
 
     @WorkerThread
-    fun insertMessagesIntoDatabase(messageResponse: MessageResponse) =
+    fun insertMessagesIntoDatabase(messageResponse: MessageResponseList) =
         viewModelScope.launch {
             messageRepository.insertMessages(
                 messageResponse.map {
@@ -97,7 +96,7 @@ class LoginViewModel(
                         message = it.message,
                         timeSent = LocalDateTime.parse(it.timeSent),
                         timeUpdated = if (it.timeUpdated != null) LocalDateTime.parse(it.timeUpdated) else null,
-                        status = SentStatus.RECEIVED_FROM_API
+                        status = SentStatus.SUCCESS
                     )
                 }
             )
@@ -181,8 +180,8 @@ class LoginViewModel(
             api.getAllMessagesForUser(userId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<MessageResponse>() {
-                    override fun onSuccess(messageResponse: MessageResponse) {
+                .subscribeWith(object : DisposableSingleObserver<MessageResponseList>() {
+                    override fun onSuccess(messageResponse: MessageResponseList) {
                         //Insert messages into local database
                         CoroutineScope(Dispatchers.Main).launch {
                             async { insertMessagesIntoDatabase(messageResponse) }.await()

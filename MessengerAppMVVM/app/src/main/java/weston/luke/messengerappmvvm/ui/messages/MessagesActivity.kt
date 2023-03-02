@@ -1,7 +1,9 @@
 package weston.luke.messengerappmvvm.ui.messages
 
+import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -60,7 +62,7 @@ class MessagesActivity : AppCompatActivity() {
 
 
         //Set up the displaying messages recyclerview
-        messagesAdapter = MessagesAdapter()
+        messagesAdapter = MessagesAdapter(this)
         messagesRecyclerView = mBinding.recyclerGchat
         messagesRecyclerView.layoutManager = LinearLayoutManager(this)
         messagesRecyclerView.adapter = messagesAdapter
@@ -78,9 +80,30 @@ class MessagesActivity : AppCompatActivity() {
             }
         }
 
+        mMessageViewModel.toastMessageToDisplay.observe(this) { toastMessageToDisplay ->
+            if (toastMessageToDisplay != null) {
+                toast(toastMessageToDisplay)
+                //Todo, set up a way to resend the message
+                //And make sure the message is displayed differently
+            }
+        }
+
 
         mBinding.buttonGchatSend.setOnClickListener{
-            mMessageViewModel.sendMessage("test", conversationId)
+
+            //close the keyboard
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(mBinding.editGchatMessage.windowToken, 0)
+
+            val textMessage = mBinding.editGchatMessage.text.toString()
+
+            mMessageViewModel.sendMessage(textMessage, conversationId)
+
+            //Clear the textMessage
+            mBinding.editGchatMessage.text.clear()
+
+            //Load data again to update recycler View
+           // mMessageViewModel.loadData(conversationId)
         }
 
     }

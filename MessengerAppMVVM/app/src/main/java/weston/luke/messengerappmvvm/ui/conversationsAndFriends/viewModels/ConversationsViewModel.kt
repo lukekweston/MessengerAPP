@@ -1,27 +1,17 @@
 package weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels
 
-import android.util.Log
 import androidx.lifecycle.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
-import weston.luke.messengerappmvvm.data.database.entities.Message
 import weston.luke.messengerappmvvm.repository.ConversationRepository
-import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
 import weston.luke.messengerappmvvm.repository.MessageRepository
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.data.ConversationWithLatestMessage
-import java.lang.IllegalArgumentException
-import java.time.LocalDateTime
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class ConversationsViewModel(
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository
 ) : ViewModel() {
 
-    // private var conversations :List<Conversation> = listOf()
 
 
     private val _conversationsWithLatestMessages =

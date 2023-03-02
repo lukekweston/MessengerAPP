@@ -33,7 +33,7 @@ class MessageController(private val messageService: MessageService) {
 
 
     @PostMapping("/sendMessage")
-    fun sendMessage(@RequestBody messageRequest: NewMessageRequest): SuccessResponse {
+    fun sendMessage(@RequestBody messageRequest: NewMessageRequest): MessageResponse {
         return messageService.newMessage(messageRequest)
     }
 

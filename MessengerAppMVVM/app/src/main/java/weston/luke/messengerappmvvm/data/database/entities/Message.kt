@@ -13,20 +13,19 @@ import java.time.LocalDateTime
 data class Message(
     //Duplicate id here, message id and id as messages will be created in room database before being
     //posted to database (for holding created messages if the post fails)
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo val messageId: Int,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @ColumnInfo val messageId: Int? = null,
     @ColumnInfo val userId: Int,
     @ColumnInfo val conversationId: Int,
     @ColumnInfo val userName: String,
     @ColumnInfo val message: String,
     @ColumnInfo val timeSent: LocalDateTime,
-    @ColumnInfo val timeUpdated: LocalDateTime?,
+    @ColumnInfo val timeUpdated: LocalDateTime? = null,
     @ColumnInfo val status: SentStatus
 ) : Parcelable
 
 
 enum class SentStatus {
-    RECEIVED_FROM_API,
-    CREATED_LOCALLY,
-    CREATED_AND_SENT
+    SUCCESS,
+    CREATED,
 }

@@ -1,22 +1,20 @@
 package weston.luke.messengerappmvvm.data.database
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import weston.luke.messengerappmvvm.data.database.dao.ConversationDao
 import weston.luke.messengerappmvvm.data.database.dao.LoggedInUserDao
 import weston.luke.messengerappmvvm.data.database.dao.MessageDao
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.database.entities.Message
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
 
 //Version will need to be bumped after every database change
 //Keeps track of migrations
-@Database(entities = [LoggedInUser::class, Conversation::class, Message::class], version = 6)
+@Database(entities = [LoggedInUser::class, Conversation::class, Message::class], version = 8)
 @TypeConverters(Converters::class)
 abstract class MessengerAppMVVMDatabase : RoomDatabase() {
 

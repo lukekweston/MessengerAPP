@@ -1,8 +1,8 @@
 package weston.luke.messengerappmvvm.data.remote.response
 
-class MessageResponse : ArrayList<MessageResponseItem>()
+class MessageResponseList : ArrayList<MessageResponse>()
 
-data class MessageResponseItem(
+data class MessageResponse(
     val conversationId: Int,
     val id: Int,
     val message: String,

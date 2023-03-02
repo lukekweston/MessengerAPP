@@ -10,7 +10,7 @@ import weston.luke.messengerappmvvm.data.remote.request.MessageSendRequest
 import weston.luke.messengerappmvvm.data.remote.response.ConversationResponse
 import weston.luke.messengerappmvvm.data.remote.response.LoginResponse
 import weston.luke.messengerappmvvm.data.remote.response.MessageResponse
-import weston.luke.messengerappmvvm.data.remote.response.SuccessResponse
+import weston.luke.messengerappmvvm.data.remote.response.MessageResponseList
 import weston.luke.messengerappmvvm.util.Constants
 
 interface MessengerAPIInterface {
@@ -29,11 +29,11 @@ interface MessengerAPIInterface {
     @GET(Constants.API_ENDPOINT_GET_ALL_MESSAGES_FOR_USER + "{userId}")
     fun getAllMessagesForUser(
         @Path("userId") userId: Int
-    ): Single<MessageResponse>
+    ): Single<MessageResponseList>
 
     @POST(Constants.API_ENDPOINT_SEND_MESSAGE)
-    fun sendMessage(
+    suspend fun sendMessage(
         @Body messageRequest: MessageSendRequest
-    ): Single<SuccessResponse>
+    ): MessageResponse
 
 }
