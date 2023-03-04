@@ -10,7 +10,8 @@ import weston.luke.messengerappmvvm.repository.MessageRepository
 
 class MessengerAppMVVMApplication : Application() {
 
-    private val database by lazy { MessengerAppMVVMDatabase.getDatabase(this@MessengerAppMVVMApplication)}
+    val database by lazy { MessengerAppMVVMDatabase.getDatabase(this@MessengerAppMVVMApplication)}
+//    val database = Room.databaseBuilder(applicationContext, MessengerAppMVVMDatabase::class.java, "messenger-db").build()
 
     val loggedInUserRepository by lazy { LoggedInUserRepository(database.loggedInUserDao(), MessengerAPIService()) }
     val conversationRepository by lazy { ConversationRepository(database.conversationDao(), MessengerAPIService()) }
