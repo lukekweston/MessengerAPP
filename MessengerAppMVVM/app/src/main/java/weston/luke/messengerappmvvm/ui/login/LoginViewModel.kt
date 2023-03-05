@@ -72,7 +72,7 @@ class LoginViewModel(
                     _invalidUserNameOrPassword.value = true
                 }
             } catch (e: Exception) {
-                e
+                _toastMessage.value = "Unable to contact server, please try again later"
             }
         }
     }

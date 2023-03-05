@@ -13,7 +13,7 @@ import weston.luke.messengerappmvvm.repository.MessageRepository
 import java.time.LocalDateTime
 
 class MessagesViewModel(
-    private val loginRepository: LoggedInUserRepository,
+    private val loggedInUserRepository: LoggedInUserRepository,
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository
 ) : ViewModel() {
@@ -49,7 +49,7 @@ class MessagesViewModel(
 
     fun loadData(conversationId: Int) {
         viewModelScope.launch {
-            loginRepository.loggedInUser.collect {
+            loggedInUserRepository.loggedInUser.collect {
                 loggedInUser.value = it
                 loggedInUserId.value = it?.userId
             }

@@ -1,6 +1,5 @@
 package weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels
 
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -9,7 +8,7 @@ import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
 import weston.luke.messengerappmvvm.repository.MessageRepository
-import java.lang.IllegalArgumentException
+import weston.luke.messengerappmvvm.util.Utils
 
 class ConversationAndFriendsViewModel(
     private val loggedInUserRepository: LoggedInUserRepository,
@@ -19,11 +18,11 @@ class ConversationAndFriendsViewModel(
 
     val loggedInUser: LiveData<LoggedInUser?> = loggedInUserRepository.loggedInUser.asLiveData()
 
-    @WorkerThread
+
     suspend fun logoutUser() {
-        loggedInUserRepository.logoutUser()
-        conversationRepository.deleteConversationData()
-        messageRepository.deleteAllMessages()
+
+        Utils.logoutUser(loggedInUserRepository, conversationRepository, messageRepository, loggedInUser.value!!.userId, loggedInUser.value!!.userName)
+
     }
 }
 

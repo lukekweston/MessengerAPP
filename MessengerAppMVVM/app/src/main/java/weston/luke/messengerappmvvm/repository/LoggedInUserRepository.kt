@@ -7,7 +7,9 @@ import weston.luke.messengerappmvvm.data.database.dao.LoggedInUserDao
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
+import weston.luke.messengerappmvvm.data.remote.request.LogoutRequest
 import weston.luke.messengerappmvvm.data.remote.response.LoginResponse
+import weston.luke.messengerappmvvm.data.remote.response.SuccessResponse
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -19,7 +21,7 @@ class LoggedInUserRepository(private val loggedInUserDao: LoggedInUserDao, priva
     }
 
     @WorkerThread
-    suspend fun logoutUser(){
+    suspend fun deleteUserFromLocalDatabase(){
         loggedInUserDao.logoutUser()
     }
 
@@ -32,6 +34,11 @@ class LoggedInUserRepository(private val loggedInUserDao: LoggedInUserDao, priva
 
     suspend fun loginUser(loginRequest: LoginRequest): LoginResponse {
         return apiService.loginUser(loginRequest)
+    }
+
+    suspend fun logoutUser(logoutRequest: LogoutRequest): SuccessResponse {
+        return apiService.logoutUser(logoutRequest)
+
     }
 
 

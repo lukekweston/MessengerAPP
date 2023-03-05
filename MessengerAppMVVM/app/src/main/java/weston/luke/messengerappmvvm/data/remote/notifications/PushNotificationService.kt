@@ -24,7 +24,7 @@ class PushNotificationService : FirebaseMessagingService() {
     //Only works for when the app is in the foreground
     override fun onMessageReceived(message: RemoteMessage) {
         messageDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).messageDao()
-
+    applicationContext
         when (message.data.get("type")){
             "newMessage" -> newMessageReceived(message)
         }

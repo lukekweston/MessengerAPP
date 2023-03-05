@@ -46,14 +46,12 @@ class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener
 
         mViewModel.loadConversations()
 
-        //When conversations/Messages are updated the conversationsWithLatestMessages are updated which updates the data in the recyclerview
-        //then notify the adapter to update the view
-        mViewModel.conversationsWithLatestMessages.observe(viewLifecycleOwner) { conversationsWithLatestMessages ->
-            if (conversationsWithLatestMessages != null) {
-                conversationsAdapter.setData(conversationsWithLatestMessages)
-            }
-
+        //Observe the latest messages and the conversations for changes
+        mViewModel.latestMessagesAndConversations.observe(viewLifecycleOwner){ (latestMessages, conversations) ->
+            conversationsAdapter.setData(latestMessages, conversations)
         }
+
+
         return mBinding.root
     }
 

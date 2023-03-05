@@ -32,9 +32,10 @@ class MessageRepository(private val messageDao: MessageDao, private val apiServi
         messageDao.deleteAllMessages()
     }
 
+
     @WorkerThread
-    suspend fun getLatestMessageForConversation(conversationId: Int): LatestMessage? {
-        return messageDao.getLatestMessageForConversation(conversationId = conversationId)
+    fun getLastestMessagesForEachConversation() : Flow<List<LatestMessage?>>{
+        return messageDao.getLatestMessagesForEachConversation()
     }
 
     @WorkerThread

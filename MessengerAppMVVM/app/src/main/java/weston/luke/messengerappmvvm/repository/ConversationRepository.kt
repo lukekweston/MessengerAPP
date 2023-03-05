@@ -9,7 +9,8 @@ import java.time.LocalDateTime
 
 class ConversationRepository(private val conversationDao: ConversationDao, private val apiService: MessengerAPIService) {
 
-    val conversations: Flow<List<Conversation>> = conversationDao.getAllConversations()
+   val conversations: Flow<List<Conversation>> = conversationDao.getAllConversations()
+
 
     @WorkerThread
     fun getConversation(conversationId: Int): Flow<Conversation>{

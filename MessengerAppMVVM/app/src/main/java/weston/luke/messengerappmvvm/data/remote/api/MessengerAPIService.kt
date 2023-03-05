@@ -1,6 +1,7 @@
 package weston.luke.messengerappmvvm.data.remote.api
 
-import io.reactivex.rxjava3.core.Single
+import NetworkConnectionInterceptor
+import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -8,16 +9,14 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
+import weston.luke.messengerappmvvm.data.remote.request.LogoutRequest
 import weston.luke.messengerappmvvm.data.remote.request.MessageSendRequest
-import weston.luke.messengerappmvvm.data.remote.response.ConversationResponse
-import weston.luke.messengerappmvvm.data.remote.response.LoginResponse
-import weston.luke.messengerappmvvm.data.remote.response.MessageResponse
-import weston.luke.messengerappmvvm.data.remote.response.MessageResponseList
+import weston.luke.messengerappmvvm.data.remote.response.*
 import weston.luke.messengerappmvvm.util.Constants
 import java.util.concurrent.TimeUnit
 
 
-class MessengerAPIService {
+class MessengerAPIService(private val context: Context){
 
 
     private val logging = HttpLoggingInterceptor()
@@ -33,11 +32,12 @@ class MessengerAPIService {
         logging.level = HttpLoggingInterceptor.Level.BODY
         addNetworkInterceptor(logging)
         }
+        .addInterceptor(NetworkConnectionInterceptor(context))
         //Time out the api calls after 10 seconds of no response
-        .callTimeout(10, TimeUnit.SECONDS)
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(10, TimeUnit.SECONDS)
-        .writeTimeout(10, TimeUnit.SECONDS)
+        .callTimeout(1, TimeUnit.SECONDS)
+        .connectTimeout(1, TimeUnit.SECONDS)
+        .readTimeout(5, TimeUnit.SECONDS)
+        .writeTimeout(5, TimeUnit.SECONDS)
         .build()
 
 
@@ -51,6 +51,10 @@ class MessengerAPIService {
 
     suspend fun loginUser(loginRequest: LoginRequest): LoginResponse {
         return api.loginUser(loginRequest)
+    }
+
+    suspend fun logoutUser(logoutRequest: LogoutRequest): SuccessResponse {
+        return api.logoutUser(logoutRequest)
     }
 
     suspend fun getAllConversationsForUser(userId: Int): ConversationResponse {

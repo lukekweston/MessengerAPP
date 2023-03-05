@@ -2,6 +2,7 @@ package weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
+import weston.luke.messengerappmvvm.data.database.dto.LatestMessage
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.MessageRepository
@@ -21,34 +22,35 @@ class ConversationsViewModel(
         get() = _conversationsWithLatestMessages
 
 
-    private val _conversations = MutableLiveData<List<Conversation>>()
-    val conversations: LiveData<List<Conversation>> = _conversations
+
+
+    private val latestMessages = MutableLiveData<List<LatestMessage?>>()
+    private val conversations = MutableLiveData<List<Conversation>>()
+
+    val latestMessagesAndConversations = MediatorLiveData<Pair<List<LatestMessage?>, List<Conversation>>>()
+
+    init {
+        latestMessagesAndConversations.addSource(latestMessages) {
+            latestMessagesAndConversations.value = Pair(it, conversations.value.orEmpty())
+        }
+        latestMessagesAndConversations.addSource(conversations) {
+            latestMessagesAndConversations.value = Pair(latestMessages.value.orEmpty(), it)
+        }
+    }
+
 
 
     fun loadConversations() {
 
         viewModelScope.launch {
-            conversationRepository.conversations.collect { conversations ->
-                _conversations.value = conversations
+            messageRepository.getLastestMessagesForEachConversation().collect{
+                latestMessages.value = it
+            }
+        }
 
-                val conversationsWithLatestMessageTemp: MutableList<ConversationWithLatestMessage> =
-                    mutableListOf()
-
-                for (conversation in conversations) {
-
-                    val latestMessage = messageRepository.getLatestMessageForConversation(conversation.conversationId)
-
-
-                    conversationsWithLatestMessageTemp += ConversationWithLatestMessage(
-                        conversationId = conversation.conversationId,
-                        conversationName = conversation.conversationName ?: "Unnamed Conversation",
-                        userName = latestMessage?.userName ?: "",
-                        message = latestMessage?.message ?: "",
-                        lastMessageTime = latestMessage?.latestTime
-                    )
-                }
-
-                _conversationsWithLatestMessages.value = conversationsWithLatestMessageTemp
+        viewModelScope.launch {
+            conversationRepository.conversations.collect { convo ->
+                conversations.value = convo
             }
         }
     }
