@@ -1,7 +1,6 @@
 package weston.luke.messengerappmvvm.ui.login
 
 import androidx.lifecycle.*
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
@@ -15,11 +14,9 @@ class LoginViewModel(
     private val messageRepository: MessageRepository
 ) : ViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
-
-    private var failedLogin = false
-
     val loggedInUser: LiveData<LoggedInUser?> = loginRepository.loggedInUser.asLiveData()
+
+    var firebaseToken: String = ""
 
     private val _toastMessage = MutableLiveData<String>()
 
@@ -39,6 +36,7 @@ class LoginViewModel(
 
 
     suspend fun checkUserAlreadyLoggedIn(): Boolean {
+        firebaseToken = loginRepository.getFirebaseToken()
         return loginRepository.awaitGettingLoggedInUser() != null
     }
 
@@ -46,15 +44,13 @@ class LoginViewModel(
 
     fun loginUser(userName: String, password: String) {
 
-        failedLogin = false
-
-
         viewModelScope.launch {
             try {
-                var loginResponse = loginRepository.loginUser(
+                val loginResponse = loginRepository.loginUser(
                     LoginRequest(
                         userName = userName,
-                        password = password
+                        password = password,
+                        firebaseRegistrationToken = firebaseToken
                     )
                 )
                 if (loginResponse.SuccessfulLogin) {
@@ -76,7 +72,7 @@ class LoginViewModel(
                     _invalidUserNameOrPassword.value = true
                 }
             } catch (e: Exception) {
-
+                e
             }
         }
     }

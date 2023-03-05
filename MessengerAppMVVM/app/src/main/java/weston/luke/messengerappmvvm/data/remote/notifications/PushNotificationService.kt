@@ -25,22 +25,27 @@ class PushNotificationService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         messageDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).messageDao()
 
-        var title: String? = message.notification?.title
-        var text: String? = message.notification?.body
-
-
-        //todo
-        //Get the current opened activity
-
-
-        //Check what the title is, use this to determine what database update to do
-        when(title){
-            "message" -> insertMessage(text!!)
-            //"messageUpdate" -> update existing message
-            //"messageDelete" -> delete a message
-            //"conversationAdd" -> add new conversation
-            //"conversationRename" -> rename conversation
+        when (message.data.get("type")){
+            "newMessage" -> newMessageReceived(message)
         }
+
+//        var title: String? = message.notification?.title
+//        var text: String? = message.notification?.body
+//
+//
+//        //todo
+//        //Get the current opened activity
+//        insertMessage("hello from the back")
+//
+//
+//        //Check what the title is, use this to determine what database update to do
+//        when(title){
+//            "message" -> insertMessage(text!!)
+//            //"messageUpdate" -> update existing message
+//            //"messageDelete" -> delete a message
+//            //"conversationAdd" -> add new conversation
+//            //"conversationRename" -> rename conversation
+//        }
 
 //Change the notification importance based on what the notification is and where in the app the user is
 /*
@@ -58,6 +63,29 @@ class PushNotificationService : FirebaseMessagingService() {
 
 */
 
+
+
+        super.onMessageReceived(message)
+    }
+
+    fun newMessageReceived(message: RemoteMessage){
+
+
+
+        insertMessage(
+            Message(
+                messageId = message.data.get("id")!!.toInt(),
+                userId = message.data.get("userId")!!.toInt(),
+                userName = message.data.get("usernameSending")!!,
+                conversationId = message.data.get("conversationId")!!.toInt(),
+                timeSent = LocalDateTime.now(),
+                status = SentStatus.SUCCESS,
+                message = message.data.get("textMessage")!!
+            )
+        )
+
+
+
         //Create the notification
         val CHANNEL_ID: String = "HEADS_UP_NOTIFICATION"
 
@@ -66,38 +94,26 @@ class PushNotificationService : FirebaseMessagingService() {
             NotificationManager.IMPORTANCE_HIGH
         )
 
-
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         val notification: Notification.Builder = Notification.Builder(
             this, CHANNEL_ID
         )
-            .setContentTitle(title)
-            .setContentText(text)
+            .setContentTitle(message.data.get("usernameSending"))
+            .setContentText(message.data.get("textMessage"))
             .setSmallIcon(R.drawable.ic_conversations)
             //Goes away when user taps on it
             .setAutoCancel(true)
 
         //Build and display the notification
         NotificationManagerCompat.from(this).notify(1, notification.build())
-
-
-
-        super.onMessageReceived(message)
     }
 
 
-    fun insertMessage(message: String) {
+    private fun insertMessage(message: Message) {
         GlobalScope.launch {
             Log.d("inserting message?", "Does this work")
             messageDao.insertMessage(
-                Message(
-                    userId = 1,
-                    conversationId = 1,
-                    userName = "Luke",
-                    message = message,
-                    timeSent = LocalDateTime.now(),
-                    status = SentStatus.CREATED
-                )
+                message
             )
         }
     }
