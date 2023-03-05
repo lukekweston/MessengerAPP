@@ -1,5 +1,6 @@
 package weston.luke.messengerappmvvm.ui.messages
 
+import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
@@ -77,6 +78,14 @@ class MessagesActivity : AppCompatActivity() {
             //On initial load scroll the recyclerview to the bottom when there are messages loaded
             if(firstLoad && messages.isNotEmpty()){
                 messagesRecyclerView.scrollToPosition(messages.size - 1)
+            }
+
+            //Automatically dismiss the notification based on the message id of the last message added
+            //to the room database
+            if(messages.isNotEmpty()) {
+                val notificationManager =
+                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.cancel(messages.last().messageId!!)
             }
         }
 

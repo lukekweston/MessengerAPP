@@ -3,6 +3,8 @@ package weston.luke.messengerappmvvm.data.remote.notifications
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -14,19 +16,38 @@ import weston.luke.messengerappmvvm.data.database.MessengerAppMVVMDatabase
 import weston.luke.messengerappmvvm.data.database.dao.MessageDao
 import weston.luke.messengerappmvvm.data.database.entities.Message
 import weston.luke.messengerappmvvm.data.database.entities.SentStatus
+import weston.luke.messengerappmvvm.ui.messages.MessagesActivity
+import weston.luke.messengerappmvvm.util.Constants
 import java.time.LocalDateTime
+
 
 class PushNotificationService : FirebaseMessagingService() {
 
     lateinit var messageDao: MessageDao
 
+    //Value to keep track of the notification id
+    companion object {
+        private var lastNotificationId = 0
+    }
+
+
     //This receives a notifaction and decides how to display it on the screen
     //Only works for when the app is in the foreground
     override fun onMessageReceived(message: RemoteMessage) {
         messageDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).messageDao()
-    applicationContext
-        when (message.data.get("type")){
-            "newMessage" -> newMessageReceived(message)
+        applicationContext
+        when (message.data.get("type")) {
+            "newMessage" -> newMessageReceived(
+                Message(
+                    messageId = message.data.get("id")!!.toInt(),
+                    userId = message.data.get("userId")!!.toInt(),
+                    userName = message.data.get("usernameSending")!!,
+                    conversationId = message.data.get("conversationId")!!.toInt(),
+                    timeSent = LocalDateTime.now(),
+                    status = SentStatus.SUCCESS,
+                    message = message.data.get("textMessage")!!
+                )
+            )
         }
 
 //        var title: String? = message.notification?.title
@@ -68,44 +89,44 @@ class PushNotificationService : FirebaseMessagingService() {
         super.onMessageReceived(message)
     }
 
-    fun newMessageReceived(message: RemoteMessage){
+    fun newMessageReceived(message: Message) {
 
 
-
-        insertMessage(
-            Message(
-                messageId = message.data.get("id")!!.toInt(),
-                userId = message.data.get("userId")!!.toInt(),
-                userName = message.data.get("usernameSending")!!,
-                conversationId = message.data.get("conversationId")!!.toInt(),
-                timeSent = LocalDateTime.now(),
-                status = SentStatus.SUCCESS,
-                message = message.data.get("textMessage")!!
-            )
-        )
-
+        //Insert the message into the room database
+        insertMessage(message)
 
 
         //Create the notification
-        val CHANNEL_ID: String = "HEADS_UP_NOTIFICATION"
+        val CHANNEL_ID: String = "NEW_MESSAGE_NOTIFICATION"
 
         var channel: NotificationChannel = NotificationChannel(
-            CHANNEL_ID, "Heads up notification",
+            CHANNEL_ID, "New message notification",
             NotificationManager.IMPORTANCE_HIGH
         )
+
+        //Intent for the notification to go to
+        val intent = Intent(applicationContext, MessagesActivity::class.java)
+        intent.putExtra(Constants.CONVERSATION_ID, message.conversationId)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, 0)
 
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         val notification: Notification.Builder = Notification.Builder(
             this, CHANNEL_ID
         )
-            .setContentTitle(message.data.get("usernameSending"))
-            .setContentText(message.data.get("textMessage"))
+            .setContentTitle(message.userName)
+            .setContentText(message.message)
             .setSmallIcon(R.drawable.ic_conversations)
+            .setContentIntent(pendingIntent)
             //Goes away when user taps on it
             .setAutoCancel(true)
 
+
         //Build and display the notification
-        NotificationManagerCompat.from(this).notify(1, notification.build())
+        NotificationManagerCompat.from(this)
+            //Set the notification id to the same as the message id
+            //This is so it can be found and dismissed in the activity
+            .notify(message.messageId!!, notification.build())
     }
 
 
