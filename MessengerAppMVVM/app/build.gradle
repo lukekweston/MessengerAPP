@@ -109,4 +109,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation('com.google.firebase:firebase-messaging-ktx:23.1.2')
 
+    //Glide for displaying images
+    implementation 'com.github.bumptech.glide:glide:4.15.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
+
 }

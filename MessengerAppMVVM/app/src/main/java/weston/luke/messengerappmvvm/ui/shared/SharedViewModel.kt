@@ -1,16 +1,16 @@
-package weston.luke.messengerappmvvm.ui.login
+package weston.luke.messengerappmvvm.ui.shared
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
-import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
-import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
+import weston.luke.messengerappmvvm.data.remote.request.LogoutRequest
 import weston.luke.messengerappmvvm.data.remote.request.fcmRegTokenCheckRequest
 import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
 import weston.luke.messengerappmvvm.repository.MessageRepository
-import weston.luke.messengerappmvvm.util.Utils
 
-class LoginViewModel(
+
+//Todo make a shared view model for checking that the user is not logged in on other devices
+class SharedViewModel(
     private val loginRepository: LoggedInUserRepository,
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository
@@ -21,25 +21,11 @@ class LoginViewModel(
 
     val successfullyCheckedUserIsLoggedIn: LiveData<Boolean>
         get() = _successfullyCheckedUserIsLoggedIn
-
+    
 
     var firebaseToken: String = ""
 
     private val _toastMessage = MutableLiveData<String>()
-
-    val toastMessage: LiveData<String>
-        get() = _toastMessage
-
-    private val _invalidUserNameOrPassword = MutableLiveData<Boolean>()
-
-    val invalidUserNameOrPassword: LiveData<Boolean>
-        get() = _invalidUserNameOrPassword
-
-
-    private val _loggingUserIn = MutableLiveData<Boolean>()
-
-    val loggingUserIn: LiveData<Boolean>
-        get() = _loggingUserIn
 
 
     fun checkUserAlreadyLoggedIn() {
@@ -77,64 +63,35 @@ class LoginViewModel(
 
     suspend fun logoutUser() {
         val loggedInUser = loginRepository.awaitGettingLoggedInUser()
-        Utils.logoutUser(
-            loginRepository,
-            conversationRepository,
-            messageRepository,
-            loggedInUser!!.userId,
-            loggedInUser!!.userName
+        //Delete the users fcm_reg_token from server
+        loginRepository.logoutUser(
+            LogoutRequest(
+                userId = loggedInUser!!.userId,
+                userName = loggedInUser!!.userName
+            )
         )
+
+        //Delete users data locally
+        loginRepository.deleteUserFromLocalDatabase()
+        conversationRepository.deleteConversationData()
+        messageRepository.deleteAllMessages()
+
+
     }
 
-
-    fun loginUser(userName: String, password: String) {
-
-        viewModelScope.launch {
-            try {
-                val loginResponse = loginRepository.loginUser(
-                    LoginRequest(
-                        userName = userName,
-                        password = password,
-                        firebaseRegistrationToken = firebaseToken
-                    )
-                )
-                if (loginResponse.SuccessfulLogin) {
-                    //Get the conversation data
-                    conversationRepository.getAllConversationsForUser(loginResponse.UserId)
-                    //Get all the messages for the user
-                    messageRepository.getAllMessagesForUser(loginResponse.UserId)
-                    //Set the logged in user to this in the database
-                    loginRepository.loginUser(
-                        LoggedInUser(
-                            userId = loginResponse.UserId,
-                            userName = loginResponse.UserName,
-                            userEmail = loginResponse.UserEmail
-                        )
-                    )
-                    _successfullyCheckedUserIsLoggedIn.value = true
-                }
-                //Invalid username or password
-                else {
-                    _invalidUserNameOrPassword.value = true
-                }
-            } catch (e: Exception) {
-                _toastMessage.value = "Unable to contact server, please try again later"
-            }
-        }
-    }
 
 }
 
-class LoginViewModelFactory(
+class SharedViewModelFactory(
     private val loginRepository: LoggedInUserRepository,
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(SharedViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LoginViewModel(loginRepository, conversationRepository, messageRepository) as T
+            return SharedViewModel(loginRepository, conversationRepository, messageRepository) as T
 
         }
         throw IllegalArgumentException("Unknown ViewModel Class")

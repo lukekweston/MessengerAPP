@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/drawable-v24/ic_vector_photo_camera.xml" value="0.1" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/drawable/ic_baseline_chevron_right_24.xml" value="0.196" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/drawable/ic_chevron_right.xml" value="0.195" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/drawable/ic_conversations.xml" value="0.196" />
@@ -11,7 +12,7 @@
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/activity_conversation_and_friends.xml" value="0.28351449275362317" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/activity_main.xml" value="0.28351449275362317" />
-        <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/activity_messages.xml" value="0.22" />
+        <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/activity_messages.xml" value="0.33" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/fragment_conversations.xml" value="0.25" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/fragment_friends.xml" value="0.33559782608695654" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/fragment_friendss.xml" value="0.17604166666666668" />
@@ -21,10 +22,11 @@
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/item_message_me.xml" value="0.26145833333333335" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/item_message_other.xml" value="0.26145833333333335" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/item_message_recieved.xml" value="0.223731884057971" />
-        <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/item_message_sent.xml" value="0.223731884057971" />
+        <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/layout/item_message_sent.xml" value="0.9" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/menu/bottom_menu_options.xml" value="0.18072916666666666" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/menu/bottom_nav_menu.xml" value="0.33" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/menu/top_menu_conversations.xml" value="0.25" />
+        <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/xml/file_paths.xml" value="0.17604166666666668" />
         <entry key="..\:/Workspace/MessengerApp/MessengerAppMVVM/app/src/main/res/xml/nework_security_config.xml" value="0.18802083333333333" />
       </map>
     </option>

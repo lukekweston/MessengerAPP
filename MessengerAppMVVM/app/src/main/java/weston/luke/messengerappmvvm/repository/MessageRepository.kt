@@ -1,5 +1,6 @@
 package weston.luke.messengerappmvvm.repository
 
+import android.util.Base64
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.Flow
 import weston.luke.messengerappmvvm.data.database.dao.MessageDao
@@ -72,7 +73,8 @@ class MessageRepository(private val messageDao: MessageDao, private val apiServi
                 MessageSendRequest(
                     userId = message.userId,
                     message = message.message,
-                    conversationId = message.conversationId
+                    conversationId = message.conversationId,
+                    imageBase64 = if(message.image != null) Base64.encodeToString(message.image, Base64.DEFAULT) else null
                 )
             )
 

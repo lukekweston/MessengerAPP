@@ -1,16 +1,21 @@
 package weston.luke.messengerappmvvm.ui.messages
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import weston.luke.messengerappmvvm.data.database.entities.Message
 import weston.luke.messengerappmvvm.databinding.ItemMessageRecievedBinding
 import weston.luke.messengerappmvvm.databinding.ItemMessageSentBinding
 import weston.luke.messengerappmvvm.util.Utils
+import weston.luke.messengerappmvvm.util.hide
 
-class MessagesAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MessagesAdapter(private val context: Context) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_TYPE_SENT = 1
     private val VIEW_TYPE_RECEIVED = 2
@@ -45,7 +50,8 @@ class MessagesAdapter(private val context: Context) : RecyclerView.Adapter<Recyc
         }
         //Show date if the message is the first message for the day
         else if (message.timeSent.dayOfMonth != messages[position - 1].timeSent.dayOfMonth ||
-            message.timeSent.month != messages[position - 1].timeSent.month) {
+            message.timeSent.month != messages[position - 1].timeSent.month
+        ) {
             showDate = true
         }
         if (holder.itemViewType == VIEW_TYPE_SENT) {
@@ -75,9 +81,10 @@ class ReceivedMessageHolder(private val mBinding: ItemMessageRecievedBinding) :
     RecyclerView.ViewHolder(mBinding.root) {
     fun bind(message: Message, showDate: Boolean) {
 
-        val timestamp = message.timeUpdated?.format(Utils.formatDayMonthHourMin) ?: message.timeSent.format(
-            Utils.formatHourMin
-        )
+        val timestamp =
+            message.timeUpdated?.format(Utils.formatDayMonthHourMin) ?: message.timeSent.format(
+                Utils.formatHourMin
+            )
 
 
 
@@ -95,13 +102,29 @@ class ReceivedMessageHolder(private val mBinding: ItemMessageRecievedBinding) :
 }
 
 
-class SentMessageHolder(private val mBinding: ItemMessageSentBinding, private val context: Context) :
+class SentMessageHolder(
+    private val mBinding: ItemMessageSentBinding,
+    private val context: Context
+) :
     RecyclerView.ViewHolder(mBinding.root) {
     fun bind(message: Message, showDate: Boolean) {
 
-        val timestamp = message.timeUpdated?.format(Utils.formatDayMonthHourMin) ?: message.timeSent.format(
-            Utils.formatHourMin
-        )
+        val timestamp =
+            message.timeUpdated?.format(Utils.formatDayMonthHourMin) ?: message.timeSent.format(
+                Utils.formatHourMin
+            )
+
+        if (message.image != null) {
+            val thumbnail: Bitmap = Utils.getBitmapFromByteArray(message.image)
+            //Assign and crop image with Glide
+            Glide.with(context).load(thumbnail)
+                .fitCenter()
+                .apply(RequestOptions().override(1000, 1000))
+                .into(mBinding.ivImageSent)
+        }
+        else{
+            mBinding.ivImageSent.hide()
+        }
 
 
 

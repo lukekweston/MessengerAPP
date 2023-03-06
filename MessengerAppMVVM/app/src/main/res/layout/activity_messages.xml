@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_gchat_chatbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,47 +14,45 @@
         app:layout_constraintStart_toStartOf="parent">
 
 
-        <Button
-            android:id="@+id/button_gchat_send"
-            android:layout_width="75dp"
-            android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:background="?attr/selectableItemBackground"
-            android:text="Send"
-            android:textColor="?colorPrimary" />
+        <ImageView
+            android:id="@+id/iv_openCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/et_message"
+            app:layout_constraintBottom_toBottomOf="@+id/et_message"
 
+            android:src="@drawable/ic_vector_photo_camera" />
 
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:id="@+id/til_message"-->
-<!--            style="@style/Widget.MaterialComponents.TextInputLayout."-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:hint="Enter Message">-->
-
-<!--            <EditText-->
-<!--                android:id="@+id/et_username"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:inputType="text"-->
-<!--                android:textSize="@dimen/_16sdp"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-
-<!--                />-->
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
         <EditText
-            android:id="@+id/edit_gchat_message"
-            android:layout_width="match_parent"
+            android:id="@+id/et_message"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
-            android:layout_toStartOf="@+id/button_gchat_send"
+            android:layout_marginStart="@dimen/_8sdp"
             android:background="@android:color/transparent"
             android:hint="Enter Message"
             android:inputType="text"
             android:maxLines="6"
-            tools:ignore="Autofill" />
+            tools:ignore="Autofill"
+            app:layout_constraintStart_toEndOf="@+id/iv_openCamera"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_send"/>
 
-    </RelativeLayout>
+        <Button
+            android:id="@+id/button_send"
+            android:layout_width="75dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="Send"
+            android:textColor="?colorPrimary" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/text_gchat_indicator"
@@ -88,7 +87,6 @@
         android:id="@+id/recycler_gchat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="16dp"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@+id/text_gchat_indicator"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />

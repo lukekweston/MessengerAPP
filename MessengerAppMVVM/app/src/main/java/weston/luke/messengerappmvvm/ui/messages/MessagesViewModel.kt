@@ -61,7 +61,7 @@ class MessagesViewModel(
         }
     }
 
-    fun sendMessage(textMessage: String, conversationId: Int) {
+    fun sendMessage(textMessage: String, conversationId: Int, image: ByteArray? = null) {
         viewModelScope.launch {
             var message = Message(
                 conversationId = conversationId,
@@ -69,7 +69,8 @@ class MessagesViewModel(
                 userId = loggedInUser.value!!.userId,
                 userName = loggedInUser.value!!.userName,
                 status = SentStatus.CREATED,
-                timeSent = LocalDateTime.now()
+                timeSent = LocalDateTime.now(),
+                image = image
             )
             var success = messageRepository.sendMessage(message)
 
