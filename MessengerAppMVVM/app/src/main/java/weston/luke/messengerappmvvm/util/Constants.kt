@@ -6,6 +6,7 @@ object Constants {
 
     const val API_ENDPOINT_LOGIN_USER = "loginUser"
     const val API_ENDPOINT_LOGOUT_USER = "logoutUser"
+    const val API_ENDPOINT_CHECK_FCM_REG_TOKEN = "checkFCMRegToken"
     const val API_ENDPOINT_GET_CONVERSATIONS_FOR_USER = "getConversationsForUser/"
     const val API_ENDPOINT_GET_ALL_MESSAGES_FOR_USER = "allMessagesForUser/"
     const val API_ENDPOINT_SEND_MESSAGE = "sendMessage"

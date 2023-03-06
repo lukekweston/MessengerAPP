@@ -3,15 +3,10 @@ package weston.luke.messengerappmvvm.ui.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityLoginBinding
@@ -30,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
             (application as MessengerAppMVVMApplication).messageRepository
         )
     }
-    private val activityScope = CoroutineScope(lifecycleScope.coroutineContext + Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +33,15 @@ class LoginActivity : AppCompatActivity() {
         setContentView(mBinding.root)
 
         //Check for logged in user
-        checkForAlreadyLoggedInUser()
+        mLoginViewModel.checkUserAlreadyLoggedIn()
 
-        mLoginViewModel.loggedInUser.observe(this) { loggedInUser ->
-            if (loggedInUser != null) {
+        mBinding.loadingSpinner.hide()
+        mBinding.content.show()
+
+
+        //When the user has logged in successfully go to the next screen
+        mLoginViewModel.successfullyCheckedUserIsLoggedIn.observe(this) { success ->
+            if (success == true) {
                 mBinding.loadingSpinner.show()
                 mBinding.content.hide()
                 endLoginScreenAndGoToConversations()
@@ -78,7 +77,8 @@ class LoginActivity : AppCompatActivity() {
             mBinding.btnLogin.isEnabled = false
             mBinding.btnLogin.isClickable = false
             //close the keyboard
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(mBinding.etPassword.windowToken, 0)
             inputMethodManager.hideSoftInputFromWindow(mBinding.etUsername.windowToken, 0)
 
@@ -86,23 +86,8 @@ class LoginActivity : AppCompatActivity() {
                 userName = mBinding.etUsername.text.toString(),
                 password = mBinding.etPassword.text.toString()
             )
-            mBinding.btnLogin.isEnabled  = true
+            mBinding.btnLogin.isEnabled = true
             mBinding.btnLogin.isClickable = true
-        }
-    }
-
-    //Check user is already logged in, if they are, skip to the next screen
-    //Todo, go to last opened screen?
-
-    private fun checkForAlreadyLoggedInUser() {
-        activityScope.launch {
-            Log.d("loggedIn", mLoginViewModel.checkUserAlreadyLoggedIn().toString())
-            if (mLoginViewModel.checkUserAlreadyLoggedIn()) {
-                endLoginScreenAndGoToConversations()
-            } else {
-                mBinding.loadingSpinner.hide()
-                mBinding.content.show()
-            }
         }
     }
 

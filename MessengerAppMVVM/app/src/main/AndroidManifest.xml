@@ -14,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:importantForAutofill="no"
+
         android:theme="@style/Theme.MessengerAppMVVM"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">

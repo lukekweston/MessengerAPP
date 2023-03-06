@@ -1,6 +1,8 @@
 package weston.luke.messengerappmvvm.util
 
 import android.annotation.SuppressLint
+import android.content.Context
+import androidx.appcompat.app.AlertDialog
 import weston.luke.messengerappmvvm.data.remote.request.LogoutRequest
 import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
@@ -20,6 +22,15 @@ object Utils {
     @SuppressLint("ConstantLocale")
     val formatDayMonth: DateTimeFormatter =
         DateTimeFormatter.ofPattern("dd MMM", Locale.getDefault())
+
+
+    fun displayOkAlertDialog(context: Context, message: String) {
+        val builder = AlertDialog.Builder(context)
+        builder.setMessage(message)
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+        val dialog = builder.create()
+        dialog.show()
+    }
 
 
     //Accessible everywhere method to logout the currently logged in user

@@ -1,6 +1,5 @@
 package weston.luke.messengerappmvvm.data.remote.api
 
-import NetworkConnectionInterceptor
 import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -11,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
 import weston.luke.messengerappmvvm.data.remote.request.LogoutRequest
 import weston.luke.messengerappmvvm.data.remote.request.MessageSendRequest
+import weston.luke.messengerappmvvm.data.remote.request.fcmRegTokenCheckRequest
 import weston.luke.messengerappmvvm.data.remote.response.*
 import weston.luke.messengerappmvvm.util.Constants
 import java.util.concurrent.TimeUnit
@@ -32,7 +32,7 @@ class MessengerAPIService(private val context: Context){
         logging.level = HttpLoggingInterceptor.Level.BODY
         addNetworkInterceptor(logging)
         }
-        .addInterceptor(NetworkConnectionInterceptor(context))
+        //.addInterceptor(NetworkConnectionInterceptor(context))
         //Time out the api calls after 10 seconds of no response
         .callTimeout(1, TimeUnit.SECONDS)
         .connectTimeout(1, TimeUnit.SECONDS)
@@ -55,6 +55,10 @@ class MessengerAPIService(private val context: Context){
 
     suspend fun logoutUser(logoutRequest: LogoutRequest): SuccessResponse {
         return api.logoutUser(logoutRequest)
+    }
+
+    suspend fun checkFcmRegToken(fcmRegTokenCheckRequest: fcmRegTokenCheckRequest): SuccessResponse {
+        return api.checkFcmRegToken(fcmRegTokenCheckRequest)
     }
 
     suspend fun getAllConversationsForUser(userId: Int): ConversationResponse {

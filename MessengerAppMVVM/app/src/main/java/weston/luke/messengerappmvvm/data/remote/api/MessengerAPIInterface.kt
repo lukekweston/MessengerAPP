@@ -7,6 +7,7 @@ import retrofit2.http.Path
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
 import weston.luke.messengerappmvvm.data.remote.request.LogoutRequest
 import weston.luke.messengerappmvvm.data.remote.request.MessageSendRequest
+import weston.luke.messengerappmvvm.data.remote.request.fcmRegTokenCheckRequest
 import weston.luke.messengerappmvvm.data.remote.response.*
 import weston.luke.messengerappmvvm.util.Constants
 
@@ -23,6 +24,11 @@ interface MessengerAPIInterface {
     @POST(Constants.API_ENDPOINT_LOGOUT_USER)
     suspend fun logoutUser(
         @Body logoutRequest: LogoutRequest
+    ): SuccessResponse
+
+    @POST(Constants.API_ENDPOINT_CHECK_FCM_REG_TOKEN)
+    suspend fun checkFcmRegToken(
+        @Body fcmRegTokenCheckRequest: fcmRegTokenCheckRequest
     ): SuccessResponse
 
     @GET(Constants.API_ENDPOINT_GET_CONVERSATIONS_FOR_USER + "{userId}")

@@ -4,9 +4,11 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
+import weston.luke.messengerappmvvm.data.remote.request.fcmRegTokenCheckRequest
 import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
 import weston.luke.messengerappmvvm.repository.MessageRepository
+import weston.luke.messengerappmvvm.util.Utils
 
 class LoginViewModel(
     private val loginRepository: LoggedInUserRepository,
@@ -14,7 +16,12 @@ class LoginViewModel(
     private val messageRepository: MessageRepository
 ) : ViewModel() {
 
-    val loggedInUser: LiveData<LoggedInUser?> = loginRepository.loggedInUser.asLiveData()
+    //Bool to keep track for if the user has/is successfully logged in and should go to the next screen
+    private val _successfullyCheckedUserIsLoggedIn = MutableLiveData<Boolean>()
+
+    val successfullyCheckedUserIsLoggedIn: LiveData<Boolean>
+        get() = _successfullyCheckedUserIsLoggedIn
+    
 
     var firebaseToken: String = ""
 
@@ -35,11 +42,49 @@ class LoginViewModel(
         get() = _loggingUserIn
 
 
-    suspend fun checkUserAlreadyLoggedIn(): Boolean {
-        firebaseToken = loginRepository.getFirebaseToken()
-        return loginRepository.awaitGettingLoggedInUser() != null
+    fun checkUserAlreadyLoggedIn() {
+        viewModelScope.launch {
+
+            firebaseToken = loginRepository.getFirebaseToken()
+
+            var loggedInUser = loginRepository.awaitGettingLoggedInUser()
+
+            //There is a logged in user
+            if (loggedInUser != null) {
+
+                //Check that the users logged in firebase reg token matches the saved firebase token for the logged in token
+                val success = loginRepository.checkFcmRegToken(
+                    fcmRegTokenCheckRequest(
+                        userId = loggedInUser.userId,
+                        firebaseRegistrationToken = firebaseToken
+                    )
+                )
+
+                //If they dont, log the user out. Display a message informing the user why they have been logged out
+                if (!success.success) {
+                    _toastMessage.value =
+                        "The user has logged in from another device, and as a result, they have been logged out of this device."
+                    logoutUser()
+                }
+                //Else user is already logged in, continue to next screen
+                else {
+                    _successfullyCheckedUserIsLoggedIn.value = true
+                }
+            }
+        }
+
     }
 
+    suspend fun logoutUser() {
+        val loggedInUser = loginRepository.awaitGettingLoggedInUser()
+        Utils.logoutUser(
+            loginRepository,
+            conversationRepository,
+            messageRepository,
+            loggedInUser!!.userId,
+            loggedInUser!!.userName
+        )
+    }
 
 
     fun loginUser(userName: String, password: String) {
@@ -66,6 +111,7 @@ class LoginViewModel(
                             userEmail = loginResponse.UserEmail
                         )
                     )
+                    _successfullyCheckedUserIsLoggedIn.value = true
                 }
                 //Invalid username or password
                 else {
