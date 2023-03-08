@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Base64
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
@@ -29,6 +30,7 @@ import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityMessagesBinding
 import weston.luke.messengerappmvvm.util.Constants
+import weston.luke.messengerappmvvm.util.ImageUtils
 import weston.luke.messengerappmvvm.util.toast
 import java.io.File
 import java.io.FileInputStream
@@ -91,7 +93,7 @@ class MessagesActivity : AppCompatActivity() {
         (messagesRecyclerView.layoutManager as LinearLayoutManager).stackFromEnd = true
 
         //Load the data in the viewModel
-        mMessageViewModel.loadData(conversationId)
+        mMessageViewModel.loadData(conversationId, this)
 
         //Update the recyclerview when the messages are received/updated
         mMessageViewModel.loggedInUserAndMessages.observe(this) { (messages, loggedInUserId) ->
@@ -114,8 +116,6 @@ class MessagesActivity : AppCompatActivity() {
         mMessageViewModel.toastMessageToDisplay.observe(this) { toastMessageToDisplay ->
             if (toastMessageToDisplay != null) {
                 toast(toastMessageToDisplay)
-                //Todo, set up a way to resend the message
-                //And make sure the message is displayed differently
             }
         }
 
@@ -134,8 +134,6 @@ class MessagesActivity : AppCompatActivity() {
             //Clear the textMessage
             mBinding.etMessage.text.clear()
 
-            //Load data again to update recycler View
-            // mMessageViewModel.loadData(conversationId)
         }
 
 
@@ -164,7 +162,8 @@ class MessagesActivity : AppCompatActivity() {
     fun openCamera() {
         Dexter.withContext(this@MessagesActivity).withPermissions(
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
         ).withListener(object : MultiplePermissionsListener {
             override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
                 // Let only runs the code when report is not null - good to know
@@ -205,15 +204,17 @@ class MessagesActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == CAMERA && resultCode == RESULT_OK) {
-            //data?.extras?.let {
 
                 // Get the image data from the file
-                val imageData = FileInputStream(photoFile).use { it.readBytes() }
-
-                //Save the image to messages table
-                mMessageViewModel.sendMessage("", conversationId, imageData)
-
-            //}
+                var imageData = FileInputStream(photoFile).use { it.readBytes() }
+                //Get the correct orientation
+                imageData = ImageUtils.rotateByteArrayIfRequired(imageData)
+                //Change to base 64 string
+                val imageDataAsBase64String = Base64.encodeToString(imageData, Base64.DEFAULT)
+                //Save the image and return the full path
+                val fullResImagePath = ImageUtils.saveImage(this, imageDataAsBase64String)
+                //Send the image to the server
+                mMessageViewModel.sendImage(conversationId, imageDataAsBase64String, fullResImagePath, this)
         }
     }
 

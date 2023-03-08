@@ -1,17 +1,22 @@
 package weston.luke.messengerappmvvm.repository
 
-import android.util.Base64
+import android.content.Context
+import android.util.Log
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.Flow
 import weston.luke.messengerappmvvm.data.database.dao.MessageDao
 import weston.luke.messengerappmvvm.data.database.dto.LatestMessage
 import weston.luke.messengerappmvvm.data.database.entities.Message
-import weston.luke.messengerappmvvm.data.database.entities.SentStatus
+import weston.luke.messengerappmvvm.data.database.entities.MessageStatus
 import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
 import weston.luke.messengerappmvvm.data.remote.request.MessageSendRequest
+import weston.luke.messengerappmvvm.util.ImageUtils
 import java.time.LocalDateTime
 
-class MessageRepository(private val messageDao: MessageDao, private val apiService: MessengerAPIService) {
+class MessageRepository(
+    private val messageDao: MessageDao,
+    private val apiService: MessengerAPIService
+) {
 
     @WorkerThread
     suspend fun insertMessages(messages: List<Message>) {
@@ -35,7 +40,7 @@ class MessageRepository(private val messageDao: MessageDao, private val apiServi
 
 
     @WorkerThread
-    fun getLastestMessagesForEachConversation() : Flow<List<LatestMessage?>>{
+    fun getLastestMessagesForEachConversation(): Flow<List<LatestMessage?>> {
         return messageDao.getLatestMessagesForEachConversation()
     }
 
@@ -44,7 +49,7 @@ class MessageRepository(private val messageDao: MessageDao, private val apiServi
         return messageDao.getAllMessagesForAConversation(conversationId)
     }
 
-    suspend fun getAllMessagesForUser(userId: Int){
+    suspend fun getAllMessagesForUser(userId: Int, context: Context) {
         val messageResponse = apiService.getAllMessagesForUser(userId)
         insertMessages(
             messageResponse.map {
@@ -56,17 +61,49 @@ class MessageRepository(private val messageDao: MessageDao, private val apiServi
                     message = it.message,
                     timeSent = LocalDateTime.parse(it.timeSent),
                     timeUpdated = if (it.timeUpdated != null) LocalDateTime.parse(it.timeUpdated) else null,
-                    status = SentStatus.SUCCESS
+                    status = MessageStatus.SUCCESS,
+                    pathToSavedLowRes = if (it.imageLowRes != null) ImageUtils.saveImage(
+                        context,
+                        it.imageLowRes,
+                        false,
+                        it.id.toString()
+                    ) else ""
                 )
             }
         )
 
     }
 
-    suspend fun sendMessage(message: Message): Boolean{
-        //Insert a new message and get its local id
-        val messageId = insertMessage(message)
+    //Todo, fix the send by saving the photo in a file on the phone before sending it
+    //Image is too large for the database (it is bad practise to put large files in a database)
+    //Also low res photos should be saved outside of the database
+    suspend fun sendMessageText(message: Message): Boolean {
+        return try {
+            val messageId = insertMessage(message)
+            sendMessage(message, messageId = messageId)
+        } catch (e: Exception) {
+            Log.e("Error saving message", e.message.toString())
+            false
+        }
+    }
 
+    suspend fun sendMessageImage(
+        messageId: Long,
+        message: Message,
+        imageBase64StringFullRes: String,
+        imageBase64StringLowRes: String
+    ): Boolean {
+        return sendMessage(message, messageId, imageBase64StringFullRes, imageBase64StringLowRes)
+    }
+
+
+    suspend fun sendMessage(
+        message: Message,
+        messageId: Long,
+        imageBase64StringFullRes: String? = null,
+        imageBase64StringLowRes: String? = null
+    ): Boolean {
+        //Insert a new message and get its local id
         try {
             //Send the message to the server
             val messageResponse = apiService.sendMessage(
@@ -74,7 +111,8 @@ class MessageRepository(private val messageDao: MessageDao, private val apiServi
                     userId = message.userId,
                     message = message.message,
                     conversationId = message.conversationId,
-                    imageBase64 = if(message.image != null) Base64.encodeToString(message.image, Base64.DEFAULT) else null
+                    imageBase64FullRes = imageBase64StringFullRes,
+                    imageBase64LowRes = imageBase64StringLowRes
                 )
             )
 
@@ -89,15 +127,37 @@ class MessageRepository(private val messageDao: MessageDao, private val apiServi
                     message = messageResponse.message,
                     timeSent = LocalDateTime.parse(messageResponse.timeSent),
                     timeUpdated = null,
-                    status = SentStatus.SUCCESS,
+                    status = if (messageResponse.imageLowRes == null) MessageStatus.SUCCESS else MessageStatus.SUCCESS_LOW_RES_IMAGE_ONLY,
+                    pathToSavedLowRes = message.pathToSavedLowRes
                 )
             )
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
+            Log.e("Error sending message", e.message.toString())
             return false
         }
         return true
 
+    }
+
+    //Gets the image from the server and saves it back on the image, updates status flag
+    suspend fun getLowResImageForMessage(message: Message, context: Context) {
+        //MessageId will have to have a value to get here - but still do null check
+        if (message.messageId != null) {
+            val imageResponse = apiService.getLowResImageForMessage(message.messageId)
+            if (imageResponse.imageBase64.isNotEmpty()) {
+
+                //Save the image and return its path and set the path to saved low res image to this
+                message.pathToSavedLowRes = ImageUtils.saveImage(
+                    context,
+                    imageResponse.imageBase64,
+                    false,
+                    imageResponse.messageId.toString()
+                )
+                message.status = MessageStatus.SUCCESS_LOW_RES_IMAGE_ONLY
+                updateMessage(message)
+            }
+
+        }
     }
 
 

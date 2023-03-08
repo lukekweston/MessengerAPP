@@ -52,6 +52,12 @@
         app:layout_constraintStart_toEndOf="@+id/image_gchat_profile_other"
         app:layout_constraintTop_toBottomOf="@+id/text_gchat_user_other">
 
+        <ImageView
+            android:id="@+id/ivImageReceived"
+            android:layout_width="wrap_content"
+            android:padding="@dimen/_8sdp"
+            android:layout_height="wrap_content"/>
+
         <LinearLayout
             android:id="@+id/layout_gchat_container_other"
             android:layout_width="wrap_content"

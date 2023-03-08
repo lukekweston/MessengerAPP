@@ -34,10 +34,10 @@ class MessengerAPIService(private val context: Context){
         }
         //.addInterceptor(NetworkConnectionInterceptor(context))
         //Time out the api calls after 10 seconds of no response
-        .callTimeout(1, TimeUnit.SECONDS)
-        .connectTimeout(1, TimeUnit.SECONDS)
-        .readTimeout(5, TimeUnit.SECONDS)
-        .writeTimeout(5, TimeUnit.SECONDS)
+        .callTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
 
@@ -71,5 +71,9 @@ class MessengerAPIService(private val context: Context){
 
     suspend fun sendMessage(messageRequest: MessageSendRequest) : MessageResponse {
         return api.sendMessage(messageRequest)
+    }
+
+    suspend fun getLowResImageForMessage(messageId: Int): ImageResponse{
+        return api.getLowResImageForMessage(messageId)
     }
 }

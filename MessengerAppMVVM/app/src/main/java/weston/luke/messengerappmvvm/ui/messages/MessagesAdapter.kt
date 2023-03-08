@@ -1,7 +1,6 @@
 package weston.luke.messengerappmvvm.ui.messages
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +11,17 @@ import weston.luke.messengerappmvvm.data.database.entities.Message
 import weston.luke.messengerappmvvm.databinding.ItemMessageRecievedBinding
 import weston.luke.messengerappmvvm.databinding.ItemMessageSentBinding
 import weston.luke.messengerappmvvm.util.Utils
-import weston.luke.messengerappmvvm.util.hide
+import java.io.File
 
 class MessagesAdapter(private val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_TYPE_SENT = 1
     private val VIEW_TYPE_RECEIVED = 2
+
+    private val displayMetrics = context.resources.displayMetrics
+    //Set max imageDimension to 2/3s of the screen width
+    private val maxImageDimension = ((displayMetrics.widthPixels / 3) * 2)
 
 
     private var messages: List<Message> = emptyList()
@@ -34,10 +37,10 @@ class MessagesAdapter(private val context: Context) :
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == VIEW_TYPE_SENT) {
             val mBinding = ItemMessageSentBinding.inflate(inflater, parent, false)
-            SentMessageHolder(mBinding, context)
+            SentMessageHolder(mBinding, context, maxImageDimension)
         } else {
             val mBinding = ItemMessageRecievedBinding.inflate(inflater, parent, false)
-            ReceivedMessageHolder(mBinding)
+            ReceivedMessageHolder(mBinding, context, maxImageDimension)
         }
     }
 
@@ -77,7 +80,11 @@ class MessagesAdapter(private val context: Context) :
 }
 
 
-class ReceivedMessageHolder(private val mBinding: ItemMessageRecievedBinding) :
+class ReceivedMessageHolder(
+    private val mBinding: ItemMessageRecievedBinding,
+    private val context: Context,
+    private val maxImageDimension: Int
+) :
     RecyclerView.ViewHolder(mBinding.root) {
     fun bind(message: Message, showDate: Boolean) {
 
@@ -85,6 +92,18 @@ class ReceivedMessageHolder(private val mBinding: ItemMessageRecievedBinding) :
             message.timeUpdated?.format(Utils.formatDayMonthHourMin) ?: message.timeSent.format(
                 Utils.formatHourMin
             )
+
+        if (message.pathToSavedLowRes != null) {
+
+            val file = File(message.pathToSavedLowRes!!)
+            //Assign and crop image with Glide
+            Glide.with(context).load(file)
+                .fitCenter()
+                .apply(RequestOptions().override(maxImageDimension, maxImageDimension))
+                .into(mBinding.ivImageReceived)
+        } else {
+            Glide.with(context).clear(mBinding.ivImageReceived)
+        }
 
 
 
@@ -104,7 +123,8 @@ class ReceivedMessageHolder(private val mBinding: ItemMessageRecievedBinding) :
 
 class SentMessageHolder(
     private val mBinding: ItemMessageSentBinding,
-    private val context: Context
+    private val context: Context,
+    private val maxImageDimension: Int
 ) :
     RecyclerView.ViewHolder(mBinding.root) {
     fun bind(message: Message, showDate: Boolean) {
@@ -114,16 +134,20 @@ class SentMessageHolder(
                 Utils.formatHourMin
             )
 
-        if (message.image != null) {
-            val thumbnail: Bitmap = Utils.getBitmapFromByteArray(message.image)
+
+        if (message.pathToSavedLowRes != null || message.pathToSavedHighRes != null) {
+            //Prioritise drawing low res over high res
+            val imagePath =  message.pathToSavedLowRes ?: message.pathToSavedHighRes
+            val file = File(imagePath!!)
+
             //Assign and crop image with Glide
-            Glide.with(context).load(thumbnail)
+            Glide.with(context)
+                .load(file)
                 .fitCenter()
-                .apply(RequestOptions().override(1000, 1000))
+                .apply(RequestOptions().override(maxImageDimension, maxImageDimension))
                 .into(mBinding.ivImageSent)
-        }
-        else{
-            mBinding.ivImageSent.hide()
+        } else {
+            Glide.with(context).clear(mBinding.ivImageSent)
         }
 
 

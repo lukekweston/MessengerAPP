@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
@@ -15,7 +16,7 @@ import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.data.database.MessengerAppMVVMDatabase
 import weston.luke.messengerappmvvm.data.database.dao.MessageDao
 import weston.luke.messengerappmvvm.data.database.entities.Message
-import weston.luke.messengerappmvvm.data.database.entities.SentStatus
+import weston.luke.messengerappmvvm.data.database.entities.MessageStatus
 import weston.luke.messengerappmvvm.ui.messages.MessagesActivity
 import weston.luke.messengerappmvvm.util.Constants
 import java.time.LocalDateTime
@@ -36,6 +37,7 @@ class PushNotificationService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         messageDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).messageDao()
         applicationContext
+
         when (message.data.get("type")) {
             "newMessage" -> newMessageReceived(
                 Message(
@@ -44,8 +46,19 @@ class PushNotificationService : FirebaseMessagingService() {
                     userName = message.data.get("usernameSending")!!,
                     conversationId = message.data.get("conversationId")!!.toInt(),
                     timeSent = LocalDateTime.now(),
-                    status = SentStatus.SUCCESS,
+                    status = MessageStatus.SUCCESS,
                     message = message.data.get("textMessage")!!
+                )
+            )
+            "newImageMessage" -> newMessageReceived(
+                Message(
+                    messageId = message.data.get("id")!!.toInt(),
+                    userId = message.data.get("userId")!!.toInt(),
+                    userName = message.data.get("usernameSending")!!,
+                    conversationId = message.data.get("conversationId")!!.toInt(),
+                    timeSent = LocalDateTime.now(),
+                    status = MessageStatus.IMAGE_READY_TO_GET_FROM_API,
+                    message = ""
                 )
             )
         }
@@ -108,14 +121,15 @@ class PushNotificationService : FirebaseMessagingService() {
         val intent = Intent(applicationContext, MessagesActivity::class.java)
         intent.putExtra(Constants.CONVERSATION_ID, message.conversationId)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, 0)
+        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, FLAG_IMMUTABLE)
 
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         val notification: Notification.Builder = Notification.Builder(
             this, CHANNEL_ID
         )
+            //Todo make the title/message dynamic on if the notification is coming from a group conversation or not
             .setContentTitle(message.userName)
-            .setContentText(message.message)
+            .setContentText(if (message.status == MessageStatus.IMAGE_READY_TO_GET_FROM_API) "Sent you an image!" else message.message)
             .setSmallIcon(R.drawable.ic_conversations)
             .setContentIntent(pendingIntent)
             //Goes away when user taps on it

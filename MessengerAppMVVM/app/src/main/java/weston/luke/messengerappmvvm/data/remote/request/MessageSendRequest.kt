@@ -5,5 +5,6 @@ data class MessageSendRequest(
     val conversationId: Int,
     val message: String,
     val userId: Int,
-    val imageBase64: String? = null
+    val imageBase64FullRes: String? = null,
+    val imageBase64LowRes: String? = null
 )

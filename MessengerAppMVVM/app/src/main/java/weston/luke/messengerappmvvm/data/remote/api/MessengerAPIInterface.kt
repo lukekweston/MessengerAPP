@@ -46,4 +46,10 @@ interface MessengerAPIInterface {
         @Body messageRequest: MessageSendRequest
     ): MessageResponse
 
+    @GET(Constants.API_ENDPOINT_GET_LOW_RES_IMAGE_FOR_MESSAGE + "{messageId}")
+    suspend fun getLowResImageForMessage(
+        @Path("messageId") messageId: Int
+    ): ImageResponse
+
+
 }

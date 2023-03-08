@@ -9,5 +9,6 @@ data class MessageResponse(
     val timeSent: String,
     val timeUpdated: String,
     val userId: Int,
-    val username: String
+    val username: String,
+    val imageLowRes: String?
 )

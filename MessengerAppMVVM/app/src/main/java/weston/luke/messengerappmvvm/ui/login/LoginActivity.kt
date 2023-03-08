@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(mBinding.root)
 
         //Check for logged in user
-        mLoginViewModel.checkUserAlreadyLoggedIn()
+        mLoginViewModel.checkUserAlreadyLoggedIn(this)
 
         mBinding.loadingSpinner.hide()
         mBinding.content.show()
@@ -84,7 +84,8 @@ class LoginActivity : AppCompatActivity() {
 
             mLoginViewModel.loginUser(
                 userName = mBinding.etUsername.text.toString(),
-                password = mBinding.etPassword.text.toString()
+                password = mBinding.etPassword.text.toString(),
+                this
             )
             mBinding.btnLogin.isEnabled = true
             mBinding.btnLogin.isClickable = true

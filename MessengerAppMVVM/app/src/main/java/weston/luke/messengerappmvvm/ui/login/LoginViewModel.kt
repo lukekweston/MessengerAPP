@@ -1,5 +1,6 @@
 package weston.luke.messengerappmvvm.ui.login
 
+import android.content.Context
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
@@ -42,7 +43,7 @@ class LoginViewModel(
         get() = _loggingUserIn
 
 
-    fun checkUserAlreadyLoggedIn() {
+    fun checkUserAlreadyLoggedIn(context: Context) {
         viewModelScope.launch {
 
             firebaseToken = loginRepository.getFirebaseToken()
@@ -64,7 +65,7 @@ class LoginViewModel(
                 if (!success.success) {
                     _toastMessage.value =
                         "The user has logged in from another device, and as a result, they have been logged out of this device."
-                    logoutUser()
+                    logoutUser(context)
                 }
                 //Else user is already logged in, continue to next screen
                 else {
@@ -75,19 +76,20 @@ class LoginViewModel(
 
     }
 
-    suspend fun logoutUser() {
+    suspend fun logoutUser(context: Context) {
         val loggedInUser = loginRepository.awaitGettingLoggedInUser()
         Utils.logoutUser(
             loginRepository,
             conversationRepository,
             messageRepository,
             loggedInUser!!.userId,
-            loggedInUser!!.userName
+            loggedInUser!!.userName,
+            context
         )
     }
 
 
-    fun loginUser(userName: String, password: String) {
+    fun loginUser(userName: String, password: String, context: Context) {
 
         viewModelScope.launch {
             try {
@@ -102,7 +104,7 @@ class LoginViewModel(
                     //Get the conversation data
                     conversationRepository.getAllConversationsForUser(loginResponse.UserId)
                     //Get all the messages for the user
-                    messageRepository.getAllMessagesForUser(loginResponse.UserId)
+                    messageRepository.getAllMessagesForUser(loginResponse.UserId, context)
                     //Set the logged in user to this in the database
                     loginRepository.loginUser(
                         LoggedInUser(

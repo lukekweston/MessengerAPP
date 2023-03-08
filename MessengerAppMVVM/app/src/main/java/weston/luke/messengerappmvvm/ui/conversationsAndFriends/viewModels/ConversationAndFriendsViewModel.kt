@@ -1,5 +1,6 @@
 package weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -19,9 +20,16 @@ class ConversationAndFriendsViewModel(
     val loggedInUser: LiveData<LoggedInUser?> = loggedInUserRepository.loggedInUser.asLiveData()
 
 
-    suspend fun logoutUser() {
+    suspend fun logoutUser(context: Context) {
 
-        Utils.logoutUser(loggedInUserRepository, conversationRepository, messageRepository, loggedInUser.value!!.userId, loggedInUser.value!!.userName)
+        Utils.logoutUser(
+            loggedInUserRepository,
+            conversationRepository,
+            messageRepository,
+            loggedInUser.value!!.userId,
+            loggedInUser.value!!.userName,
+            context
+        )
 
     }
 }

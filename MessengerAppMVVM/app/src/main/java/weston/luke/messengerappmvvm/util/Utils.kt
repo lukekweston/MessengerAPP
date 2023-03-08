@@ -45,7 +45,8 @@ object Utils {
         conversationRepository: ConversationRepository,
         messageRepository: MessageRepository,
         loggedInUserId: Int,
-        loggedInUserName: String
+        loggedInUserName: String,
+        context: Context
     ) {
 
 
@@ -61,6 +62,9 @@ object Utils {
         loggedInUserRepository.deleteUserFromLocalDatabase()
         conversationRepository.deleteConversationData()
         messageRepository.deleteAllMessages()
+        ImageUtils.deleteAllHiddenLowResImages(context)
+
+
 
 
     }

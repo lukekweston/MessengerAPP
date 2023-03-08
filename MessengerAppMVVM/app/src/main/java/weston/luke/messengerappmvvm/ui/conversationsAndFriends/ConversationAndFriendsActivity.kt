@@ -1,5 +1,6 @@
 package weston.luke.messengerappmvvm.ui.conversationsAndFriends
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -100,16 +101,16 @@ class ConversationAndFriendsActivity : AppCompatActivity() {
                 this.toast("Not implemented")
             }
             R.id.action_logout -> {
-                logoutUser()
+                logoutUser(this)
             }
         }
         return true
     }
 
 
-    private fun logoutUser() {
+    private fun logoutUser(context: Context) {
         activityScope.launch {
-            mConversationAndFriendsViewModel.logoutUser()
+            mConversationAndFriendsViewModel.logoutUser(context)
         }
     }
 }
