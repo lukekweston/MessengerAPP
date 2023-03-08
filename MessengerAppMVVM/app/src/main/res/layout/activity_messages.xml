@@ -5,9 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/loadingSpinner"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"/>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_gchat_chatbox"
+        android:id="@+id/layout_chatbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -18,12 +29,24 @@
             android:id="@+id/iv_openCamera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_8sdp"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingVertical="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_4sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/et_message"
             app:layout_constraintBottom_toBottomOf="@+id/et_message"
-
             android:src="@drawable/ic_vector_photo_camera" />
+
+        <ImageView
+            android:id="@+id/iv_openGallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/_8sdp"
+            android:paddingHorizontal="@dimen/_4sdp"
+            app:layout_constraintStart_toEndOf="@+id/iv_openCamera"
+            app:layout_constraintTop_toTopOf="@+id/et_message"
+            app:layout_constraintBottom_toBottomOf="@+id/et_message"
+            android:src="@drawable/ic_vector_gallery" />
 
         <EditText
             android:id="@+id/et_message"
@@ -36,7 +59,7 @@
             android:inputType="text"
             android:maxLines="6"
             tools:ignore="Autofill"
-            app:layout_constraintStart_toEndOf="@+id/iv_openCamera"
+            app:layout_constraintStart_toEndOf="@+id/iv_openGallery"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_send"/>
@@ -55,7 +78,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/text_gchat_indicator"
+        android:id="@+id/text_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -68,7 +91,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#e0e0e0"
-        app:layout_constraintBottom_toTopOf="@+id/layout_gchat_chatbox" />
+        app:layout_constraintBottom_toTopOf="@+id/layout_chatbox" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -84,11 +107,11 @@
         app:titleTextColor="@android:color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_gchat"
+        android:id="@+id/recyclerview_messages"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@+id/text_gchat_indicator"
+        app:layout_constraintBottom_toTopOf="@+id/text_indicator"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 

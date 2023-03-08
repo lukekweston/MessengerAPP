@@ -10,10 +10,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Base64
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
+import java.io.*
 import java.time.LocalDateTime
 import kotlin.math.sqrt
 
@@ -196,5 +193,26 @@ object ImageUtils {
             matrix,
             true
         )
+    }
+
+    fun bitmapToBase64(bitmap: Bitmap): String {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
+        return Base64.encodeToString(byteArray, Base64.DEFAULT)
+    }
+
+    fun uriToBase64(uri: Uri, context: Context): String? {
+        var inputStream: InputStream? = null
+        try {
+            inputStream = context.contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            return bitmapToBase64(bitmap)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } finally {
+            inputStream?.close()
+        }
+        return null
     }
 }

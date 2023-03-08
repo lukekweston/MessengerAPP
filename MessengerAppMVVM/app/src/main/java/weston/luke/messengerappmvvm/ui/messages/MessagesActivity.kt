@@ -8,10 +8,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Base64
+import android.util.Log
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
@@ -29,13 +29,9 @@ import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityMessagesBinding
-import weston.luke.messengerappmvvm.util.Constants
-import weston.luke.messengerappmvvm.util.ImageUtils
-import weston.luke.messengerappmvvm.util.toast
+import weston.luke.messengerappmvvm.util.*
 import java.io.File
 import java.io.FileInputStream
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 //Got messaging UI from here - modified a lot from this
@@ -85,15 +81,23 @@ class MessagesActivity : AppCompatActivity() {
         }
 
 
+
+
         //Set up the displaying messages recyclerview
         messagesAdapter = MessagesAdapter(this)
-        messagesRecyclerView = mBinding.recyclerGchat
+        messagesRecyclerView = mBinding.recyclerviewMessages
         messagesRecyclerView.layoutManager = LinearLayoutManager(this)
         messagesRecyclerView.adapter = messagesAdapter
         (messagesRecyclerView.layoutManager as LinearLayoutManager).stackFromEnd = true
 
-        //Load the data in the viewModel
+
+        //Load/get the data in the viewModel
+        messagesRecyclerView.hide()
+        mBinding.loadingSpinner.show()
         mMessageViewModel.loadData(conversationId, this)
+        messagesRecyclerView.show()
+        mBinding.loadingSpinner.hide()
+
 
         //Update the recyclerview when the messages are received/updated
         mMessageViewModel.loggedInUserAndMessages.observe(this) { (messages, loggedInUserId) ->
@@ -136,9 +140,12 @@ class MessagesActivity : AppCompatActivity() {
 
         }
 
-
         mBinding.ivOpenCamera.setOnClickListener {
             openCamera()
+        }
+
+        mBinding.ivOpenGallery.setOnClickListener {
+            openGallery()
         }
 
     }
@@ -158,44 +165,66 @@ class MessagesActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
-
     fun openCamera() {
-        Dexter.withContext(this@MessagesActivity).withPermissions(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ).withListener(object : MultiplePermissionsListener {
-            override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                // Let only runs the code when report is not null - good to know
-                report?.let {
-                    // Checks all permissions above are granted
-                    if (report.areAllPermissionsGranted()) {
+        openMedia(isCamera = true)
+    }
 
-                        // Create a file to store the photo
-                        photoFile = createImageFile()
+    fun openGallery() {
+        openMedia(isCamera = false)
+    }
 
-                        // Get the URI of the photo file
-                        photoURI = FileProvider.getUriForFile(this@MessagesActivity,
-                            "weston.luke.messengerappmvvm.fileprovider",
-                            photoFile)
 
-                        // Need to specify class as in listener
-                        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                        startActivityForResult(takePictureIntent, CAMERA)
+    private fun openMedia(isCamera: Boolean) {
+        val permissions = if (isCamera) {
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        } else {
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
 
+        Dexter.withContext(this@MessagesActivity).withPermissions(*permissions)
+            .withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                    report?.let {
+                        if (report.areAllPermissionsGranted()) {
+                            //Open camera if camera is true
+                            if (isCamera) {
+                                // Create a temp file to store the photo
+                                photoFile = File.createTempFile("temp", ".jpg",)
+                                // Get the URI of the photo file
+                                photoURI = FileProvider.getUriForFile(
+                                    this@MessagesActivity,
+                                    "weston.luke.messengerappmvvm.fileprovider",
+                                    photoFile
+                                )
+                                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                                startActivityForResult(takePictureIntent, CAMERA)
+                            }
+                            //Otherwise open the gallery
+                            else {
+                                val intent = Intent(
+                                    Intent.ACTION_PICK,
+                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                                )
+                                startActivityForResult(intent, GALLERY)
+                            }
+                        }
                     }
                 }
-            }
 
-            override fun onPermissionRationaleShouldBeShown(
-                permissions: MutableList<PermissionRequest>?,
-                token: PermissionToken?
-            ) {
-                showRationalDialogForPermissions()
-            }
-        }
-        ).onSameThread().check()
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: MutableList<PermissionRequest>?,
+                    token: PermissionToken?
+                ) {
+                    showRationalDialogForPermissions()
+                }
+            })
+            .onSameThread()
+            .check()
     }
 
 
@@ -204,8 +233,9 @@ class MessagesActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == CAMERA && resultCode == RESULT_OK) {
-
+            try {
                 // Get the image data from the file
+                //TODO future simplify this image return, is it possible to return just a base64 string
                 var imageData = FileInputStream(photoFile).use { it.readBytes() }
                 //Get the correct orientation
                 imageData = ImageUtils.rotateByteArrayIfRequired(imageData)
@@ -214,20 +244,46 @@ class MessagesActivity : AppCompatActivity() {
                 //Save the image and return the full path
                 val fullResImagePath = ImageUtils.saveImage(this, imageDataAsBase64String)
                 //Send the image to the server
-                mMessageViewModel.sendImage(conversationId, imageDataAsBase64String, fullResImagePath, this)
+                mMessageViewModel.sendImage(
+                    conversationId,
+                    imageDataAsBase64String,
+                    fullResImagePath,
+                    this
+                )
+            }
+            catch (e: Exception){
+                Log.e("Error displaying image from camera", e.message.toString())
+                e.printStackTrace()
+                toast("Error displaying image from camera")
+            }
+        }
+        else if (requestCode == GALLERY) {
+            try {
+                data?.let {
+                    val selectedPhotoUri = data.data
+                    val imageAsString = ImageUtils.uriToBase64(selectedPhotoUri!!, this)
+                    //Simple check for path from uri will work as we are just looking for an image
+                    val imagePath = selectedPhotoUri.path
+                    if(imageAsString != null && imagePath != null) {
+                        mMessageViewModel.sendImage(
+                            conversationId,
+                            imageAsString,
+                            imagePath,
+                            this
+                        )
+                    }
+                    else{
+                        throw NullPointerException("path is null or image is null")
+                    }
+                }
+            }
+            catch (e: Exception){
+                Log.e("Error loading image from gallery", e.message.toString())
+                e.printStackTrace()
+                toast("Error loading image from gallery")
+            }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
 //    Display an alert saying that the user doesn't have the required permissions set
 //    On positive click go to phone settings to be able to enable permissions - dont need to dismiss this as going to a new display, settings
@@ -237,15 +293,15 @@ class MessagesActivity : AppCompatActivity() {
             .setMessage("It looks like you have turned off permissions required fot this feature. It can ben enabled under Application Settings")
             .setPositiveButton("GO TO SETTINGS") { _, _ ->
                 try {
-//                    Create an intent to go towards phone settings - specifically to application details settings
+                    //Create an intent to go towards phone settings - specifically to application details settings
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-//                    use the package name of this app to be able to get to the specific application settings for this app
+                    //use the package name of this app to be able to get to the specific application settings for this app
                     val uri = Uri.fromParts("package", packageName, null)
                     intent.data = uri
-//                    Start the settings
+                    //Start the settings
                     startActivity(intent)
                 }
-//                Catch not found, print stack trace
+                //Catch not found, print stack trace
                 catch (e: ActivityNotFoundException) {
                     e.printStackTrace()
                 }
@@ -256,28 +312,9 @@ class MessagesActivity : AppCompatActivity() {
     }
 
 
-    private fun createImageFile(): File {
-        // Create a unique file name
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val imageFileName = "JPEG_" + timeStamp + "_"
-
-        // Get the directory where the file will be stored
-        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-
-        // Create the file and return its path
-        return File.createTempFile(
-            imageFileName,  /* prefix */
-            ".jpg",         /* suffix */
-            storageDir      /* directory */
-        )
-    }
-
-
     companion object {
         private const val CAMERA = 1
         private const val GALLERY = 2
-
-        private const val IMAGEDIRECTORY = "FavDishImages"
     }
 
 }
