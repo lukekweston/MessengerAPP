@@ -51,5 +51,10 @@ interface MessengerAPIInterface {
         @Path("messageId") messageId: Int
     ): ImageResponse
 
+    @GET(Constants.API_ENDPOINT_GET_FULL_RES_IMAGE_FOR_MESSAGE + "{messageId}")
+    suspend fun getFullResImageForMessage(
+        @Path("messageId") messageId: Int
+    ): ImageResponse
+
 
 }

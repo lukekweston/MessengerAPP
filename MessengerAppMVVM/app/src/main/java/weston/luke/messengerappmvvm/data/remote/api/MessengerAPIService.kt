@@ -76,4 +76,8 @@ class MessengerAPIService(private val context: Context){
     suspend fun getLowResImageForMessage(messageId: Int): ImageResponse{
         return api.getLowResImageForMessage(messageId)
     }
+
+    suspend fun getFullResImageForMessage(messageId: Int): ImageResponse{
+        return api.getFullResImageForMessage(messageId)
+    }
 }

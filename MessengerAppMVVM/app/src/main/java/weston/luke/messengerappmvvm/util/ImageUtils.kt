@@ -51,7 +51,8 @@ object ImageUtils {
         context: Context,
         base64ImageString: String,
         fullRes: Boolean = true,
-        imageId: String? = null
+        imageId: String? = null,
+        overrideFileName: String? = null
     ): String {
         // Decode base64 string to Bitmap
         val decodedBytes = Base64.decode(base64ImageString, Base64.DEFAULT)
@@ -60,7 +61,7 @@ object ImageUtils {
         // Get directory for the app's private file storage
         var fileDir = context.filesDir
 
-        var fileName = LocalDateTime.now().toString() + "_image"
+        var fileName = overrideFileName ?: (LocalDateTime.now().toString() + "_image")
         if (imageId != null) {
             fileName += "_$imageId"
         }

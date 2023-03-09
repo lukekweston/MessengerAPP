@@ -13,13 +13,17 @@ import weston.luke.messengerappmvvm.databinding.ItemMessageSentBinding
 import weston.luke.messengerappmvvm.util.Utils
 import java.io.File
 
-class MessagesAdapter(private val context: Context) :
+class MessagesAdapter(
+    private val context: Context,
+    private val onLowResImageClick: (Int, String, String) -> Unit
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_TYPE_SENT = 1
     private val VIEW_TYPE_RECEIVED = 2
 
     private val displayMetrics = context.resources.displayMetrics
+
     //Set max imageDimension to 2/3s of the screen width
     private val maxImageDimension = ((displayMetrics.widthPixels / 3) * 2)
 
@@ -37,10 +41,10 @@ class MessagesAdapter(private val context: Context) :
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == VIEW_TYPE_SENT) {
             val mBinding = ItemMessageSentBinding.inflate(inflater, parent, false)
-            SentMessageHolder(mBinding, context, maxImageDimension)
+            SentMessageHolder(mBinding, context, maxImageDimension, onLowResImageClick)
         } else {
             val mBinding = ItemMessageRecievedBinding.inflate(inflater, parent, false)
-            ReceivedMessageHolder(mBinding, context, maxImageDimension)
+            ReceivedMessageHolder(mBinding, context, maxImageDimension, onLowResImageClick)
         }
     }
 
@@ -83,7 +87,8 @@ class MessagesAdapter(private val context: Context) :
 class ReceivedMessageHolder(
     private val mBinding: ItemMessageRecievedBinding,
     private val context: Context,
-    private val maxImageDimension: Int
+    private val maxImageDimension: Int,
+    private val onLowResImageClick: (Int, String, String) -> Unit
 ) :
     RecyclerView.ViewHolder(mBinding.root) {
     fun bind(message: Message, showDate: Boolean) {
@@ -101,6 +106,15 @@ class ReceivedMessageHolder(
                 .fitCenter()
                 .apply(RequestOptions().override(maxImageDimension, maxImageDimension))
                 .into(mBinding.ivImageReceived)
+
+            //Add an onclick listener to the card to go to the fullResImageActivity
+            mBinding.cardGchatMessageOther.setOnClickListener {
+                onLowResImageClick(
+                    message.messageId!!,
+                    message.userName,
+                    message.timeSent.toString() + "_" + message.messageId.toString()
+                )
+            }
         } else {
             Glide.with(context).clear(mBinding.ivImageReceived)
         }
@@ -124,7 +138,8 @@ class ReceivedMessageHolder(
 class SentMessageHolder(
     private val mBinding: ItemMessageSentBinding,
     private val context: Context,
-    private val maxImageDimension: Int
+    private val maxImageDimension: Int,
+    private val onLowResImageClick: (Int, String, String) -> Unit
 ) :
     RecyclerView.ViewHolder(mBinding.root) {
     fun bind(message: Message, showDate: Boolean) {
@@ -137,7 +152,7 @@ class SentMessageHolder(
 
         if (message.pathToSavedLowRes != null || message.pathToSavedHighRes != null) {
             //Prioritise drawing low res over high res
-            val imagePath =  message.pathToSavedLowRes ?: message.pathToSavedHighRes
+            val imagePath = message.pathToSavedLowRes ?: message.pathToSavedHighRes
             val file = File(imagePath!!)
 
             //Assign and crop image with Glide
@@ -146,6 +161,16 @@ class SentMessageHolder(
                 .fitCenter()
                 .apply(RequestOptions().override(maxImageDimension, maxImageDimension))
                 .into(mBinding.ivImageSent)
+
+            //Add an onclick listener to the card to go to the fullResImageActivity
+            mBinding.cardGchatMessageMe.setOnClickListener {
+                onLowResImageClick(
+                    message.messageId!!,
+                    message.userName,
+                    message.timeSent.toString() + "_" + message.messageId.toString()
+                )
+            }
+
         } else {
             Glide.with(context).clear(mBinding.ivImageSent)
         }

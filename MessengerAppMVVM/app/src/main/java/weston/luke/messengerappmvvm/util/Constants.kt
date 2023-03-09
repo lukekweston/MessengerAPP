@@ -11,8 +11,12 @@ object Constants {
     const val API_ENDPOINT_GET_ALL_MESSAGES_FOR_USER = "allMessagesForUser/"
     const val API_ENDPOINT_SEND_MESSAGE = "sendMessage"
     const val API_ENDPOINT_GET_LOW_RES_IMAGE_FOR_MESSAGE = "getLowResImageForMessage/"
-
+    const val API_ENDPOINT_GET_FULL_RES_IMAGE_FOR_MESSAGE = "getFullResImageForMessage/"
 
 
     const val CONVERSATION_ID = "conversationId"
+
+    const val IMAGE_ID = "imageId"
+    const val IMAGE_BY_USERNAME ="imageByName"
+    const val IMAGE_FILE_NAME ="imageFileName"
 }

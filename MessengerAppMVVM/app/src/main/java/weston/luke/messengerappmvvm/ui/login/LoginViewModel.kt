@@ -83,7 +83,7 @@ class LoginViewModel(
             conversationRepository,
             messageRepository,
             loggedInUser!!.userId,
-            loggedInUser!!.userName,
+            loggedInUser.userName,
             context
         )
     }

@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/navigation_conversation"
-        android:icon="@drawable/ic_conversations"
+        android:icon="@drawable/ic_banta_conversation_icon"
         android:title="@string/conversations" />
 
     <item

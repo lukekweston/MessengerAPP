@@ -3,31 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="weston.luke.messengerappmvvm">
 
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
-
     <application
         android:name=".application.MessengerAppMVVMApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_banta_conversation_icon"
+        android:importantForAutofill="no"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:importantForAutofill="no"
-
         android:theme="@style/Theme.MessengerAppMVVM"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.messages.FullSizeImageActivity"
+            android:exported="false"
+            android:label="@string/title_activity_full_size_image"
+            android:theme="@style/Theme.MessengerAppMVVM.NoActionBar" />
         <activity
             android:name=".ui.messages.MessagesActivity"
             android:exported="false"
             android:label="@string/title_activity_messages"
             android:theme="@style/Theme.MessengerAppMVVM.NoActionBar"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.conversationsAndFriends.ConversationAndFriendsActivity"
             android:exported="false"
@@ -44,28 +44,33 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".data.remote.notifications.PushNotificationService"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="weston.luke.messengerappmvvm.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
+
+        <service
+            android:name=".data.remote.notifications.PushNotificationService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
-
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>

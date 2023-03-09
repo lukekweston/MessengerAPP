@@ -130,7 +130,7 @@ class PushNotificationService : FirebaseMessagingService() {
             //Todo make the title/message dynamic on if the notification is coming from a group conversation or not
             .setContentTitle(message.userName)
             .setContentText(if (message.status == MessageStatus.IMAGE_READY_TO_GET_FROM_API) "Sent you an image!" else message.message)
-            .setSmallIcon(R.drawable.ic_conversations)
+            .setSmallIcon(R.drawable.ic_banta_conversation_icon)
             .setContentIntent(pendingIntent)
             //Goes away when user taps on it
             .setAutoCancel(true)

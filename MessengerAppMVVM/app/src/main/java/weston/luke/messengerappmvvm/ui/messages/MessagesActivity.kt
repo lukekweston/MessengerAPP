@@ -30,6 +30,9 @@ import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityMessagesBinding
 import weston.luke.messengerappmvvm.util.*
+import weston.luke.messengerappmvvm.util.Constants.IMAGE_BY_USERNAME
+import weston.luke.messengerappmvvm.util.Constants.IMAGE_FILE_NAME
+import weston.luke.messengerappmvvm.util.Constants.IMAGE_ID
 import java.io.File
 import java.io.FileInputStream
 
@@ -81,10 +84,15 @@ class MessagesActivity : AppCompatActivity() {
         }
 
 
-
-
         //Set up the displaying messages recyclerview
-        messagesAdapter = MessagesAdapter(this)
+        messagesAdapter = MessagesAdapter(this) { messageId, imageByUser, imageFileName ->
+            val intent = Intent(this, FullSizeImageActivity::class.java)
+            intent.putExtra(IMAGE_ID, messageId)
+            intent.putExtra(IMAGE_BY_USERNAME, imageByUser)
+            intent.putExtra(IMAGE_FILE_NAME, imageFileName)
+            startActivity(intent)
+            this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
         messagesRecyclerView = mBinding.recyclerviewMessages
         messagesRecyclerView.layoutManager = LinearLayoutManager(this)
         messagesRecyclerView.adapter = messagesAdapter
@@ -200,12 +208,14 @@ class MessagesActivity : AppCompatActivity() {
                                     "weston.luke.messengerappmvvm.fileprovider",
                                     photoFile
                                 )
+                                //Todo future change this to activity result contract
                                 val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                                 startActivityForResult(takePictureIntent, CAMERA)
                             }
                             //Otherwise open the gallery
                             else {
+                                //Todo future change this to activity result contract
                                 val intent = Intent(
                                     Intent.ACTION_PICK,
                                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -228,7 +238,7 @@ class MessagesActivity : AppCompatActivity() {
     }
 
 
-
+    //Todo future change this to activity result contract
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 

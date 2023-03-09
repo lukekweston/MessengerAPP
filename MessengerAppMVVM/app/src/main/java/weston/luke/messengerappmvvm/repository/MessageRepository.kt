@@ -139,6 +139,10 @@ class MessageRepository(
 
     }
 
+    suspend fun getFullResImage(messageId: Int) : String{
+        return apiService.getFullResImageForMessage(messageId).imageBase64
+    }
+
     //Gets the image from the server and saves it back on the image, updates status flag
     suspend fun getLowResImageForMessage(message: Message, context: Context) {
         //MessageId will have to have a value to get here - but still do null check

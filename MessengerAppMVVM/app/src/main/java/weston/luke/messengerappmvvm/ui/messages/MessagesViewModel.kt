@@ -83,9 +83,6 @@ class MessagesViewModel(
                 userName = loggedInUser.value!!.userName,
                 status = MessageStatus.CREATED,
                 timeSent = LocalDateTime.now(),
-                //Todo save the image in a file and put a link to the file
-                //Dont save the full res image in the database,
-                //imageLowRes = imageBase64String
             )
             val success = messageRepository.sendMessageText(message)
 
@@ -95,6 +92,8 @@ class MessagesViewModel(
         }
     }
 
+    //Best practise would be to store the uri for the images in the database rather than the path
+    // todo change this in the future
     fun sendImage(
         conversationId: Int,
         imageBase64StringFullRes: String,
@@ -111,7 +110,7 @@ class MessagesViewModel(
                 timeSent = LocalDateTime.now(),
                 pathToSavedHighRes = fullResImagePath
             )
-            //Save the inital data, this will update the ui
+            //Save the initial data, this will update the ui
             val messageId = messageRepository.insertMessage(message)
 
             //Compress the image and then save it and return the directory
@@ -131,12 +130,8 @@ class MessagesViewModel(
                 imageBase64StringFullRes,
                 imageBase64StringLowRes
             )
-
         }
-
     }
-
-
 }
 
 class MessagesViewModelFactory(
