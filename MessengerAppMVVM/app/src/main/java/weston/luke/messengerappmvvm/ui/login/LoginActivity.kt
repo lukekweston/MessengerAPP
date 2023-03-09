@@ -22,7 +22,8 @@ class LoginActivity : AppCompatActivity() {
         LoginViewModelFactory(
             (application as MessengerAppMVVMApplication).loggedInUserRepository,
             (application as MessengerAppMVVMApplication).conversationRepository,
-            (application as MessengerAppMVVMApplication).messageRepository
+            (application as MessengerAppMVVMApplication).messageRepository,
+            (application as MessengerAppMVVMApplication).parentRepository
         )
     }
 

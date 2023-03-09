@@ -6,39 +6,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
-import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
-import weston.luke.messengerappmvvm.repository.MessageRepository
-import weston.luke.messengerappmvvm.util.Utils
+import weston.luke.messengerappmvvm.repository.ParentRepository
 
 class ConversationAndFriendsViewModel(
     private val loggedInUserRepository: LoggedInUserRepository,
-    private val conversationRepository: ConversationRepository,
-    private val messageRepository: MessageRepository
+    private val parentRepository: ParentRepository
 ) : ViewModel() {
 
     val loggedInUser: LiveData<LoggedInUser?> = loggedInUserRepository.loggedInUser.asLiveData()
 
 
     suspend fun logoutUser(context: Context) {
-
-        Utils.logoutUser(
-            loggedInUserRepository,
-            conversationRepository,
-            messageRepository,
-            loggedInUser.value!!.userId,
-            loggedInUser.value!!.userName,
-            context
-        )
-
+        parentRepository.logoutUser(context)
     }
 }
 
 
 class ConversationAndFriendsViewModelFactory(
     private val loggedInUserRepository: LoggedInUserRepository,
-    private val conversationRepository: ConversationRepository,
-    private val messageRepository: MessageRepository
+    private val parentRepository: ParentRepository
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -46,8 +33,7 @@ class ConversationAndFriendsViewModelFactory(
             @Suppress("UNCHECKED_CAST")
             return ConversationAndFriendsViewModel(
                 loggedInUserRepository,
-                conversationRepository,
-                messageRepository
+                parentRepository
             ) as T
 
         }

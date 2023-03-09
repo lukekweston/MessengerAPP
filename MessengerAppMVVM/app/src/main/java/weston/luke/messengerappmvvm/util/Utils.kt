@@ -4,10 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import weston.luke.messengerappmvvm.data.remote.request.LogoutRequest
-import weston.luke.messengerappmvvm.repository.ConversationRepository
-import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
-import weston.luke.messengerappmvvm.repository.MessageRepository
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -37,35 +33,4 @@ object Utils {
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
 
-
-
-    //Accessible everywhere method to logout the currently logged in user
-    suspend fun logoutUser(
-        loggedInUserRepository: LoggedInUserRepository,
-        conversationRepository: ConversationRepository,
-        messageRepository: MessageRepository,
-        loggedInUserId: Int,
-        loggedInUserName: String,
-        context: Context
-    ) {
-
-
-        //Delete the users fcm_reg_token from server
-        loggedInUserRepository.logoutUser(
-            LogoutRequest(
-                userId = loggedInUserId,
-                userName = loggedInUserName
-            )
-        )
-
-        //Delete users data locally
-        loggedInUserRepository.deleteUserFromLocalDatabase()
-        conversationRepository.deleteConversationData()
-        messageRepository.deleteAllMessages()
-        ImageUtils.deleteAllHiddenLowResImages(context)
-
-
-
-
-    }
 }

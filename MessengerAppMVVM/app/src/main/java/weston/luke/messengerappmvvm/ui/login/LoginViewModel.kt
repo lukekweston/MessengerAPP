@@ -9,12 +9,13 @@ import weston.luke.messengerappmvvm.data.remote.request.fcmRegTokenCheckRequest
 import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
 import weston.luke.messengerappmvvm.repository.MessageRepository
-import weston.luke.messengerappmvvm.util.Utils
+import weston.luke.messengerappmvvm.repository.ParentRepository
 
 class LoginViewModel(
     private val loginRepository: LoggedInUserRepository,
     private val conversationRepository: ConversationRepository,
-    private val messageRepository: MessageRepository
+    private val messageRepository: MessageRepository,
+    private val parentRepository: ParentRepository
 ) : ViewModel() {
 
     //Bool to keep track for if the user has/is successfully logged in and should go to the next screen
@@ -65,7 +66,7 @@ class LoginViewModel(
                 if (!success.success) {
                     _toastMessage.value =
                         "The user has logged in from another device, and as a result, they have been logged out of this device."
-                    logoutUser(context)
+                    parentRepository.logoutUser(context)
                 }
                 //Else user is already logged in, continue to next screen
                 else {
@@ -76,17 +77,6 @@ class LoginViewModel(
 
     }
 
-    suspend fun logoutUser(context: Context) {
-        val loggedInUser = loginRepository.awaitGettingLoggedInUser()
-        Utils.logoutUser(
-            loginRepository,
-            conversationRepository,
-            messageRepository,
-            loggedInUser!!.userId,
-            loggedInUser.userName,
-            context
-        )
-    }
 
 
     fun loginUser(userName: String, password: String, context: Context) {
@@ -130,13 +120,14 @@ class LoginViewModel(
 class LoginViewModelFactory(
     private val loginRepository: LoggedInUserRepository,
     private val conversationRepository: ConversationRepository,
-    private val messageRepository: MessageRepository
+    private val messageRepository: MessageRepository,
+    private val parentRepository: ParentRepository
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LoginViewModel(loginRepository, conversationRepository, messageRepository) as T
+            return LoginViewModel(loginRepository, conversationRepository, messageRepository, parentRepository) as T
 
         }
         throw IllegalArgumentException("Unknown ViewModel Class")
