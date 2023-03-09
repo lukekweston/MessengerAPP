@@ -9,12 +9,10 @@ import weston.luke.messengerappmvvm.databinding.ItemConversationBinding
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.data.ConversationWithLatestMessage
 import weston.luke.messengerappmvvm.util.Utils
 
-class ConversationsAdapter : RecyclerView.Adapter<ConversationViewHolder>() {
+class ConversationsAdapter(private val onConversationClick: (Int) -> Unit) : RecyclerView.Adapter<ConversationViewHolder>() {
 
     private var conversationsAndMessages: List<ConversationWithLatestMessage> = emptyList()
-    private var onItemClickListener: onCardClickListener? = null
-
-
+    
     //Todo - future order the conversations by when the conversation was created
     //This will happen when the user can start conversations
     fun setData(latestMessages: List<LatestMessage?>, conversations: List<Conversation>, ) {
@@ -49,21 +47,11 @@ class ConversationsAdapter : RecyclerView.Adapter<ConversationViewHolder>() {
         val conversationsAndMessage = conversationsAndMessages[position]
         holder.bind(conversationsAndMessage)
         holder.itemView.setOnClickListener {
-            onItemClickListener?.onCardClick(
-                conversationsAndMessage.conversationId
-            )
+            onConversationClick(conversationsAndMessage.conversationId)
         }
     }
 
     override fun getItemCount() = conversationsAndMessages.size
-
-    fun setOnItemClickListener(listener: onCardClickListener) {
-        onItemClickListener = listener
-    }
-
-    interface onCardClickListener {
-        fun onCardClick(conversationId: Int)
-    }
 
 }
 

@@ -18,7 +18,7 @@ import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.Conver
 import weston.luke.messengerappmvvm.ui.messages.MessagesActivity
 import weston.luke.messengerappmvvm.util.Constants
 
-class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener {
+class ConversationFragment: Fragment(){
 
     private lateinit var mBinding: FragmentConversationsBinding
     private lateinit var conversationsAdapter: ConversationsAdapter
@@ -37,12 +37,18 @@ class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener
         savedInstanceState: Bundle?
     ): View {
         mBinding = FragmentConversationsBinding.inflate(inflater, container, false)
-        conversationsAdapter = ConversationsAdapter()
+
+        conversationsAdapter = ConversationsAdapter(){ conversationId ->
+            val intent = Intent(requireActivity(), MessagesActivity::class.java)
+            intent.putExtra(Constants.CONVERSATION_ID, conversationId)
+            startActivity(intent)
+            activity?.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+
         conversationRecyclerView = mBinding.recyclerViewConversations
         conversationRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         conversationRecyclerView.adapter = conversationsAdapter
 
-        conversationsAdapter.setOnItemClickListener(this)
 
         mViewModel.loadConversations()
 
@@ -53,15 +59,6 @@ class ConversationFragment: Fragment(), ConversationsAdapter.onCardClickListener
 
 
         return mBinding.root
-    }
-
-
-
-    override fun onCardClick(conversationId: Int) {
-        val intent = Intent(requireActivity(), MessagesActivity::class.java)
-        intent.putExtra(Constants.CONVERSATION_ID, conversationId)
-        startActivity(intent)
-        activity?.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
 }
