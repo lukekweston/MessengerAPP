@@ -15,7 +15,7 @@ import weston.luke.messengerappmvvm.databinding.FragmentConversationsBinding
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationsAdapter
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModel
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModelFactory
-import weston.luke.messengerappmvvm.ui.messages.MessagesActivity
+import weston.luke.messengerappmvvm.ui.messages.activity.MessagesActivity
 import weston.luke.messengerappmvvm.util.Constants
 
 class ConversationFragment: Fragment(){

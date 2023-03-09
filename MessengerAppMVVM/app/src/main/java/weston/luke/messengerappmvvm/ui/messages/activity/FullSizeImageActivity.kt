@@ -1,4 +1,4 @@
-package weston.luke.messengerappmvvm.ui.messages
+package weston.luke.messengerappmvvm.ui.messages.activity
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -9,6 +9,8 @@ import com.bumptech.glide.Glide
 import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityFullSizeImageBinding
+import weston.luke.messengerappmvvm.ui.messages.FullSizeImageViewModel
+import weston.luke.messengerappmvvm.ui.messages.FullSizeImageViewModelFactory
 import weston.luke.messengerappmvvm.util.Constants.IMAGE_BY_USERNAME
 import weston.luke.messengerappmvvm.util.Constants.IMAGE_FILE_NAME
 import weston.luke.messengerappmvvm.util.Constants.IMAGE_ID

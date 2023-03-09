@@ -17,7 +17,7 @@ import weston.luke.messengerappmvvm.data.database.MessengerAppMVVMDatabase
 import weston.luke.messengerappmvvm.data.database.dao.MessageDao
 import weston.luke.messengerappmvvm.data.database.entities.Message
 import weston.luke.messengerappmvvm.data.database.entities.MessageStatus
-import weston.luke.messengerappmvvm.ui.messages.MessagesActivity
+import weston.luke.messengerappmvvm.ui.messages.activity.MessagesActivity
 import weston.luke.messengerappmvvm.util.Constants
 import java.time.LocalDateTime
 

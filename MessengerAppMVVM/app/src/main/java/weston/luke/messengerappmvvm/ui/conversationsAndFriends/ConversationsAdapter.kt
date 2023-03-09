@@ -12,7 +12,7 @@ import weston.luke.messengerappmvvm.util.Utils
 class ConversationsAdapter(private val onConversationClick: (Int) -> Unit) : RecyclerView.Adapter<ConversationViewHolder>() {
 
     private var conversationsAndMessages: List<ConversationWithLatestMessage> = emptyList()
-    
+
     //Todo - future order the conversations by when the conversation was created
     //This will happen when the user can start conversations
     fun setData(latestMessages: List<LatestMessage?>, conversations: List<Conversation>, ) {

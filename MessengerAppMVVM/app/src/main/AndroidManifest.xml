@@ -18,12 +18,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ui.messages.FullSizeImageActivity"
+            android:name=".ui.messages.activity.FullSizeImageActivity"
             android:exported="false"
             android:label="@string/title_activity_full_size_image"
             android:theme="@style/Theme.MessengerAppMVVM.NoActionBar" />
         <activity
-            android:name=".ui.messages.MessagesActivity"
+            android:name=".ui.messages.activity.MessagesActivity"
             android:exported="false"
             android:label="@string/title_activity_messages"
             android:theme="@style/Theme.MessengerAppMVVM.NoActionBar"

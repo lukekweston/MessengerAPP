@@ -1,4 +1,4 @@
-package weston.luke.messengerappmvvm.ui.messages
+package weston.luke.messengerappmvvm.ui.messages.activity
 
 import android.Manifest
 import android.app.AlertDialog
@@ -29,6 +29,9 @@ import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityMessagesBinding
+import weston.luke.messengerappmvvm.ui.messages.MessagesAdapter
+import weston.luke.messengerappmvvm.ui.messages.MessagesViewModel
+import weston.luke.messengerappmvvm.ui.messages.MessagesViewModelFactory
 import weston.luke.messengerappmvvm.util.*
 import weston.luke.messengerappmvvm.util.Constants.IMAGE_BY_USERNAME
 import weston.luke.messengerappmvvm.util.Constants.IMAGE_FILE_NAME
