@@ -10,4 +10,15 @@
     <color name="greyLikeText">#FF808080</color>
     <color name="offWhite">#FFF5F5F5</color>
     <color name="itemBackgroundColor">#FFEEF1F6</color>
+
+
+    <!--    https://www.materialpalette.com/teal/grey-->
+    <color name="DARKPRIMARYCOLOR">#00796B</color>
+    <color name="LIGHTPRIMARYCOLOR">#B2DFDB</color>
+    <color name="PRIMARYCOLOR">#009688</color>
+    <color name="TEXTANDICONS">#FFFFFF</color>
+    <color name="ACCENTCOLOR">#9E9E9E</color>
+    <color name="PRIMARYTEXT">#212121</color>
+    <color name="SECONDARYTEXT">#757575</color>
+    <color name="DIVIDERCOLOR">#BDBDBD</color>
 </resources>

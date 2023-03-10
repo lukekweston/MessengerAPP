@@ -33,7 +33,7 @@ interface MessageDao {
     )
     fun getLatestMessagesForEachConversation(): Flow<List<LatestMessage?>>
 
-    @Query("select * from message where conversationId = :conversationId")
+    @Query("select * from message where conversationId = :conversationId order by messageId asc")
     fun getAllMessagesForAConversation(conversationId: Int): Flow<List<Message>>
 
 }
