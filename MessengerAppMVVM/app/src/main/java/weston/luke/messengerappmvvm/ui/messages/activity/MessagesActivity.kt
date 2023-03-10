@@ -118,6 +118,7 @@ class MessagesActivity : AppCompatActivity() {
                 messagesRecyclerView.scrollToPosition(messages.size - 1)
             }
 
+
             //Automatically dismiss the notification based on the message id of the last message added
             //to the room database
             //Need to do a null check on messageId incase there is an undelivered message
@@ -201,6 +202,7 @@ class MessagesActivity : AppCompatActivity() {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
                     report?.let {
                         if (report.areAllPermissionsGranted()) {
+
                             //Open camera if camera is true
                             if (isCamera) {
                                 // Create a temp file to store the photo

@@ -15,7 +15,10 @@
     <!--    https://www.materialpalette.com/teal/grey-->
     <color name="DARKPRIMARYCOLOR">#00796B</color>
     <color name="LIGHTPRIMARYCOLOR">#B2DFDB</color>
-    <color name="PRIMARYCOLOR">#009688</color>
+
+<!--    Updated to match background of logo teal-->
+<!--    <color name="PRIMARYCOLOR">#009688</color>-->
+    <color name="PRIMARYCOLOR">#00796B</color>
     <color name="TEXTANDICONS">#FFFFFF</color>
     <color name="ACCENTCOLOR">#9E9E9E</color>
     <color name="PRIMARYTEXT">#212121</color>
