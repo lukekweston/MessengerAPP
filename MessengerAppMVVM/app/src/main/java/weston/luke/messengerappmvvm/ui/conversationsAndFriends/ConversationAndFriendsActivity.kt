@@ -25,6 +25,7 @@ import weston.luke.messengerappmvvm.databinding.ActivityConversationAndFriendsBi
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationAndFriendsViewModel
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationAndFriendsViewModelFactory
 import weston.luke.messengerappmvvm.ui.login.LoginActivity
+import weston.luke.messengerappmvvm.util.Constants
 import weston.luke.messengerappmvvm.util.toast
 
 class ConversationAndFriendsActivity : AppCompatActivity() {
@@ -44,12 +45,16 @@ class ConversationAndFriendsActivity : AppCompatActivity() {
         mBinding = ActivityConversationAndFriendsBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-
-
         setSupportActionBar(mBinding.toolbar)
 
         mNavController = findNavController(R.id.nav_host_conversation_and_friends)
 
+
+        //If we are starting this activity from a friends notification - go to friends fragment
+        val gotoFriendsFragment = intent.getBooleanExtra(Constants.GOTO_FRIEND_FRAGMENT, false)
+        if(gotoFriendsFragment){
+            mNavController.navigate(R.id.navigation_friends)
+        }
 
         val appBarConfiguration = AppBarConfiguration(
             setOf(

@@ -1,7 +1,6 @@
 package weston.luke.messengerappmvvm.data.remote.api
 
 import android.content.Context
-import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -9,13 +8,9 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Headers
-import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
-import weston.luke.messengerappmvvm.data.remote.request.LogoutRequest
-import weston.luke.messengerappmvvm.data.remote.request.MessageSendRequest
-import weston.luke.messengerappmvvm.data.remote.request.fcmRegTokenCheckRequest
+import weston.luke.messengerappmvvm.data.remote.request.*
 import weston.luke.messengerappmvvm.data.remote.response.*
 import weston.luke.messengerappmvvm.util.Constants
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 
@@ -23,9 +18,9 @@ class MessengerAPIService(context: Context) {
 
 
     //Add a 100mb cache - good for getting full res images
-    val cacheDirectory = File(context.cacheDir, "http-cache")
-    val cacheSize = 100 * 1024 * 1024 // 100 MiB
-    val cache = Cache(cacheDirectory, cacheSize.toLong())
+//    val cacheDirectory = File(context.cacheDir, "http-cache")
+//    val cacheSize = 100 * 1024 * 1024 // 100 MiB
+//    val cache = Cache(cacheDirectory, cacheSize.toLong())
 
     private val logging = HttpLoggingInterceptor()
     private val httpClient = OkHttpClient.Builder().apply {
@@ -38,7 +33,7 @@ class MessengerAPIService(context: Context) {
             }
         )
                 //Add the cache and the network Interceptor
-            .cache(cache)
+            // .cache(cache)
             .addNetworkInterceptor(CacheInterceptor())
 
         logging.level = HttpLoggingInterceptor.Level.BODY
@@ -61,6 +56,10 @@ class MessengerAPIService(context: Context) {
         .client(httpClient)
         .build()
         .create(MessengerAPIInterface::class.java)
+
+
+    //todo Cache headers are not needed,
+    //Work out how to just cache the large image endpoint
 
     @Headers("Cache-Control: no-cache")
     suspend fun loginUser(loginRequest: LoginRequest): LoginResponse {
@@ -97,8 +96,27 @@ class MessengerAPIService(context: Context) {
         return api.getLowResImageForMessage(messageId)
     }
 
-//    this is the only endpoint that isnt cached, as these full sized images are not saved (only saved when the user does a save)
+
+
+    @Headers("Cache-Control: no-cache")
+    suspend fun sendFriendRequest(friendRequest: NewFriendRequest): FriendRequestResponse{
+        return api.sendFriendRequest(friendRequest)
+    }
+
+    @Headers("Cache-Control: no-cache")
+    suspend fun getAllFriendsForUser(userId: Int): List<FriendResponse>{
+        return api.getAllFriendsForUser(userId)
+    }
+
+    @Headers("Cache-Control: no-cache")
+    suspend fun updateFriendshipStatus(updateFriendshipStatusRequest: UpdateFriendshipStatusRequest): SuccessResponse{
+        return api.updateFriendshipStatus(updateFriendshipStatusRequest)
+    }
+
+    //    this is the only endpoint that isnt cached, as these full sized images are not saved (only saved when the user does a save)
     suspend fun getFullResImageForMessage(messageId: Int): ImageResponse {
         return api.getFullResImageForMessage(messageId)
     }
+
+
 }

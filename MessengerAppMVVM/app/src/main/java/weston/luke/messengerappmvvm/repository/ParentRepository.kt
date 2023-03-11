@@ -7,7 +7,8 @@ import weston.luke.messengerappmvvm.util.ImageUtils
 class ParentRepository(
     private val conversationRepository: ConversationRepository,
     private val loggedInUserRepository: LoggedInUserRepository,
-    private val messageRepository: MessageRepository
+    private val messageRepository: MessageRepository,
+    private val friendRepository: FriendRepository
 ) {
 
 
@@ -18,7 +19,7 @@ class ParentRepository(
         loggedInUserRepository.logoutUser(
             LogoutRequest(
                 userId = loggedInUser!!.userId,
-                userName = loggedInUser.userName
+                username = loggedInUser.userName
             )
         )
 
@@ -26,7 +27,17 @@ class ParentRepository(
         loggedInUserRepository.deleteUserFromLocalDatabase()
         conversationRepository.deleteConversationData()
         messageRepository.deleteAllMessages()
+        friendRepository.deleteAllFriends()
         ImageUtils.deleteAllHiddenLowResImages(context)
+    }
+
+    suspend fun getAllDataForUser(userId: Int, context: Context){
+        //Get the conversation data
+        conversationRepository.getAllConversationsForUser(userId)
+        //Get all the messages for the user
+        messageRepository.getAllMessagesForUser(userId, context)
+        //Get all the friends for a logged in user
+        friendRepository.getAllFriendsForUser(userId)
     }
 
 

@@ -4,10 +4,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
-import weston.luke.messengerappmvvm.data.remote.request.LogoutRequest
-import weston.luke.messengerappmvvm.data.remote.request.MessageSendRequest
-import weston.luke.messengerappmvvm.data.remote.request.fcmRegTokenCheckRequest
+import weston.luke.messengerappmvvm.data.remote.request.*
 import weston.luke.messengerappmvvm.data.remote.response.*
 import weston.luke.messengerappmvvm.util.Constants
 
@@ -55,6 +52,23 @@ interface MessengerAPIInterface {
     suspend fun getFullResImageForMessage(
         @Path("messageId") messageId: Int
     ): ImageResponse
+
+    @POST(Constants.API_ENDPOINT_SEND_FRIEND_REQUEST)
+    suspend fun sendFriendRequest(
+        @Body friendRequest: NewFriendRequest
+    ): FriendRequestResponse
+
+
+    @GET(Constants.API_ENDPOINT_GET_ALL_FRIENDS + "{userId}")
+    suspend fun getAllFriendsForUser(
+        @Path("userId") userId: Int
+    ): List<FriendResponse>
+
+    @POST(Constants.API_ENDPOINT_UPDATE_FRIENDSHIP_STATUS)
+    suspend fun updateFriendshipStatus(
+        @Body updateFriendshipStatusRequest: UpdateFriendshipStatusRequest
+    ): SuccessResponse
+
 
 
 }

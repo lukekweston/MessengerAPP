@@ -13,10 +13,16 @@ object Constants {
     const val API_ENDPOINT_GET_LOW_RES_IMAGE_FOR_MESSAGE = "getLowResImageForMessage/"
     const val API_ENDPOINT_GET_FULL_RES_IMAGE_FOR_MESSAGE = "getFullResImageForMessage/"
 
+    const val API_ENDPOINT_GET_ALL_FRIENDS = "findAllFriendsForUser/"
+    const val API_ENDPOINT_SEND_FRIEND_REQUEST = "sendFriendRequest"
+    const val API_ENDPOINT_UPDATE_FRIENDSHIP_STATUS = "updateFriendStatus"
+
 
     const val CONVERSATION_ID = "conversationId"
 
     const val IMAGE_ID = "imageId"
-    const val IMAGE_BY_USERNAME ="imageByName"
-    const val IMAGE_FILE_NAME ="imageFileName"
+    const val IMAGE_BY_USERNAME = "imageByName"
+    const val IMAGE_FILE_NAME = "imageFileName"
+
+    const val GOTO_FRIEND_FRAGMENT = "friendFragment"
 }

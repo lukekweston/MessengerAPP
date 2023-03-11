@@ -21,9 +21,7 @@ class LoginActivity : AppCompatActivity() {
     private val mLoginViewModel: LoginViewModel by viewModels {
         LoginViewModelFactory(
             (application as MessengerAppMVVMApplication).loggedInUserRepository,
-            (application as MessengerAppMVVMApplication).conversationRepository,
-            (application as MessengerAppMVVMApplication).messageRepository,
-            (application as MessengerAppMVVMApplication).parentRepository
+            (application as MessengerAppMVVMApplication).parentRepository,
         )
     }
 

@@ -6,16 +6,12 @@ import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
 import weston.luke.messengerappmvvm.data.remote.request.fcmRegTokenCheckRequest
-import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
-import weston.luke.messengerappmvvm.repository.MessageRepository
 import weston.luke.messengerappmvvm.repository.ParentRepository
 
 class LoginViewModel(
     private val loginRepository: LoggedInUserRepository,
-    private val conversationRepository: ConversationRepository,
-    private val messageRepository: MessageRepository,
-    private val parentRepository: ParentRepository
+    private val parentRepository: ParentRepository,
 ) : ViewModel() {
 
     //Bool to keep track for if the user has/is successfully logged in and should go to the next screen
@@ -91,10 +87,7 @@ class LoginViewModel(
                     )
                 )
                 if (loginResponse.SuccessfulLogin) {
-                    //Get the conversation data
-                    conversationRepository.getAllConversationsForUser(loginResponse.UserId)
-                    //Get all the messages for the user
-                    messageRepository.getAllMessagesForUser(loginResponse.UserId, context)
+                    parentRepository.getAllDataForUser(loginResponse.UserId, context)
                     //Set the logged in user to this in the database
                     loginRepository.loginUser(
                         LoggedInUser(
@@ -119,15 +112,13 @@ class LoginViewModel(
 
 class LoginViewModelFactory(
     private val loginRepository: LoggedInUserRepository,
-    private val conversationRepository: ConversationRepository,
-    private val messageRepository: MessageRepository,
     private val parentRepository: ParentRepository
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LoginViewModel(loginRepository, conversationRepository, messageRepository, parentRepository) as T
+            return LoginViewModel(loginRepository, parentRepository) as T
 
         }
         throw IllegalArgumentException("Unknown ViewModel Class")

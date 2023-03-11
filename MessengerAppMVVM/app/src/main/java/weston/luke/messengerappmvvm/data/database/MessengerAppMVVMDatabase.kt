@@ -6,22 +6,24 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import weston.luke.messengerappmvvm.data.database.dao.ConversationDao
+import weston.luke.messengerappmvvm.data.database.dao.FriendDao
 import weston.luke.messengerappmvvm.data.database.dao.LoggedInUserDao
 import weston.luke.messengerappmvvm.data.database.dao.MessageDao
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
+import weston.luke.messengerappmvvm.data.database.entities.Friend
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.database.entities.Message
 
 //Version will need to be bumped after every database change
 //Keeps track of migrations
-@Database(entities = [LoggedInUser::class, Conversation::class, Message::class], version = 11)
+@Database(entities = [LoggedInUser::class, Conversation::class, Message::class, Friend::class], version = 14)
 @TypeConverters(Converters::class)
 abstract class MessengerAppMVVMDatabase : RoomDatabase() {
 
     abstract fun loggedInUserDao(): LoggedInUserDao
     abstract fun conversationDao(): ConversationDao
     abstract fun messageDao(): MessageDao
-
+    abstract fun friendDao(): FriendDao
 
     companion object {
         //Needs to be a singleton as there should only ever be one instance max of the database
