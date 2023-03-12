@@ -81,8 +81,8 @@ class FriendRepository(
                 friendshipStatus = friendshipStatus.toString()
             )
         )
-        //If FriendshipStatus.Declined - delete the friendship relationship
-        if (response.success && friendshipStatus == FriendshipStatus.Declined) {
+        //If FriendshipStatus.Declined or friendshipStatus == FriendshipStatus.Removed- delete the friendship relationship
+        if (response.success && (friendshipStatus == FriendshipStatus.Declined || friendshipStatus == FriendshipStatus.Removed)) {
             friendDao.delete(Friend(friendId, friendUsername, friendshipStatus))
         }
         //Else update friendship status

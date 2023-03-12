@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import weston.luke.messengerappmvvm.data.database.entities.Friend
 import weston.luke.messengerappmvvm.databinding.ItemFriendBinding
 
-class FriendAdapter(private val onFriendMessageClick: (Int) -> Unit) :
+class FriendAdapter(
+    private val onFriendMessageClick: (Int) -> Unit,
+    private val onRemoveFriend: (Int, String) -> Unit
+) :
     RecyclerView.Adapter<FriendViewHolder>() {
 
     private var friends: List<Friend> = emptyList()
@@ -19,7 +22,7 @@ class FriendAdapter(private val onFriendMessageClick: (Int) -> Unit) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val mBinding = ItemFriendBinding.inflate(inflater, parent, false)
-        return FriendViewHolder(mBinding, onFriendMessageClick)
+        return FriendViewHolder(mBinding, onFriendMessageClick, onRemoveFriend)
     }
 
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
@@ -34,11 +37,16 @@ class FriendAdapter(private val onFriendMessageClick: (Int) -> Unit) :
 class FriendViewHolder(
     private val mBinding: ItemFriendBinding,
     private val onFriendMessageClick: (Int) -> Unit,
+    private val onRemoveFriend: (Int, String) -> Unit
 ) :
     RecyclerView.ViewHolder(mBinding.root) {
     fun bind(friend: Friend) {
         mBinding.tvFriendName.text = friend.friendUserName
         mBinding.buttonMessage.setOnClickListener { onFriendMessageClick(friend.friendId) }
+        mBinding.cardView.setOnLongClickListener {
+            onRemoveFriend(friend.friendId, friend.friendUserName)
+            true
+        }
 
     }
 }

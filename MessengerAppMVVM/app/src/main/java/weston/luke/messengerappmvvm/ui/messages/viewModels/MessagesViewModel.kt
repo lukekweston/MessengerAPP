@@ -94,6 +94,7 @@ class MessagesViewModel(
 
     //Best practise would be to store the uri for the images in the database rather than the path
     // todo change this in the future
+    //Todo update this in the future to use a coroutine that lasts longer than the viewmodel life time
     fun sendImage(
         conversationId: Int,
         imageBase64StringFullRes: String,

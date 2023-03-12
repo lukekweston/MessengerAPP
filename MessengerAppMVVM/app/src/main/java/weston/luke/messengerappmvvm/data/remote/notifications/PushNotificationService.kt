@@ -195,10 +195,10 @@ class PushNotificationService : FirebaseMessagingService() {
             friendStatus = FriendshipStatus.valueOf(data.get("status")!!.toString())
         )
 
-        //If friendship status is declined, then remove the relationship in the local database
-        if (FriendshipStatus.valueOf(
-                data.get("status")!!.toString()
-            ) == FriendshipStatus.Declined
+
+
+        //If friendship status is declined or removed, then remove the relationship in the local database
+        if (friend.friendStatus == FriendshipStatus.Declined || friend.friendStatus == FriendshipStatus.Removed
         ) {
             deleteFriend(friend)
         } else {

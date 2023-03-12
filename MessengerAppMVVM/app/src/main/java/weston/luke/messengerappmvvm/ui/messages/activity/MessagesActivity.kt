@@ -25,6 +25,7 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
@@ -206,7 +207,7 @@ class MessagesActivity : AppCompatActivity() {
                             //Open camera if camera is true
                             if (isCamera) {
                                 // Create a temp file to store the photo
-                                photoFile = File.createTempFile("temp", ".jpg",)
+                                photoFile = File.createTempFile("temp", ".jpg")
                                 // Get the URI of the photo file
                                 photoURI = FileProvider.getUriForFile(
                                     this@MessagesActivity,
@@ -265,34 +266,31 @@ class MessagesActivity : AppCompatActivity() {
                     fullResImagePath,
                     this
                 )
-            }
-            catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("Error displaying image from camera", e.message.toString())
                 e.printStackTrace()
                 toast("Error displaying image from camera")
             }
-        }
-        else if (requestCode == GALLERY) {
+
+        } else if (requestCode == GALLERY) {
             try {
                 data?.let {
                     val selectedPhotoUri = data.data
                     val imageAsString = ImageUtils.uriToBase64(selectedPhotoUri!!, this)
                     //Simple check for path from uri will work as we are just looking for an image
                     val imagePath = selectedPhotoUri.path
-                    if(imageAsString != null && imagePath != null) {
+                    if (imageAsString != null && imagePath != null) {
                         mMessageViewModel.sendImage(
                             conversationId,
                             imageAsString,
                             imagePath,
                             this
                         )
-                    }
-                    else{
+                    } else {
                         throw NullPointerException("path is null or image is null")
                     }
                 }
-            }
-            catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e("Error loading image from gallery", e.message.toString())
                 e.printStackTrace()
                 toast("Error loading image from gallery")
@@ -300,7 +298,7 @@ class MessagesActivity : AppCompatActivity() {
         }
     }
 
-//    Display an alert saying that the user doesn't have the required permissions set
+    //    Display an alert saying that the user doesn't have the required permissions set
 //    On positive click go to phone settings to be able to enable permissions - dont need to dismiss this as going to a new display, settings
 //    Negative click - dismiss
     private fun showRationalDialogForPermissions() {

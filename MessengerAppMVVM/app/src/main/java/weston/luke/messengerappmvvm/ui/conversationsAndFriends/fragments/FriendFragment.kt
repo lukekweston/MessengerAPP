@@ -19,11 +19,12 @@ import weston.luke.messengerappmvvm.ui.conversationsAndFriends.FriendAdapter
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.FriendRequestAdapter
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.FriendsViewModel
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.FriendsViewModelFactory
+import weston.luke.messengerappmvvm.util.Utils
 import weston.luke.messengerappmvvm.util.hide
 import weston.luke.messengerappmvvm.util.show
 import weston.luke.messengerappmvvm.util.toast
 
-class FriendFragment: Fragment() {
+class FriendFragment : Fragment() {
 
     private lateinit var mBinding: FragmentFriendsBinding
     private lateinit var dialogAddFriend: AlertDialog
@@ -50,13 +51,13 @@ class FriendFragment: Fragment() {
         mViewModel.loadData()
 
         mBinding = FragmentFriendsBinding.inflate(inflater, container, false)
-        mBinding.fab.setOnClickListener{
+        mBinding.fab.setOnClickListener {
             dialogAddFriend.show()
         }
 
 
         //Observe the latest messages and the conversations for changes
-        mViewModel.friendRequestResponse.observe(viewLifecycleOwner){ friendResponse ->
+        mViewModel.friendRequestResponse.observe(viewLifecycleOwner) { friendResponse ->
             if (friendResponse == null) {
                 requireActivity().toast("Server error sending friend request, please try again")
             } else if (friendResponse!!.friendRequestSent) {
@@ -73,42 +74,51 @@ class FriendFragment: Fragment() {
 
 
 
-        friendRequestAdapter = FriendRequestAdapter(onFriendRequestAcceptClick = { friendId, friendUsername ->
-            mViewModel.acceptFriendRequest(friendId, friendUsername)
-        },
-        onFriendRequestDeclineClick = {friendId, friendUsername ->
-            mViewModel.declineFriendRequest(friendId, friendUsername)
-        })
+        friendRequestAdapter =
+            FriendRequestAdapter(onFriendRequestAcceptClick = { friendId, friendUsername ->
+                mViewModel.acceptFriendRequest(friendId, friendUsername)
+            },
+                onFriendRequestDeclineClick = { friendId, friendUsername ->
+                    mViewModel.declineFriendRequest(friendId, friendUsername)
+                })
 
         friendRequestRecyclerView = mBinding.recyclerViewFriendRequests
         friendRequestRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         friendRequestRecyclerView.adapter = friendRequestAdapter
 
-        mViewModel.friendRequests.observe(viewLifecycleOwner){friendRequests ->
-            if(friendRequests.isNotEmpty()){
+        mViewModel.friendRequests.observe(viewLifecycleOwner) { friendRequests ->
+            if (friendRequests.isNotEmpty()) {
                 mBinding.tvFriendRequests.show()
                 friendRequestAdapter.setData(friendRequests)
-            }
-            else{
+            } else {
                 mBinding.tvFriendRequests.hide()
                 friendRequestAdapter.setData(listOf())
             }
         }
 
-        friendAdapter = FriendAdapter(onFriendMessageClick = {friendUserId ->
+        friendAdapter = FriendAdapter(onFriendMessageClick = { friendUserId ->
             requireContext().toast("Start or continue conversation with friend")
+        }, onRemoveFriend = { friendUserId, friendUsername ->
+            Utils.createAlertDialog(
+                context = requireContext(),
+                title = "Remove friend",
+                message = "Are you sure you would like to remove $friendUsername",
+                positiveText = "Remove",
+                onPositiveClick = { mViewModel.removeFriend(friendUserId, friendUsername)},
+                onNegativeClick = {}
+            ).show()
+
         })
 
         friendRecyclerView = mBinding.recyclerViewFriend
         friendRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         friendRecyclerView.adapter = friendAdapter
 
-        mViewModel.friends.observe(viewLifecycleOwner){friends ->
-            if(friends.isNotEmpty()){
+        mViewModel.friends.observe(viewLifecycleOwner) { friends ->
+            if (friends.isNotEmpty()) {
                 mBinding.tvFriends.show()
                 friendAdapter.setData(friends)
-            }
-            else{
+            } else {
                 mBinding.tvFriends.hide()
                 friendAdapter.setData(listOf())
             }
@@ -119,7 +129,7 @@ class FriendFragment: Fragment() {
     }
 
 
-    private fun createDialogAddFriend(){
+    private fun createDialogAddFriend() {
         val binding = DialogAddFriendBinding.inflate(layoutInflater)
         val usernameOrEmail = binding.etInputAccount
 
@@ -143,7 +153,8 @@ class FriendFragment: Fragment() {
                 val currentFocus = dialogAddFriend.currentFocus
                 if (currentFocus != null) {
                     // Get the InputMethodManager service
-                    val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val inputMethodManager =
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     // Hide the keyboard
                     inputMethodManager.hideSoftInputFromWindow(currentFocus.windowToken, 0)
                 }

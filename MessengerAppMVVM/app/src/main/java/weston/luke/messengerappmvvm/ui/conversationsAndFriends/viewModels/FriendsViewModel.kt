@@ -68,7 +68,7 @@ class FriendsViewModel(
         }
     }
 
-    //
+
     fun declineFriendRequest(friendId: Int, friendUsername: String) {
         viewModelScope.launch {
             friendRepository.updateFriendshipStatus(
@@ -76,6 +76,17 @@ class FriendsViewModel(
                 friendId,
                 friendUsername,
                 FriendshipStatus.Declined
+            )
+        }
+    }
+
+    fun removeFriend(friendId: Int, friendUsername: String) {
+        viewModelScope.launch {
+            friendRepository.updateFriendshipStatus(
+                loggedInUser.value!!.userId,
+                friendId,
+                friendUsername,
+                FriendshipStatus.Removed
             )
         }
     }
