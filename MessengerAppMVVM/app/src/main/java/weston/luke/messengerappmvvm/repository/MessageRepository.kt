@@ -3,6 +3,7 @@ package weston.luke.messengerappmvvm.repository
 import android.content.Context
 import android.util.Log
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import kotlinx.coroutines.flow.Flow
 import weston.luke.messengerappmvvm.data.database.dao.MessageDao
 import weston.luke.messengerappmvvm.data.database.dto.LatestMessage
@@ -17,6 +18,13 @@ class MessageRepository(
     private val messageDao: MessageDao,
     private val apiService: MessengerAPIService
 ) {
+
+    private val latestMessagesForEachConversation: LiveData<List<LatestMessage?>> = messageDao.getLatestMessagesForEachConversation()
+
+
+    fun getLatestMessagesForEachConversation(): LiveData<List<LatestMessage?>> {
+        return latestMessagesForEachConversation
+    }
 
     @WorkerThread
     suspend fun insertMessages(messages: List<Message>) {
@@ -38,11 +46,6 @@ class MessageRepository(
         messageDao.deleteAllMessages()
     }
 
-
-    @WorkerThread
-    fun getLastestMessagesForEachConversation(): Flow<List<LatestMessage?>> {
-        return messageDao.getLatestMessagesForEachConversation()
-    }
 
     @WorkerThread
     fun getAllMessagesForAConversation(conversationId: Int): Flow<List<Message>> {

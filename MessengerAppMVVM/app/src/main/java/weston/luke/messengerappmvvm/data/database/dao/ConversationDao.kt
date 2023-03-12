@@ -1,5 +1,6 @@
 package weston.luke.messengerappmvvm.data.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
@@ -8,7 +9,7 @@ import weston.luke.messengerappmvvm.data.database.entities.Conversation
 interface ConversationDao {
 
     @Query("select * from conversation")
-    fun getAllConversations() : Flow<List<Conversation>>
+    fun getAllConversations() : LiveData<List<Conversation>>
 
     @Query("select * from conversation where conversationId = :conversationId")
     fun getConversation(conversationId :Int) : Flow<Conversation>

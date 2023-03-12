@@ -1,6 +1,7 @@
 package weston.luke.messengerappmvvm.repository
 
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import kotlinx.coroutines.flow.Flow
 import weston.luke.messengerappmvvm.data.database.dao.ConversationDao
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
@@ -9,8 +10,11 @@ import java.time.LocalDateTime
 
 class ConversationRepository(private val conversationDao: ConversationDao, private val apiService: MessengerAPIService) {
 
-   val conversations: Flow<List<Conversation>> = conversationDao.getAllConversations()
+   private val conversations: LiveData<List<Conversation>> = conversationDao.getAllConversations()
 
+    fun getConversations(): LiveData<List<Conversation>>{
+        return conversations
+    }
 
     @WorkerThread
     fun getConversation(conversationId: Int): Flow<Conversation>{

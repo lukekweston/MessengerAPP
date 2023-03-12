@@ -38,7 +38,7 @@ class ConversationFragment: Fragment(){
     ): View {
         mBinding = FragmentConversationsBinding.inflate(inflater, container, false)
 
-        conversationsAdapter = ConversationsAdapter(){ conversationId ->
+        conversationsAdapter = ConversationsAdapter{ conversationId ->
             val intent = Intent(requireActivity(), MessagesActivity::class.java)
             intent.putExtra(Constants.CONVERSATION_ID, conversationId)
             startActivity(intent)
@@ -49,8 +49,6 @@ class ConversationFragment: Fragment(){
         conversationRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         conversationRecyclerView.adapter = conversationsAdapter
 
-
-        mViewModel.loadConversations()
 
         //Observe the latest messages and the conversations for changes
         mViewModel.latestMessagesAndConversations.observe(viewLifecycleOwner){ (latestMessages, conversations) ->

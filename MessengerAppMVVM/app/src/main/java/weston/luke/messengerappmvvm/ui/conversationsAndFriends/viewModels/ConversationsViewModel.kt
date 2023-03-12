@@ -1,31 +1,20 @@
 package weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels
 
-import androidx.lifecycle.*
-import kotlinx.coroutines.launch
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import weston.luke.messengerappmvvm.data.database.dto.LatestMessage
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.MessageRepository
-import weston.luke.messengerappmvvm.ui.conversationsAndFriends.data.ConversationWithLatestMessage
 
 class ConversationsViewModel(
-    private val conversationRepository: ConversationRepository,
-    private val messageRepository: MessageRepository
+    conversationRepository: ConversationRepository,
+    messageRepository: MessageRepository
 ) : ViewModel() {
 
-
-
-    private val _conversationsWithLatestMessages =
-        MutableLiveData<List<ConversationWithLatestMessage>>()
-
-    val conversationsWithLatestMessages: LiveData<List<ConversationWithLatestMessage>>
-        get() = _conversationsWithLatestMessages
-
-
-
-
-    private val latestMessages = MutableLiveData<List<LatestMessage?>>()
-    private val conversations = MutableLiveData<List<Conversation>>()
+    private val latestMessages = messageRepository.getLatestMessagesForEachConversation()
+    private val conversations = conversationRepository.getConversations()
 
     val latestMessagesAndConversations = MediatorLiveData<Pair<List<LatestMessage?>, List<Conversation>>>()
 
@@ -37,25 +26,6 @@ class ConversationsViewModel(
             latestMessagesAndConversations.value = Pair(latestMessages.value.orEmpty(), it)
         }
     }
-
-
-
-    fun loadConversations() {
-
-        viewModelScope.launch {
-            messageRepository.getLastestMessagesForEachConversation().collect{
-                latestMessages.value = it
-            }
-        }
-
-        viewModelScope.launch {
-            conversationRepository.conversations.collect { convo ->
-                conversations.value = convo
-            }
-        }
-    }
-
-
 }
 
 
