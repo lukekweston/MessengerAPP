@@ -124,7 +124,7 @@ class PushNotificationService : FirebaseMessagingService() {
         }
     }
 
-    private fun insertFriend(friend: Friend){
+    private fun insertFriend(friend: Friend) {
         GlobalScope.launch {
             friendDao.insertFriend(
                 friend
@@ -132,9 +132,16 @@ class PushNotificationService : FirebaseMessagingService() {
         }
     }
 
+    private fun deleteFriend(friend: Friend) {
+        GlobalScope.launch {
+            friendDao.delete(
+                friend
+            )
+        }
+    }
 
-    fun friendRequest(data: MutableMap<String, String>) {
 
+    private fun friendRequest(data: MutableMap<String, String>) {
 
         insertFriend(
             Friend(
@@ -182,52 +189,60 @@ class PushNotificationService : FirebaseMessagingService() {
 
     fun friendStatusUpdate(data: MutableMap<String, String>) {
 
-        //Update the existing friend item
-        insertFriend(
-            Friend(
-                friendId = data.get("fromUserId")!!.toInt(),
-                friendUserName = data.get("fromUserName")!!,
-                friendStatus = FriendshipStatus.valueOf(data.get("status")!!.toString())
-            )
+        val friend = Friend(
+            friendId = data.get("fromUserId")!!.toInt(),
+            friendUserName = data.get("fromUserName")!!,
+            friendStatus = FriendshipStatus.valueOf(data.get("status")!!.toString())
         )
 
+        //If friendship status is declined, then remove the relationship in the local database
+        if (FriendshipStatus.valueOf(
+                data.get("status")!!.toString()
+            ) == FriendshipStatus.Declined
+        ) {
+            deleteFriend(friend)
+        } else {
+            //Update the existing friend item
+            insertFriend(friend)
+        }
+
         //Only notifiy the user on friend acceptance
-        if(FriendshipStatus.valueOf(data.get("status")!!.toString()) == FriendshipStatus.Friends) {
+        if (FriendshipStatus.valueOf(data.get("status")!!.toString()) == FriendshipStatus.Friends) {
 
-                //Create the notification
-                val CHANNEL_ID: String = "NEW_FRIEND_REQUEST_NOTIFICATION"
+            //Create the notification
+            val CHANNEL_ID: String = "NEW_FRIEND_REQUEST_NOTIFICATION"
 
-                var channel: NotificationChannel = NotificationChannel(
-                    CHANNEL_ID, "New friend accept notification",
-                    NotificationManager.IMPORTANCE_HIGH
-                )
+            var channel: NotificationChannel = NotificationChannel(
+                CHANNEL_ID, "New friend accept notification",
+                NotificationManager.IMPORTANCE_HIGH
+            )
 
-                //Intent for the notification to go to
-                val intent = Intent(applicationContext, ConversationAndFriendsActivity::class.java)
-                intent.putExtra(Constants.GOTO_FRIEND_FRAGMENT, true)
-                val pendingIntent =
-                    PendingIntent.getActivity(applicationContext, 0, intent, FLAG_IMMUTABLE)
+            //Intent for the notification to go to
+            val intent = Intent(applicationContext, ConversationAndFriendsActivity::class.java)
+            intent.putExtra(Constants.GOTO_FRIEND_FRAGMENT, true)
+            val pendingIntent =
+                PendingIntent.getActivity(applicationContext, 0, intent, FLAG_IMMUTABLE)
 
-                getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
-                val notification: Notification.Builder = Notification.Builder(
-                    this, CHANNEL_ID
-                )
+            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+            val notification: Notification.Builder = Notification.Builder(
+                this, CHANNEL_ID
+            )
 
-                    .setContentTitle(data.get("title"))
-                    .setContentText(data.get("body"))
-                    .setSmallIcon(R.drawable.ic_banta_conversation_icon)
-                    .setContentIntent(pendingIntent)
-                    //Goes away when user taps on it
-                    .setAutoCancel(true)
+                .setContentTitle(data.get("title"))
+                .setContentText(data.get("body"))
+                .setSmallIcon(R.drawable.ic_banta_conversation_icon)
+                .setContentIntent(pendingIntent)
+                //Goes away when user taps on it
+                .setAutoCancel(true)
 
 
-                lastNotificationId += 1
-                //Build and display the notification
-                NotificationManagerCompat.from(this)
-                    //Set the notification id to be unique
-                    //This is so it can be found and dismissed in the activity
-                    .notify(lastNotificationId, notification.build())
-            }
+            lastNotificationId += 1
+            //Build and display the notification
+            NotificationManagerCompat.from(this)
+                //Set the notification id to be unique
+                //This is so it can be found and dismissed in the activity
+                .notify(lastNotificationId, notification.build())
+        }
 
     }
 }

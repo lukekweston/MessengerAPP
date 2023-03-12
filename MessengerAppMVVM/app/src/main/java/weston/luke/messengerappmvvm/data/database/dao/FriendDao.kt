@@ -1,10 +1,7 @@
 package weston.luke.messengerappmvvm.data.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import weston.luke.messengerappmvvm.data.database.entities.Friend
 import weston.luke.messengerappmvvm.data.database.entities.FriendshipStatus
 
@@ -16,6 +13,9 @@ interface FriendDao {
 
     @Query("Select * from friend where friendStatus = :friendshipStatus")
     fun getFriendsByFriendshipStatus(friendshipStatus: FriendshipStatus): LiveData<List<Friend>>
+
+    @Delete
+    suspend fun delete(friend: Friend)
 
     @Query("Delete from friend")
     suspend fun deleteAllFriends()

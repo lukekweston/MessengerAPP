@@ -77,7 +77,7 @@ class FriendFragment: Fragment() {
             mViewModel.acceptFriendRequest(friendId, friendUsername)
         },
         onFriendRequestDeclineClick = {friendId, friendUsername ->
-            requireContext().toast("Friend Removed")
+            mViewModel.declineFriendRequest(friendId, friendUsername)
         })
 
         friendRequestRecyclerView = mBinding.recyclerViewFriendRequests

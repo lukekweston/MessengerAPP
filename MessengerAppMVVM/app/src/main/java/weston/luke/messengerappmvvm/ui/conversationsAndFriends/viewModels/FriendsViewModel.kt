@@ -68,6 +68,18 @@ class FriendsViewModel(
         }
     }
 
+    //
+    fun declineFriendRequest(friendId: Int, friendUsername: String) {
+        viewModelScope.launch {
+            friendRepository.updateFriendshipStatus(
+                loggedInUser.value!!.userId,
+                friendId,
+                friendUsername,
+                FriendshipStatus.Declined
+            )
+        }
+    }
+
 }
 
 //Todo build this with the correct repository
