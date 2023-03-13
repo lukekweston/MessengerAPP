@@ -48,13 +48,13 @@ Todo features
 4) Delete messages
 5) Seen status on messages
 6) Add a profile screen - show the profile image on the messages screen
-7) Dark mode
+7) <s>Dark mode</s> 14/3/22 - theme doesn't look great though
 8) Make the home page go to a maintence screen if the server is not accessible 
 
 Todo code fixes
 
 1) <s>Move checking if the user is logged in to the splash screen - avoid login screen if they are logged in</s> completed 13/03/23
-2) Cache the full res image - dont cache other api querys (no others need to be cached)
+2) <s>Cache the full res image - dont cache other api querys (no others need to be cached)</s> 14/3/22 
 3) Fix the conversation title in the new message notification
 4) Increase offline support - not sent messages display differently, messages are sent once the phone has a connection again
 5) Change the Messages activity to open the camera/gallery using sctivity reult contract
