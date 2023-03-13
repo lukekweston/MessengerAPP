@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="FabTheme" parent="Theme.MaterialComponents.Light">
+        <item name="colorControlHighlight">@color/black</item>
+    </style>
+</resources>

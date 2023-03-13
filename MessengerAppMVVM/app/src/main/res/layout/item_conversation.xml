@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/_16sdp"
         app:cardElevation="@dimen/_4sdp"
-        app:cardBackgroundColor="@color/itemBackgroundColor"
+        app:cardBackgroundColor="?attr/colorButtonNormal"
         app:cardUseCompatPadding="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -77,7 +77,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
 
-                app:tint="@color/greyLikeText" />
+                app:tint="?attr/colorSecondary" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

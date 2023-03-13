@@ -26,4 +26,5 @@
     <string name="delete">Delete</string>
     <string name="message">Message</string>
     <string name="remove">Remove</string>
+    <string name="dark_mode">Dark mode</string>
 </resources>
