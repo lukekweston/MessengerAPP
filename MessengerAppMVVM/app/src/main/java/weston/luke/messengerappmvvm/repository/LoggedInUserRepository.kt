@@ -1,8 +1,8 @@
 package weston.luke.messengerappmvvm.repository
 
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import com.google.firebase.messaging.FirebaseMessaging
-import kotlinx.coroutines.flow.Flow
 import weston.luke.messengerappmvvm.data.database.dao.LoggedInUserDao
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
@@ -16,6 +16,8 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class LoggedInUserRepository(private val loggedInUserDao: LoggedInUserDao, private val apiService: MessengerAPIService) {
+
+
     @WorkerThread
     suspend fun loginUser(user: LoggedInUser){
         loggedInUserDao.loginUser(user)
@@ -26,12 +28,7 @@ class LoggedInUserRepository(private val loggedInUserDao: LoggedInUserDao, priva
         loggedInUserDao.logoutUser()
     }
 
-    val loggedInUser: Flow<LoggedInUser?> = loggedInUserDao.getLoggedInUser()
-
-    @WorkerThread
-    suspend fun awaitGettingLoggedInUser() : LoggedInUser? {
-        return loggedInUserDao.awaitGetLoggedInUser()
-    }
+    val loggedInUser: LiveData<LoggedInUser?> = loggedInUserDao.getLoggedInUser()
 
     suspend fun loginUser(loginRequest: LoginRequest): LoginResponse {
         return apiService.loginUser(loginRequest)

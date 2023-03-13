@@ -47,7 +47,6 @@ class FriendFragment : Fragment() {
     ): View {
 
         createDialogAddFriend()
-        mViewModel.loadData()
 
         mBinding = FragmentFriendsBinding.inflate(inflater, container, false)
         mBinding.fab.setOnClickListener {

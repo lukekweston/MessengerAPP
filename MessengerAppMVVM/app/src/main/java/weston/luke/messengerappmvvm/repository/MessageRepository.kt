@@ -77,9 +77,6 @@ class MessageRepository(
 
     }
 
-    //Todo, fix the send by saving the photo in a file on the phone before sending it
-    //Image is too large for the database (it is bad practise to put large files in a database)
-    //Also low res photos should be saved outside of the database
     suspend fun sendMessageText(message: Message): Boolean {
         return try {
             val messageId = insertMessage(message)

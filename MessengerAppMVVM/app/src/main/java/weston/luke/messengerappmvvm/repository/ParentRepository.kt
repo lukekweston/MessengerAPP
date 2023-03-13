@@ -11,15 +11,16 @@ class ParentRepository(
     private val friendRepository: FriendRepository
 ) {
 
+    val loggedInUser = loggedInUserRepository.loggedInUser
+
 
     suspend fun logoutUser(context: Context) {
-        val loggedInUser = loggedInUserRepository.awaitGettingLoggedInUser()
 
         //Delete the users fcm_reg_token from server
         loggedInUserRepository.logoutUser(
             LogoutRequest(
-                userId = loggedInUser!!.userId,
-                username = loggedInUser.userName
+                userId = loggedInUser.value!!.userId,
+                username = loggedInUser.value!!.userName
             )
         )
 

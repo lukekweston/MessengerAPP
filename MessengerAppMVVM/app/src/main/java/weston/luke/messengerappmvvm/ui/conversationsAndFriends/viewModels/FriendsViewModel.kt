@@ -5,7 +5,6 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.Friend
 import weston.luke.messengerappmvvm.data.database.entities.FriendshipStatus
-import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.remote.response.FriendRequestResponse
 import weston.luke.messengerappmvvm.repository.FriendRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
@@ -16,7 +15,7 @@ class FriendsViewModel(
 ) : ViewModel() {
 
 
-    val loggedInUser = MutableLiveData<LoggedInUser>()
+    val loggedInUser = loggedInUserRepository.loggedInUser
 
     val friendRequests = friendRepository.getAllFriendRequests()
     val friends = friendRepository.getAllFriends()
@@ -27,13 +26,6 @@ class FriendsViewModel(
     val friendRequestResponse: LiveData<FriendRequestResponse>
         get() = _friendRequestResponse
 
-    fun loadData() {
-        viewModelScope.launch {
-            loggedInUserRepository.loggedInUser.collect {
-                loggedInUser.value = it
-            }
-        }
-    }
 
     fun sendFriendRequest(usernameOrEmail: String): FriendRequestResponse? {
         var friendRequestResponse: FriendRequestResponse? = null
@@ -94,7 +86,7 @@ class FriendsViewModel(
 
 }
 
-//Todo build this with the correct repository
+
 class FriendsViewModelFactory(
     private val friendsRepository: FriendRepository,
     private val loggedInUserRepository: LoggedInUserRepository

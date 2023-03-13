@@ -185,7 +185,7 @@ class SentMessageHolder(
             if (message.timeUpdated != null) "Updated: $timestamp" else timestamp
 
 
-        //TODO update this so that messages that are only created display differently
+        //TODO update this so that messages that are only created display differently - offline support
 //        if (message.status == SentStatus.CREATED) {
 //            mBinding.textGchatDateMe.text = "Not sent"
 //            mBinding.cardGchatMessageMe.setCardBackgroundColor(

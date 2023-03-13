@@ -5,7 +5,6 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
-import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.database.entities.Message
 import weston.luke.messengerappmvvm.data.database.entities.MessageStatus
 import weston.luke.messengerappmvvm.repository.ConversationRepository
@@ -27,19 +26,18 @@ class MessagesViewModel(
     val toastMessageToDisplay: LiveData<String>
         get() = _toastMessageToDisplay
 
-    val loggedInUser = MutableLiveData<LoggedInUser>()
+    val loggedInUser = loggedInUserRepository.loggedInUser
 
     val messages = MutableLiveData<List<Message>>()
-    private val loggedInUserId = MutableLiveData<Int>()
 
     val loggedInUserAndMessages = MediatorLiveData<Pair<List<Message>, Int>>()
 
     init {
         loggedInUserAndMessages.addSource(messages) {
-            loggedInUserAndMessages.value = Pair(it, loggedInUserId.value ?: 0)
+            loggedInUserAndMessages.value = Pair(it, loggedInUser.value?.userId ?: 0)
         }
-        loggedInUserAndMessages.addSource(loggedInUserId) {
-            loggedInUserAndMessages.value = Pair(messages.value.orEmpty(), it)
+        loggedInUserAndMessages.addSource(loggedInUser) {
+            loggedInUserAndMessages.value = Pair(messages.value.orEmpty(), it!!.userId)
         }
     }
 
@@ -49,12 +47,6 @@ class MessagesViewModel(
     }
 
     fun loadData(conversationId: Int, context: Context) {
-        viewModelScope.launch {
-            loggedInUserRepository.loggedInUser.collect {
-                loggedInUser.value = it
-                loggedInUserId.value = it?.userId
-            }
-        }
         viewModelScope.launch {
             messageRepository.getAllMessagesForAConversation(conversationId).collect { it ->
                 val messagesThatNeedImageDownloaded =

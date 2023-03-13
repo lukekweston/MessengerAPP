@@ -59,7 +59,7 @@ class FriendRepository(
                     friendId = it.friendUserId,
                     friendUserName = it.friendUserName,
                     friendStatus = FriendshipStatus.valueOf(it.friendshipStatus),
-                    privateConversationId = null
+                    privateConversationId = it.conversationId
                 )
             }
         )

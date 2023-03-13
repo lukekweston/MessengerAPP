@@ -29,3 +29,39 @@ unless the user opens a photo, then another call will be made to get the large p
 
 APP
 10) Gets the response, and then updates the local message saved in the database
+
+
+
+Todo - documentation
+
+1) Document - overall how the app works
+2) Libraies used
+3) How a message is sent
+4) How photos are sent
+5) How friends work
+
+Todo features
+
+1) Oauth2
+2) Dagger hilt dependency injection
+3) allow the users to start group conversations, these group conversation the user should be able to add their friends to it
+4) Delete messages
+5) Seen status on messages
+6) Add a profile screen - show the profile image on the messages screen
+7) Dark mode
+8) Make the home page go to a maintence screen if the server is not accessible 
+
+Todo code fixes
+
+1) <s>Move checking if the user is logged in to the splash screen - avoid login screen if they are logged in</s> completed 13/03/23
+2) Cache the full res image - dont cache other api querys (no others need to be cached)
+3) Fix the conversation title in the new message notification
+4) Increase offline support - not sent messages display differently, messages are sent once the phone has a connection again
+5) Change the Messages activity to open the camera/gallery using sctivity reult contract
+6) See if it is possible to return the image as a base 64 string from the camera, not a byte array
+7) Change the low res images to have their uri saved in the database not their paht
+8) Changes MessagesViewModel.sendImage to use a coroutine that lasts longer than the lifetime of the view model - large image may take a while to compress and send
+(also check if this is a problem, is the view model destroyed on activity close)
+9) API - delete all the images where the message is no longer in the database
+10) Allow for blocking a person
+11) Look into why messages are not appearing in order straight after a message is sent

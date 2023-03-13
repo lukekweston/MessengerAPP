@@ -31,16 +31,13 @@ class LoginActivity : AppCompatActivity() {
         mBinding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        //Check for logged in user
-        mLoginViewModel.checkUserAlreadyLoggedIn(this)
-
         mBinding.loadingSpinner.hide()
         mBinding.content.show()
 
 
         //When the user has logged in successfully go to the next screen
-        mLoginViewModel.successfullyCheckedUserIsLoggedIn.observe(this) { success ->
-            if (success == true) {
+        mLoginViewModel.loggedInUser.observe(this) { loggedInUser ->
+            if (loggedInUser != null) {
                 mBinding.loadingSpinner.show()
                 mBinding.content.hide()
                 endLoginScreenAndGoToConversations()
