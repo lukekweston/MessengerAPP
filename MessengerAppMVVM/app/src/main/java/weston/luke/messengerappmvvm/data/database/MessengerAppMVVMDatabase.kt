@@ -16,7 +16,7 @@ import weston.luke.messengerappmvvm.data.database.entities.Message
 
 //Version will need to be bumped after every database change
 //Keeps track of migrations
-@Database(entities = [LoggedInUser::class, Conversation::class, Message::class, Friend::class], version = 14)
+@Database(entities = [LoggedInUser::class, Conversation::class, Message::class, Friend::class], version = 15)
 @TypeConverters(Converters::class)
 abstract class MessengerAppMVVMDatabase : RoomDatabase() {
 

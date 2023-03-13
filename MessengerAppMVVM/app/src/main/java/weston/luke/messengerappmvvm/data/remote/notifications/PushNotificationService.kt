@@ -13,12 +13,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.data.database.MessengerAppMVVMDatabase
+import weston.luke.messengerappmvvm.data.database.dao.ConversationDao
 import weston.luke.messengerappmvvm.data.database.dao.FriendDao
 import weston.luke.messengerappmvvm.data.database.dao.MessageDao
-import weston.luke.messengerappmvvm.data.database.entities.Friend
-import weston.luke.messengerappmvvm.data.database.entities.FriendshipStatus
-import weston.luke.messengerappmvvm.data.database.entities.Message
-import weston.luke.messengerappmvvm.data.database.entities.MessageStatus
+import weston.luke.messengerappmvvm.data.database.entities.*
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationAndFriendsActivity
 import weston.luke.messengerappmvvm.ui.messages.activity.MessagesActivity
 import weston.luke.messengerappmvvm.util.Constants
@@ -29,6 +27,7 @@ class PushNotificationService : FirebaseMessagingService() {
 
     lateinit var messageDao: MessageDao
     lateinit var friendDao: FriendDao
+    lateinit var conversationDao: ConversationDao
 
     //Value to keep track of the notification id
     companion object {
@@ -41,6 +40,7 @@ class PushNotificationService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         messageDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).messageDao()
         friendDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).friendDao()
+        conversationDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).conversationDao()
 
         when (message.data.get("type")) {
             "newMessage" -> newMessageReceived(
@@ -132,10 +132,24 @@ class PushNotificationService : FirebaseMessagingService() {
         }
     }
 
-    private fun deleteFriend(friend: Friend) {
+    private fun updateFriendStatusAndConversationIdByFriendId(friendshipStatus: FriendshipStatus, conversationId: Int?, friendId: Int) {
         GlobalScope.launch {
-            friendDao.delete(
-                friend
+            friendDao.updateFriendStatusForFriendId(friendshipStatus,conversationId, friendId)
+        }
+    }
+
+    private fun insertConversation(conversation: Conversation) {
+        GlobalScope.launch {
+            conversationDao.insertConversation(
+                conversation
+            )
+        }
+    }
+
+    private fun deleteByFriendId(friendId: Int) {
+        GlobalScope.launch {
+            friendDao.deleteByFriendId(
+                friendId
             )
         }
     }
@@ -143,13 +157,20 @@ class PushNotificationService : FirebaseMessagingService() {
 
     private fun friendRequest(data: MutableMap<String, String>) {
 
+        val conversationId = if(data.get("conversationId") != null) data.get("conversationId")!!.toInt() else null
+
         insertFriend(
             Friend(
                 friendId = data.get("fromUserId")!!.toInt(),
                 friendUserName = data.get("fromUserName")!!,
-                friendStatus = FriendshipStatus.Pending
+                friendStatus = FriendshipStatus.Pending,
+                privateConversationId = conversationId
             )
         )
+
+        if(conversationId != null){
+            insertConversation(Conversation(conversationId, data.get("conversationName")!!, null))
+        }
 
 
         //Create the notification
@@ -189,24 +210,25 @@ class PushNotificationService : FirebaseMessagingService() {
 
     fun friendStatusUpdate(data: MutableMap<String, String>) {
 
-        val friend = Friend(
-            friendId = data.get("fromUserId")!!.toInt(),
-            friendUserName = data.get("fromUserName")!!,
-            friendStatus = FriendshipStatus.valueOf(data.get("status")!!.toString())
-        )
+        val friendId = data.get("fromUserId")!!.toInt()
+        val newFriendshipStatus = FriendshipStatus.valueOf(data.get("status")!!.toString())
+        val conversationId = if(data.get("conversationId") != null) data.get("conversationId")!!.toInt() else null
 
+        if(conversationId != null){
+            insertConversation(Conversation(conversationId, data.get("conversationName")!!, null))
+        }
 
 
         //If friendship status is declined or removed, then remove the relationship in the local database
-        if (friend.friendStatus == FriendshipStatus.Declined || friend.friendStatus == FriendshipStatus.Removed
+        if (newFriendshipStatus == FriendshipStatus.Declined || newFriendshipStatus == FriendshipStatus.Removed
         ) {
-            deleteFriend(friend)
+            deleteByFriendId(friendId)
         } else {
             //Update the existing friend item
-            insertFriend(friend)
+            updateFriendStatusAndConversationIdByFriendId(newFriendshipStatus, conversationId, friendId)
         }
 
-        //Only notifiy the user on friend acceptance
+        //Only notify the user on friend acceptance
         if (FriendshipStatus.valueOf(data.get("status")!!.toString()) == FriendshipStatus.Friends) {
 
             //Create the notification

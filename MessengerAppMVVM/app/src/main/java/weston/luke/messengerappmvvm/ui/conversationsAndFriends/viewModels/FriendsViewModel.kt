@@ -47,7 +47,8 @@ class FriendsViewModel(
                     Friend(
                         friendId = friendRequestResponse!!.friendUserId!!,
                         friendUserName = friendRequestResponse!!.friendUserName!!,
-                        friendStatus = FriendshipStatus.Sent
+                        friendStatus = FriendshipStatus.Sent,
+                        privateConversationId = null
                     )
                 )
             }

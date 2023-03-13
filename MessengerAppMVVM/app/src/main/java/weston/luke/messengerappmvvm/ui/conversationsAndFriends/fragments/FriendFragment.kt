@@ -3,6 +3,7 @@ package weston.luke.messengerappmvvm.ui.conversationsAndFriends.fragments
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,10 +20,8 @@ import weston.luke.messengerappmvvm.ui.conversationsAndFriends.FriendAdapter
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.FriendRequestAdapter
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.FriendsViewModel
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.FriendsViewModelFactory
-import weston.luke.messengerappmvvm.util.Utils
-import weston.luke.messengerappmvvm.util.hide
-import weston.luke.messengerappmvvm.util.show
-import weston.luke.messengerappmvvm.util.toast
+import weston.luke.messengerappmvvm.ui.messages.activity.MessagesActivity
+import weston.luke.messengerappmvvm.util.*
 
 class FriendFragment : Fragment() {
 
@@ -96,15 +95,19 @@ class FriendFragment : Fragment() {
             }
         }
 
-        friendAdapter = FriendAdapter(onFriendMessageClick = { friendUserId ->
-            requireContext().toast("Start or continue conversation with friend")
+        friendAdapter = FriendAdapter(onFriendMessageClick = { conversationId ->
+            //Go to the messagesActivity for this conversation
+            val intent = Intent(requireContext(), MessagesActivity::class.java)
+            intent.putExtra(Constants.CONVERSATION_ID, conversationId)
+            startActivity(intent)
+
         }, onRemoveFriend = { friendUserId, friendUsername ->
             Utils.createAlertDialog(
                 context = requireContext(),
                 title = "Remove friend",
                 message = "Are you sure you would like to remove $friendUsername",
                 positiveText = "Remove",
-                onPositiveClick = { mViewModel.removeFriend(friendUserId, friendUsername)},
+                onPositiveClick = { mViewModel.removeFriend(friendUserId, friendUsername) },
                 onNegativeClick = {}
             ).show()
 

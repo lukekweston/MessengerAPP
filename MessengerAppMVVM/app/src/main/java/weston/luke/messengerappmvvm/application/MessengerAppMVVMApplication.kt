@@ -15,7 +15,7 @@ class MessengerAppMVVMApplication : Application() {
     val conversationRepository by lazy { ConversationRepository(database.conversationDao(), MessengerAPIService(this)) }
     val loggedInUserRepository by lazy { LoggedInUserRepository(database.loggedInUserDao(), MessengerAPIService(this)) }
     val messageRepository by lazy { MessageRepository(database.messageDao(), MessengerAPIService(this)) }
-    val friendsRepository by lazy { FriendRepository(database.friendDao(), MessengerAPIService(this)) }
+    val friendsRepository by lazy { FriendRepository(database.friendDao(), conversationRepository, MessengerAPIService(this)) }
 
     val parentRepository by lazy{ ParentRepository(conversationRepository, loggedInUserRepository, messageRepository, friendsRepository) }
 

@@ -13,6 +13,7 @@ data class Friend(
     @PrimaryKey val friendId: Int,
     @ColumnInfo val friendUserName: String,
     @ColumnInfo val friendStatus: FriendshipStatus,
+    @ColumnInfo val privateConversationId: Int?
 ) :Parcelable
 
 

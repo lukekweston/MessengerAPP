@@ -17,11 +17,17 @@ interface FriendDao {
     @Delete
     suspend fun delete(friend: Friend)
 
+    @Query("Delete from friend where friendId = :friendId")
+    suspend fun deleteByFriendId(friendId: Int)
+
     @Query("Delete from friend")
     suspend fun deleteAllFriends()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFriends(friend: List<Friend>)
+
+    @Query("update friend set friendStatus = :friendshipStatus, privateConversationId = :conversationId where friendId = :friendId")
+    suspend fun updateFriendStatusForFriendId(friendshipStatus: FriendshipStatus, conversationId: Int?, friendId: Int)
 
 
 }

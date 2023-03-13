@@ -67,7 +67,7 @@ interface MessengerAPIInterface {
     @POST(Constants.API_ENDPOINT_UPDATE_FRIENDSHIP_STATUS)
     suspend fun updateFriendshipStatus(
         @Body updateFriendshipStatusRequest: UpdateFriendshipStatusRequest
-    ): SuccessResponse
+    ): ConversationResponseItem
 
 
 

@@ -32,6 +32,11 @@ class ConversationRepository(private val conversationDao: ConversationDao, priva
     }
 
     @WorkerThread
+    suspend fun insertConversation(conversation : Conversation){
+        return conversationDao.insertConversation(conversation)
+    }
+
+    @WorkerThread
     suspend fun deleteConversationData(){
         conversationDao.deleteAllConversationData()
     }

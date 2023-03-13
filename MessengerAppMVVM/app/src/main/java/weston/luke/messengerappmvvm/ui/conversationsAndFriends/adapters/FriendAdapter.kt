@@ -42,7 +42,7 @@ class FriendViewHolder(
     RecyclerView.ViewHolder(mBinding.root) {
     fun bind(friend: Friend) {
         mBinding.tvFriendName.text = friend.friendUserName
-        mBinding.buttonMessage.setOnClickListener { onFriendMessageClick(friend.friendId) }
+        mBinding.buttonMessage.setOnClickListener { onFriendMessageClick(friend.privateConversationId!!) }
         mBinding.cardView.setOnLongClickListener {
             onRemoveFriend(friend.friendId, friend.friendUserName)
             true

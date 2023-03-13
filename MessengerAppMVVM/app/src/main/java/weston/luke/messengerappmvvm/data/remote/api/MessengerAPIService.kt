@@ -109,7 +109,7 @@ class MessengerAPIService(context: Context) {
     }
 
     @Headers("Cache-Control: no-cache")
-    suspend fun updateFriendshipStatus(updateFriendshipStatusRequest: UpdateFriendshipStatusRequest): SuccessResponse{
+    suspend fun updateFriendshipStatus(updateFriendshipStatusRequest: UpdateFriendshipStatusRequest): ConversationResponseItem{
         return api.updateFriendshipStatus(updateFriendshipStatusRequest)
     }
 

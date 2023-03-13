@@ -3,16 +3,17 @@ package weston.luke.messengerappmvvm.repository
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import weston.luke.messengerappmvvm.data.database.dao.FriendDao
+import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.data.database.entities.Friend
 import weston.luke.messengerappmvvm.data.database.entities.FriendshipStatus
 import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
 import weston.luke.messengerappmvvm.data.remote.request.NewFriendRequest
 import weston.luke.messengerappmvvm.data.remote.request.UpdateFriendshipStatusRequest
 import weston.luke.messengerappmvvm.data.remote.response.FriendRequestResponse
-import weston.luke.messengerappmvvm.data.remote.response.SuccessResponse
 
 class FriendRepository(
     private val friendDao: FriendDao,
+    private val conversationRepository: ConversationRepository,
     private val apiService: MessengerAPIService
 ) {
 
@@ -57,7 +58,8 @@ class FriendRepository(
                 Friend(
                     friendId = it.friendUserId,
                     friendUserName = it.friendUserName,
-                    friendStatus = FriendshipStatus.valueOf(it.friendshipStatus)
+                    friendStatus = FriendshipStatus.valueOf(it.friendshipStatus),
+                    privateConversationId = null
                 )
             }
         )
@@ -73,8 +75,8 @@ class FriendRepository(
         friendId: Int,
         friendUsername: String,
         friendshipStatus: FriendshipStatus
-    ): SuccessResponse {
-        val response = apiService.updateFriendshipStatus(
+    ) {
+        val conversationResponse = apiService.updateFriendshipStatus(
             UpdateFriendshipStatusRequest(
                 selfUserId = selfUserId,
                 friendUsername = friendUsername,
@@ -82,15 +84,28 @@ class FriendRepository(
             )
         )
         //If FriendshipStatus.Declined or friendshipStatus == FriendshipStatus.Removed- delete the friendship relationship
-        if (response.success && (friendshipStatus == FriendshipStatus.Declined || friendshipStatus == FriendshipStatus.Removed)) {
-            friendDao.delete(Friend(friendId, friendUsername, friendshipStatus))
+        //Conversation and messages are deleted in the server - will be automatically deleted when the user logins in again
+        if (conversationResponse.success && friendshipStatus == FriendshipStatus.Declined || friendshipStatus == FriendshipStatus.Removed) {
+            friendDao.deleteByFriendId(friendId)
         }
         //Else update friendship status
-        else if (response.success) {
-            friendDao.insertFriend(Friend(friendId, friendUsername, friendshipStatus))
+        else if (conversationResponse.success && friendshipStatus == FriendshipStatus.Friends) {
+            friendDao.insertFriend(
+                Friend(
+                    friendId,
+                    friendUsername,
+                    friendshipStatus,
+                    conversationResponse.id
+                )
+            )
+            conversationRepository.insertConversation(
+                Conversation(
+                    conversationId = conversationResponse.id,
+                    conversationName = conversationResponse.conversationName,
+                    lastUpdatedDateTime = null
+                )
+            )
         }
-
-        return response
     }
 
 
