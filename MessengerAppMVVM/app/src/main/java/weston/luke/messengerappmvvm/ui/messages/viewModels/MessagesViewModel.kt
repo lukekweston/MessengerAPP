@@ -2,6 +2,7 @@ package weston.luke.messengerappmvvm.ui.messages
 
 import android.content.Context
 import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
@@ -12,9 +13,12 @@ import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
 import weston.luke.messengerappmvvm.repository.MessageRepository
 import weston.luke.messengerappmvvm.util.ImageUtils
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-class MessagesViewModel(
-    private val loggedInUserRepository: LoggedInUserRepository,
+@HiltViewModel
+class MessagesViewModel
+    @Inject constructor(
+    loggedInUserRepository: LoggedInUserRepository,
     private val conversationRepository: ConversationRepository,
     private val messageRepository: MessageRepository
 ) : ViewModel() {
@@ -87,6 +91,7 @@ class MessagesViewModel(
     //Best practise would be to store the uri for the images in the database rather than the path
     // todo change this in the future
     //Todo update this in the future to use a coroutine that lasts longer than the viewmodel life time
+    //also see if the lifetime is a problem - viewmodel lasts longer than activity, this could be finr
     fun sendImage(
         conversationId: Int,
         imageBase64StringFullRes: String,
@@ -127,23 +132,4 @@ class MessagesViewModel(
     }
 }
 
-class MessagesViewModelFactory(
-    private val loginRepository: LoggedInUserRepository,
-    private val conversationRepository: ConversationRepository,
-    private val messageRepository: MessageRepository
-) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MessagesViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return MessagesViewModel(
-                loginRepository,
-                conversationRepository,
-                messageRepository
-            ) as T
-
-        }
-        throw IllegalArgumentException("Unknown ViewModel Class")
-    }
-}
 

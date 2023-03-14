@@ -46,11 +46,11 @@ object Utils {
         val builder = AlertDialog.Builder(context)
         builder.setTitle(title)
         builder.setMessage(message)
-        builder.setPositiveButton(positiveText) { dialog, which ->
+        builder.setPositiveButton(positiveText) { dialog, _ ->
             onPositiveClick()
             dialog.dismiss()
         }
-        builder.setNegativeButton(negativeText) { dialog, which ->
+        builder.setNegativeButton(negativeText) { dialog, _ ->
             onNegativeClick()
             dialog.dismiss()
         }

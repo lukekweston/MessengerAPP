@@ -13,16 +13,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
+import dagger.hilt.android.AndroidEntryPoint
 import weston.luke.messengerappmvvm.databinding.DialogAddFriendBinding
 import weston.luke.messengerappmvvm.databinding.FragmentFriendsBinding
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.FriendAdapter
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.FriendRequestAdapter
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.FriendsViewModel
-import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.FriendsViewModelFactory
 import weston.luke.messengerappmvvm.ui.messages.activity.MessagesActivity
 import weston.luke.messengerappmvvm.util.*
 
+@AndroidEntryPoint
 class FriendFragment : Fragment() {
 
     private lateinit var mBinding: FragmentFriendsBinding
@@ -34,12 +34,7 @@ class FriendFragment : Fragment() {
     private lateinit var friendRecyclerView: RecyclerView
     private lateinit var friendAdapter: FriendAdapter
 
-    private val mViewModel: FriendsViewModel by viewModels {
-        FriendsViewModelFactory(
-            (requireActivity().application as MessengerAppMVVMApplication).friendsRepository,
-            (requireActivity().application as MessengerAppMVVMApplication).loggedInUserRepository,
-        )
-    }
+    private val mViewModel: FriendsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -16,28 +16,23 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.R
-import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityConversationAndFriendsBinding
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationAndFriendsViewModel
-import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationAndFriendsViewModelFactory
 import weston.luke.messengerappmvvm.ui.login.LoginActivity
 import weston.luke.messengerappmvvm.util.Constants
 import weston.luke.messengerappmvvm.util.toast
 
+@AndroidEntryPoint
 class ConversationAndFriendsActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityConversationAndFriendsBinding
     private lateinit var mNavController: NavController
-    private val mConversationAndFriendsViewModel: ConversationAndFriendsViewModel by viewModels {
-        ConversationAndFriendsViewModelFactory(
-            (application as MessengerAppMVVMApplication).loggedInUserRepository,
-            (application as MessengerAppMVVMApplication).parentRepository
-        )
-    }
+    private val mConversationAndFriendsViewModel: ConversationAndFriendsViewModel by viewModels()
     private val activityScope = CoroutineScope(lifecycleScope.coroutineContext + Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {

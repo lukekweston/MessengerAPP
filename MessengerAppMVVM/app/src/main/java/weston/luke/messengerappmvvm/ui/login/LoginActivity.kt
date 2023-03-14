@@ -7,23 +7,20 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import weston.luke.messengerappmvvm.R
-import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityLoginBinding
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationAndFriendsActivity
 import weston.luke.messengerappmvvm.util.hide
 import weston.luke.messengerappmvvm.util.show
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
 
     lateinit var mBinding: ActivityLoginBinding
-    private val mLoginViewModel: LoginViewModel by viewModels {
-        LoginViewModelFactory(
-            (application as MessengerAppMVVMApplication).loggedInUserRepository,
-            (application as MessengerAppMVVMApplication).parentRepository,
-        )
-    }
+    private val mLoginViewModel: LoginViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

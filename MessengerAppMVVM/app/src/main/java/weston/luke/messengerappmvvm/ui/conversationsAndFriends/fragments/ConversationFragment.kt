@@ -9,28 +9,22 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import weston.luke.messengerappmvvm.R
-import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.FragmentConversationsBinding
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationsAdapter
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModel
-import weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels.ConversationsViewModelFactory
 import weston.luke.messengerappmvvm.ui.messages.activity.MessagesActivity
 import weston.luke.messengerappmvvm.util.Constants
 
+@AndroidEntryPoint
 class ConversationFragment: Fragment(){
 
     private lateinit var mBinding: FragmentConversationsBinding
     private lateinit var conversationsAdapter: ConversationsAdapter
     private lateinit var conversationRecyclerView: RecyclerView
 
-
-    private val mViewModel: ConversationsViewModel by viewModels {
-        ConversationsViewModelFactory(
-            (requireActivity().application as MessengerAppMVVMApplication).conversationRepository,
-            (requireActivity().application as MessengerAppMVVMApplication).messageRepository
-        )
-    }
+    private val mViewModel: ConversationsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,7 +48,6 @@ class ConversationFragment: Fragment(){
         mViewModel.latestMessagesAndConversations.observe(viewLifecycleOwner){ (latestMessages, conversations) ->
             conversationsAdapter.setData(latestMessages, conversations)
         }
-
 
         return mBinding.root
     }

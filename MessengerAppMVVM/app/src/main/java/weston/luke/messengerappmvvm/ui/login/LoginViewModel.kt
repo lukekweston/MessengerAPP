@@ -1,14 +1,21 @@
 package weston.luke.messengerappmvvm.ui.login
 
 import android.content.Context
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.LoggedInUser
 import weston.luke.messengerappmvvm.data.remote.request.LoginRequest
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
 import weston.luke.messengerappmvvm.repository.ParentRepository
+import javax.inject.Inject
 
-class LoginViewModel(
+@HiltViewModel
+class LoginViewModel
+    @Inject constructor(
     private val loginRepository: LoggedInUserRepository,
     private val parentRepository: ParentRepository,
 ) : ViewModel() {
@@ -66,21 +73,5 @@ class LoginViewModel(
                 _toastMessage.value = "Unable to contact server, please try again later"
             }
         }
-    }
-
-}
-
-class LoginViewModelFactory(
-    private val loginRepository: LoggedInUserRepository,
-    private val parentRepository: ParentRepository
-) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return LoginViewModel(loginRepository, parentRepository) as T
-
-        }
-        throw IllegalArgumentException("Unknown ViewModel Class")
     }
 }

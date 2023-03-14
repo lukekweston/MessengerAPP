@@ -2,13 +2,16 @@ package weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
 import weston.luke.messengerappmvvm.data.database.dto.LatestMessage
 import weston.luke.messengerappmvvm.data.database.entities.Conversation
 import weston.luke.messengerappmvvm.repository.ConversationRepository
 import weston.luke.messengerappmvvm.repository.MessageRepository
+import javax.inject.Inject
 
-class ConversationsViewModel(
+@HiltViewModel
+class ConversationsViewModel
+    @Inject constructor(
     conversationRepository: ConversationRepository,
     messageRepository: MessageRepository
 ) : ViewModel() {
@@ -25,21 +28,5 @@ class ConversationsViewModel(
         latestMessagesAndConversations.addSource(conversations) {
             latestMessagesAndConversations.value = Pair(latestMessages.value.orEmpty(), it)
         }
-    }
-}
-
-
-class ConversationsViewModelFactory(
-    private val conversationRepository: ConversationRepository,
-    private val messageRepository: MessageRepository
-) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ConversationsViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return ConversationsViewModel(conversationRepository, messageRepository) as T
-
-        }
-        throw IllegalArgumentException("Unknown ViewModel Class")
     }
 }
