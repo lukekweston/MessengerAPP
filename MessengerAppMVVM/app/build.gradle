@@ -116,4 +116,12 @@ dependencies {
     //PhotoView is an open source library that allows for pinch zooming on images
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
+    //Dagger hilt
+    implementation 'com.google.dagger:hilt-android:2.45'
+    kapt 'com.google.dagger:hilt-compiler:2.45'
+
+}
+
+kapt {
+    correctErrorTypes true
 }
