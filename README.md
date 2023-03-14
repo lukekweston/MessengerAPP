@@ -43,7 +43,7 @@ Todo - documentation
 Todo features
 
 1) Oauth2
-2) Dagger hilt dependency injection
+2) <s>Dagger hilt dependency injection</s> 15/3/23
 3) allow the users to start group conversations, these group conversation the user should be able to add their friends to it
 4) Delete messages
 5) Seen status on messages
@@ -65,3 +65,4 @@ Todo code fixes
 9) API - delete all the images where the message is no longer in the database
 10) Allow for blocking a person
 11) Look into why messages are not appearing in order straight after a message is sent
+12) Tidy up the push notification file
