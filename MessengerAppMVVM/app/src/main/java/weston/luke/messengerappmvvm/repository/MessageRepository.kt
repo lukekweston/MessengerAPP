@@ -13,8 +13,10 @@ import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
 import weston.luke.messengerappmvvm.data.remote.request.MessageSendRequest
 import weston.luke.messengerappmvvm.util.ImageUtils
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-class MessageRepository(
+class MessageRepository
+    @Inject constructor(
     private val messageDao: MessageDao,
     private val apiService: MessengerAPIService
 ) {

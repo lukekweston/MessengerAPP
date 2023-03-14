@@ -9,10 +9,10 @@ import android.content.Intent
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.R
-import weston.luke.messengerappmvvm.data.database.MessengerAppMVVMDatabase
 import weston.luke.messengerappmvvm.data.database.dao.ConversationDao
 import weston.luke.messengerappmvvm.data.database.dao.FriendDao
 import weston.luke.messengerappmvvm.data.database.dao.MessageDao
@@ -21,12 +21,17 @@ import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationAndFr
 import weston.luke.messengerappmvvm.ui.messages.activity.MessagesActivity
 import weston.luke.messengerappmvvm.util.Constants
 import java.time.LocalDateTime
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class PushNotificationService : FirebaseMessagingService() {
 
+    @Inject
     lateinit var messageDao: MessageDao
+    @Inject
     lateinit var friendDao: FriendDao
+    @Inject
     lateinit var conversationDao: ConversationDao
 
     //Value to keep track of the notification id
@@ -38,9 +43,9 @@ class PushNotificationService : FirebaseMessagingService() {
     //This receives a notifaction and decides how to display it on the screen
     //Only works for when the app is in the foreground
     override fun onMessageReceived(message: RemoteMessage) {
-        messageDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).messageDao()
-        friendDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).friendDao()
-        conversationDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).conversationDao()
+//        messageDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).messageDao()
+//        friendDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).friendDao()
+//        conversationDao = MessengerAppMVVMDatabase.getDatabase(applicationContext).conversationDao()
 
         when (message.data.get("type")) {
             "newMessage" -> newMessageReceived(
@@ -108,11 +113,10 @@ class PushNotificationService : FirebaseMessagingService() {
 
 
         //Build and display the notification
-        lastNotificationId += 1
         NotificationManagerCompat.from(this)
-            //Set the notification id to be unique
+            //Set the notification id to be the same as the last message id
             //This is so it can be found and dismissed in the activity
-            .notify(lastNotificationId, notification.build())
+            .notify(message.messageId!!, notification.build())
     }
 
 
@@ -191,7 +195,7 @@ class PushNotificationService : FirebaseMessagingService() {
             this, CHANNEL_ID
         )
 
-            .setContentTitle("New Friend Request")
+            .setContentTitle(data.get("title"))
             .setContentText(data.get("body"))
             .setSmallIcon(R.drawable.ic_banta_conversation_icon)
             .setContentIntent(pendingIntent)

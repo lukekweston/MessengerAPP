@@ -6,11 +6,10 @@ import android.util.Base64
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
 import weston.luke.messengerappmvvm.R
-import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityFullSizeImageBinding
-import weston.luke.messengerappmvvm.ui.messages.FullSizeImageViewModel
-import weston.luke.messengerappmvvm.ui.messages.FullSizeImageViewModelFactory
+import weston.luke.messengerappmvvm.ui.messages.viewModels.FullSizeImageViewModel
 import weston.luke.messengerappmvvm.util.Constants.IMAGE_BY_USERNAME
 import weston.luke.messengerappmvvm.util.Constants.IMAGE_FILE_NAME
 import weston.luke.messengerappmvvm.util.Constants.IMAGE_ID
@@ -20,14 +19,11 @@ import weston.luke.messengerappmvvm.util.show
 import weston.luke.messengerappmvvm.util.toast
 
 
+@AndroidEntryPoint
 class FullSizeImageActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityFullSizeImageBinding
 
-    private val mFullSizeImageViewModel: FullSizeImageViewModel by viewModels {
-        FullSizeImageViewModelFactory(
-            (application as MessengerAppMVVMApplication).messageRepository
-        )
-    }
+    private val mFullSizeImageViewModel: FullSizeImageViewModel by viewModels()
 
     private lateinit var imageBase64String : String
     private lateinit var imageFileName: String

@@ -30,6 +30,8 @@ abstract class MessengerAppMVVMDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: MessengerAppMVVMDatabase? = null
 
+        val DATABASE_NAME: String = "messengerMVVMapp_db"
+
         fun getDatabase(context: Context): MessengerAppMVVMDatabase {
 //            If INSTANCE is not null, then return it
 //            If it is, then create the database

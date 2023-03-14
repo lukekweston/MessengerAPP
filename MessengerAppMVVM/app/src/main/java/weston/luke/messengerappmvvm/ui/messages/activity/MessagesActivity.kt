@@ -25,14 +25,12 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import kotlinx.coroutines.coroutineScope
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.R
-import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivityMessagesBinding
 import weston.luke.messengerappmvvm.ui.messages.MessagesAdapter
 import weston.luke.messengerappmvvm.ui.messages.MessagesViewModel
-import weston.luke.messengerappmvvm.ui.messages.MessagesViewModelFactory
 import weston.luke.messengerappmvvm.util.*
 import weston.luke.messengerappmvvm.util.Constants.IMAGE_BY_USERNAME
 import weston.luke.messengerappmvvm.util.Constants.IMAGE_FILE_NAME
@@ -44,6 +42,7 @@ import java.io.FileInputStream
 //Got messaging UI from here - modified a lot from this
 //https://sendbird.com/developer/tutorials/android-chat-tutorial-building-a-messaging-ui
 
+@AndroidEntryPoint
 class MessagesActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityMessagesBinding
@@ -54,13 +53,7 @@ class MessagesActivity : AppCompatActivity() {
     private lateinit var photoFile: File
     private lateinit var photoURI: Uri
 
-    private val mMessageViewModel: MessagesViewModel by viewModels {
-        MessagesViewModelFactory(
-            (application as MessengerAppMVVMApplication).loggedInUserRepository,
-            (application as MessengerAppMVVMApplication).conversationRepository,
-            (application as MessengerAppMVVMApplication).messageRepository
-        )
-    }
+    private val mMessageViewModel: MessagesViewModel by viewModels()
 
     private var conversationId: Int = -1
 
