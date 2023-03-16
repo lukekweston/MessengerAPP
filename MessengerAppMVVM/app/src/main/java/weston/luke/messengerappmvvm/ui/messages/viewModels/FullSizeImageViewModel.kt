@@ -1,13 +1,16 @@
-package weston.luke.messengerappmvvm.ui.messages
+package weston.luke.messengerappmvvm.ui.messages.viewModels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.repository.MessageRepository
+import javax.inject.Inject
 
-class FullSizeImageViewModel(
+@HiltViewModel
+class FullSizeImageViewModel
+    @Inject constructor(
     private val messageRepository: MessageRepository
 ) : ViewModel() {
 
@@ -17,23 +20,6 @@ class FullSizeImageViewModel(
         viewModelScope.launch {
             image.value = messageRepository.getFullResImage(messageId)
         }
-    }
-
-
-}
-
-class FullSizeImageViewModelFactory(
-    private val messageRepository: MessageRepository
-) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FullSizeImageViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return FullSizeImageViewModel(
-                messageRepository
-            ) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel Class")
     }
 }
 

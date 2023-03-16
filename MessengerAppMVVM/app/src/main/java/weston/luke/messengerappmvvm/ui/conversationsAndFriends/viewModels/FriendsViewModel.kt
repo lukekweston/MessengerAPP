@@ -1,17 +1,24 @@
 package weston.luke.messengerappmvvm.ui.conversationsAndFriends.viewModels
 
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.data.database.entities.Friend
 import weston.luke.messengerappmvvm.data.database.entities.FriendshipStatus
 import weston.luke.messengerappmvvm.data.remote.response.FriendRequestResponse
 import weston.luke.messengerappmvvm.repository.FriendRepository
 import weston.luke.messengerappmvvm.repository.LoggedInUserRepository
+import javax.inject.Inject
 
-class FriendsViewModel(
+@HiltViewModel
+class FriendsViewModel
+    @Inject constructor(
     private val friendRepository: FriendRepository,
-    private val loggedInUserRepository: LoggedInUserRepository
+    loggedInUserRepository: LoggedInUserRepository
 ) : ViewModel() {
 
 
@@ -82,21 +89,5 @@ class FriendsViewModel(
                 FriendshipStatus.Removed
             )
         }
-    }
-
-}
-
-
-class FriendsViewModelFactory(
-    private val friendsRepository: FriendRepository,
-    private val loggedInUserRepository: LoggedInUserRepository
-) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FriendsViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return FriendsViewModel(friendsRepository, loggedInUserRepository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel Class")
     }
 }

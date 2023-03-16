@@ -6,20 +6,16 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import weston.luke.messengerappmvvm.R
-import weston.luke.messengerappmvvm.application.MessengerAppMVVMApplication
 import weston.luke.messengerappmvvm.databinding.ActivitySplashBinding
 import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationAndFriendsActivity
 
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivitySplashBinding
-    private val mSplashActivityViewModel: SplashActivityViewModel by viewModels {
-        SplashActivityViewModelFactory(
-            (application as MessengerAppMVVMApplication).loggedInUserRepository,
-            (application as MessengerAppMVVMApplication).parentRepository,
-        )
-    }
+    private val mSplashActivityViewModel: SplashActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
