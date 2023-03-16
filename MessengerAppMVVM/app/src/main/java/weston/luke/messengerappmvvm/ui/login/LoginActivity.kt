@@ -1,5 +1,6 @@
 package weston.luke.messengerappmvvm.ui.login
 
+import GoogleSignInHandler
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,12 +15,15 @@ import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationAndFr
 import weston.luke.messengerappmvvm.util.hide
 import weston.luke.messengerappmvvm.util.show
 
+
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
 
     lateinit var mBinding: ActivityLoginBinding
     private val mLoginViewModel: LoginViewModel by viewModels()
+
+    private lateinit var googleSignInHandler: GoogleSignInHandler
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,7 +87,18 @@ class LoginActivity : AppCompatActivity() {
             mBinding.btnLogin.isEnabled = true
             mBinding.btnLogin.isClickable = true
         }
+
+        googleSignInHandler = GoogleSignInHandler(this)
+        mBinding.googleButton.setOnClickListener {
+            googleSignInHandler.signIn()
+        }
     }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        googleSignInHandler.handleSignInResult(requestCode, resultCode, data)
+    }
+
 
     private fun endLoginScreenAndGoToConversations() {
         val intent = Intent(this, ConversationAndFriendsActivity::class.java)
@@ -91,6 +106,4 @@ class LoginActivity : AppCompatActivity() {
         //Close this activity, should only be able to get back here if you log out
         finish()
     }
-
-
 }
