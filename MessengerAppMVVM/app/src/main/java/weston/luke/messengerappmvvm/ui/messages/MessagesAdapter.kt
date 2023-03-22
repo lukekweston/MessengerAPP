@@ -32,6 +32,7 @@ class MessagesAdapter(
     private var loggedInUserId: Int = 0
 
     fun setData(loggedInUserId: Int, messages: List<Message>) {
+        this.messages = messages.sortedBy { it.id}
         this.messages = messages
         this.loggedInUserId = loggedInUserId
         notifyDataSetChanged()

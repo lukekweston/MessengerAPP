@@ -81,7 +81,6 @@ object ApiModule {
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .client(okHttpClient)
             .build()
-
     }
 
     @Provides
