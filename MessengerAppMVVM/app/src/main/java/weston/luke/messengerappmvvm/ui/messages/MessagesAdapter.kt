@@ -33,7 +33,6 @@ class MessagesAdapter(
 
     fun setData(loggedInUserId: Int, messages: List<Message>) {
         this.messages = messages.sortedBy { it.id}
-        this.messages = messages
         this.loggedInUserId = loggedInUserId
         notifyDataSetChanged()
     }
