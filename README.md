@@ -1,6 +1,9 @@
 # MessengerApp
 Android App and API for sending messages and having conversations
 
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/cMBlo7nrstU/0.jpg)](http://www.youtube.com/watch?v=cMBlo7nrstU "Messenger app demonstration")
+
+
 
 Add documents about the environment setup, app, server firebase
 
