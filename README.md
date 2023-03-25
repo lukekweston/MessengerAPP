@@ -1,7 +1,7 @@
 # MessengerApp
 Android App and API for sending messages and having conversations
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/cMBlo7nrstU/0.jpg)](http://www.youtube.com/watch?v=cMBlo7nrstU "Messenger app demonstration")
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/E7sOMdq/0.jpg)](http://www.youtube.com/watch?v=E7sOMdq "Messenger app demonstration")
 
 
 
