@@ -9,10 +9,10 @@ import weston.luke.messengerappmvvm.data.database.entities.Conversation
 interface ConversationDao {
 
     @Query("select * from conversation")
-    fun getAllConversations() : LiveData<List<Conversation>>
+    fun getAllConversations(): LiveData<List<Conversation>>
 
     @Query("select * from conversation where conversationId = :conversationId")
-    fun getConversation(conversationId :Int) : Flow<Conversation>
+    fun getConversation(conversationId: Int): Flow<Conversation>
 
     @Update
     fun updateConversation(conversation: Conversation)
@@ -25,5 +25,9 @@ interface ConversationDao {
 
     @Query("Delete from conversation")
     suspend fun deleteAllConversationData()
+
+    @Query("Delete from conversation where conversationId = " +
+            "(select privateConversationId from friend where friendId = :friendId)")
+    suspend fun deletePrivateConversationByFriendshipId(friendId: Int)
 
 }

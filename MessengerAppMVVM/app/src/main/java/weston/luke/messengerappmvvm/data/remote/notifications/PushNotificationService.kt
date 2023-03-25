@@ -150,8 +150,9 @@ class PushNotificationService : FirebaseMessagingService() {
         }
     }
 
-    private fun deleteByFriendId(friendId: Int) {
+    private fun deleteConversationAndFriendByFriendId(friendId: Int) {
         GlobalScope.launch {
+            conversationDao.deletePrivateConversationByFriendshipId(friendId)
             friendDao.deleteByFriendId(
                 friendId
             )
@@ -216,7 +217,7 @@ class PushNotificationService : FirebaseMessagingService() {
 
         val friendId = data.get("fromUserId")!!.toInt()
         val newFriendshipStatus = FriendshipStatus.valueOf(data.get("status")!!.toString())
-        val conversationId = if(data.get("conversationId") != null) data.get("conversationId")!!.toInt() else null
+        val conversationId = if(data.get("conversationId").isNullOrEmpty()) null else data.get("conversationId")!!.toInt()
 
         if(conversationId != null){
             insertConversation(Conversation(conversationId, data.get("conversationName")!!, null))
@@ -226,7 +227,7 @@ class PushNotificationService : FirebaseMessagingService() {
         //If friendship status is declined or removed, then remove the relationship in the local database
         if (newFriendshipStatus == FriendshipStatus.Declined || newFriendshipStatus == FriendshipStatus.Removed
         ) {
-            deleteByFriendId(friendId)
+            deleteConversationAndFriendByFriendId(friendId)
         } else {
             //Update the existing friend item
             updateFriendStatusAndConversationIdByFriendId(newFriendshipStatus, conversationId, friendId)

@@ -2,6 +2,7 @@ package weston.luke.messengerappmvvm.data.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import weston.luke.messengerappmvvm.data.database.entities.Friend
 import weston.luke.messengerappmvvm.data.database.entities.FriendshipStatus
 
@@ -29,5 +30,7 @@ interface FriendDao {
     @Query("update friend set friendStatus = :friendshipStatus, privateConversationId = :conversationId where friendId = :friendId")
     suspend fun updateFriendStatusForFriendId(friendshipStatus: FriendshipStatus, conversationId: Int?, friendId: Int)
 
+    @Query("Select * from friend where friendId = :friendId Limit 1")
+    fun getFriendshipByFriendId(friendId: Int) : Flow<Friend>
 
 }

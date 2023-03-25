@@ -86,7 +86,10 @@ class FriendRepository(
         //If FriendshipStatus.Declined or friendshipStatus == FriendshipStatus.Removed- delete the friendship relationship
         //Conversation and messages are deleted in the server - will be automatically deleted when the user logins in again
         if (conversationResponse.success && friendshipStatus == FriendshipStatus.Declined || friendshipStatus == FriendshipStatus.Removed) {
+
+            conversationRepository.deletePrivateConversationByFriendshipId(friendId)
             friendDao.deleteByFriendId(friendId)
+
         }
         //Else update friendship status
         else if (conversationResponse.success && friendshipStatus == FriendshipStatus.Friends) {

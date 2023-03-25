@@ -41,6 +41,12 @@ class ConversationRepository(private val conversationDao: ConversationDao, priva
         conversationDao.deleteAllConversationData()
     }
 
+
+    @WorkerThread
+    suspend fun deletePrivateConversationByFriendshipId(friendId: Int){
+        conversationDao.deletePrivateConversationByFriendshipId(friendId)
+    }
+
     suspend fun getAllConversationsForUser(userId: Int){
         //Get all the conversations for a user from the api
         val conversationResponse = apiService.getAllConversationsForUser(userId)

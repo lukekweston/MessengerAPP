@@ -13,7 +13,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import weston.luke.messengerappmvvm.data.remote.api.CacheNetworkInterceptor
 import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
 import weston.luke.messengerappmvvm.util.Constants
 import java.io.File
@@ -56,9 +55,9 @@ object ApiModule {
                     return@Interceptor chain.proceed(builder.build())
                 }
             )
-                .cache(cache)
-                .addInterceptor(cacheInterceptor)
-                .addNetworkInterceptor(CacheNetworkInterceptor())
+//                .cache(cache)
+//                .addInterceptor(cacheInterceptor)
+//                .addNetworkInterceptor(CacheNetworkInterceptor())
 
             logging.level = HttpLoggingInterceptor.Level.BODY
             addNetworkInterceptor(logging)
