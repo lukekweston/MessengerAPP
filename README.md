@@ -11,8 +11,8 @@ graph TD;
     Phone1-->Room Database1;
     SpringBootAPI-->Phone2;
     Phone1-->Room Database2;
-    Phone1<-->Firebase;
-    Phone2<-->Firebase;
+    Phone1-->Firebase;
+    Phone2-->Firebase;
     SpringBootAPI-->Firebase;
 ```
 
