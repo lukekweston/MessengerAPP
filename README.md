@@ -6,13 +6,13 @@ Android App and API for sending messages and having conversations
 
 ```mermaid
 graph TD;
-    PostgresSQL Database-->SpringBootAPI
-    SpringBootAPI-->Phone 1;
-    Phone 1-->Room Database 1;
-    SpringBootAPI-->Phone 2;
-    Phone 1-->Room Database 2;
-    Phone 1<-->Firebase;
-    Phone 2<-->Firebase;
+    PostgresSQLDatabase-->SpringBootAPI
+    SpringBootAPI-->Phone1;
+    Phone1-->Room Database1;
+    SpringBootAPI-->Phone2;
+    Phone1-->Room Database2;
+    Phone1<-->Firebase;
+    Phone2<-->Firebase;
     SpringBootAPI-->Firebase;
 ```
 
