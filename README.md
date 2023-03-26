@@ -8,12 +8,12 @@ Android App and API for sending messages and having conversations
 graph TD;
     subgraph "Server"
         PostgresSQLDatabase--> SpringBootAPI;
-        SpringBootAPI"-->Firebase;
+        SpringBootAPI-->Firebase;
     end
     subgraph "Phone 1"
         SpringBootAPI--> Phone1;
         Phone1--> RoomDatabase1;
-        Phone"<-->Firebase;
+        Phone<-->Firebase;
     end
     subgraph "Phone 2"
         SpringBootAPI--> Phone2;
