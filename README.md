@@ -8,14 +8,14 @@ Android App and API for sending messages and having conversations
 
 ```mermaid
 graph TD;
-    subgraph "Server"
-        PostgresSQLDatabase--> SpringBootAPI;
-        SpringBootAPI-->Firebase;
-    end
     subgraph "Phone 1"
         SpringBootAPI--> Phone1;
         Phone1--> RoomDatabase1;
         Phone1<-->Firebase;
+    end
+    subgraph "Server"
+        PostgresSQLDatabase--> SpringBootAPI;
+        SpringBootAPI-->Firebase;
     end
     subgraph "Phone 2"
         SpringBootAPI--> Phone2;
