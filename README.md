@@ -1,6 +1,8 @@
 # MessengerApp
 Android App and API for sending messages and having conversations
 
+--- Create a little introduction for the app
+
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/E7sOMdqAuEs/0.jpg)](http://www.youtube.com/watch?v=E7sOMdqAuEs "Messenger app demonstration")
 
 
@@ -30,6 +32,8 @@ Add documents about how a message is sent
 
 Add documents on how an image is sent
 
+
+--- todo change this to mermaid diagram
 APP)
 
 1) Take a photo
@@ -61,6 +65,9 @@ Todo - documentation
 3) How a message is sent
 4) How photos are sent
 5) How friends work
+
+
+---move these to a kanban board and link it
 
 Todo features
 
