@@ -13,7 +13,7 @@ graph TD;
     subgraph "Phone 1"
         SpringBootAPI--> Phone1;
         Phone1--> RoomDatabase1;
-        Phone<-->Firebase;
+        Phone1<-->Firebase;
     end
     subgraph "Phone 2"
         SpringBootAPI--> Phone2;
