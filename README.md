@@ -7,21 +7,21 @@ Android App and API for sending messages and having conversations
 
 
 ```mermaid
-graph TD;
-    subgraph "Phone 1"
-        SpringBootAPI--> Phone1;
-        Phone1--> RoomDatabase1;
-        Phone1<-->Firebase;
-    end
-    subgraph "Server"
-        PostgresSQLDatabase--> SpringBootAPI;
-        SpringBootAPI-->Firebase;
-    end
+flowchart TD;
     subgraph "Phone 2"
-        SpringBootAPI--> Phone2;
-        Phone2--> RoomDatabase2;
-        Phone2<-->Firebase;
+        Phone2-->RoomDatabase2;
     end
+    subgraph "Phone 1"
+        Phone1-->RoomDatabase1;
+    end
+        subgraph "Server"
+        PostgresSQLDatabase-->SpringBootAPI;
+        SpringBootAPI<-->Phone1;
+        SpringBootAPI<-->Phone2;
+    end
+    SpringBootAPI-->Firebase;
+    Phone1<-->Firebase;
+    Phone2<-->Firebase;
 ```
 
 
