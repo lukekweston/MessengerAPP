@@ -1,10 +1,17 @@
 # MessengerApp
 Android App and API for sending messages and having conversations
 
---- Create a little introduction for the app
+--- Create a little introduction for the app (link to api project)
+
+
+## App Demo
 
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/E7sOMdqAuEs/0.jpg)](http://www.youtube.com/watch?v=E7sOMdqAuEs "Messenger app demonstration")
 
+
+## App structure
+
+Add some explanation
 
 ```mermaid
 flowchart TD;
@@ -24,9 +31,21 @@ flowchart TD;
     Phone2<-->Firebase;
 ```
 
-
+## Setup
 
 Add documents about the environment setup, app, server firebase
+
+## Libraries used
+
+## How the app works
+
+### How a message is sent
+
+--flow chart
+
+### How an image is sent
+
+--flow chart
 
 Add documents about how a message is sent
 
@@ -66,6 +85,8 @@ Todo - documentation
 4) How photos are sent
 5) How friends work
 
+
+## Work in progress
 
 ---move these to a kanban board and link it
 
