@@ -1,5 +1,6 @@
 # MessengerApp
-Android App and API for sending messages and having conversations
+
+This is a trvial andoird MVVM messenger application. This is a work in progress
 
 --- Create a little introduction for the app (link to api project)
 
