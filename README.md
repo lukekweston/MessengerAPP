@@ -1,6 +1,6 @@
 # MessengerApp
 
-This is a trvial Andoird MVVM messenger application that is composed of two main components: the Android app and the server. This app works by registering users with Firebase, sending messages to a server and then sending the messages back to the correct recepients on their logged in devices as push notifications through Firebase.
+This is a trvial Andoird MVVM messenger application that is composed of two main components: the Android app and the [server](https://github.com/lukekweston/MessengerAPI). This app works by registering users with Firebase, sending messages to a server and then sending the messages back to the correct recepients on their logged in devices as push notifications through Firebase.
 If a recipient receives a notification containing data too large for Firebase push notifications, such as an image, a push notification will still be delivered to the app to notify the user. However, the actual data will be retrieved from the server when the user navigates to the desired content within the app.
 
 **Note: that this app is currently under active development and improvements are ongoing**
@@ -12,8 +12,9 @@ If a recipient receives a notification containing data too large for Firebase pu
 
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/E7sOMdqAuEs/0.jpg)](http://www.youtube.com/watch?v=E7sOMdqAuEs "Messenger app demonstration")
 
+Click on the video above to see a demo of the application adding friends and sending messages/images between two devices
 
-## App structure
+## Project structure
 
 Add some explanation
 
