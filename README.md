@@ -96,13 +96,13 @@ With the example request:
 ```
 4. In the server, server checks if the password matches the username
     If the password matches:
-    1. firebase token is saved against the user in the server database, success response is sent back
-    2. In the app the user will save the user logging in with the firebase token
-    3. App will now retrive all the existing conversations/messages (with only low res images)/friendships fot the logged in user and save it to the local room database, any new data will come in as push notifications
-    4. App proceeds to conversation/friends screen - User logged in
+        1. firebase token is saved against the user in the server database, success response is sent back
+        2. In the app the user will save the user logging in with the firebase token
+        3. App will now retrive all the existing conversations/messages (with only low res images)/friendships fot the logged in user and save it to the local room database, any new data will come in as push notifications
+        4. App proceeds to conversation/friends screen - User logged in
     If the password does not match
-    1. Server responds failure
-    2. App displays invalid username or password
+        1. Server responds failure
+        2. App displays invalid username or password
 
 
 
