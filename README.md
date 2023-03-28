@@ -14,7 +14,6 @@ This app is built using the MVVM design pattern, using a room database for cachi
 
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/E7sOMdqAuEs/0.jpg)](http://www.youtube.com/watch?v=E7sOMdqAuEs "Messenger app demonstration")
 
-http://www.youtube.com/watch?v=E7sOMdqAuEs
 [Click](http://www.youtube.com/watch?v=E7sOMdqAuEs) on the video above to see a demo of the application adding friends and sending messages/images between two devices
 
 ## Project structure
