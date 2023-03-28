@@ -84,6 +84,6 @@ Add documents about the environment setup, app, server firebase
 
 
 
-## Work in progress
+## Current work in progress
 
 [Link to trello board for current work](https://trello.com/b/gPo8LC0v/messenger-app-todo)
