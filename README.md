@@ -21,20 +21,21 @@ This app is built using the MVVM design pattern, using a room database for cachi
 Add some explanation
 
 ```mermaid
-subgraph "Phone 2"
-    Phone2{Phone 2}-->RoomDatabase2{Room Database 2};
-end
-subgraph "Phone 1"
-    Phone1{Phone 1}-->RoomDatabase1{Room Database 1};
-end
-    subgraph "Server"
-    PostgresSQLDatabase{Postgres SQL Database}-->SpringBootAPI{Springboot API};
-    SpringBootAPI<-->Phone1;
-    SpringBootAPI<-->Phone2;
-end
-SpringBootAPI-->Firebase;
-Phone1<-->Firebase;
-Phone2<-->Firebase;
+flowchart TD;
+    subgraph "Phone 2"
+        Phone2-->RoomDatabase2;
+    end
+    subgraph "Phone 1"
+        Phone1-->RoomDatabase1;
+    end
+        subgraph "Server"
+        PostgresSQLDatabase-->SpringBootAPI;
+        SpringBootAPI<-->Phone1;
+        SpringBootAPI<-->Phone2;
+    end
+    SpringBootAPI-->Firebase;
+    Phone1<-->Firebase;
+    Phone2<-->Firebase;
 ```
 
 
