@@ -38,9 +38,6 @@ flowchart TD;
     Phone2<-->Firebase;
 ```
 
-## Setup
-
-Add documents about the environment setup, app, server firebase
 
 ## Libraries used
 
