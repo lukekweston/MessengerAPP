@@ -79,51 +79,9 @@ Add documents about the environment setup, app, server firebase
 
 ## How the app works
 
-### How a message is sent
 
---flow chart
+[Work in progress](https://trello.com/c/5VldrnoJ/21-add-documenation-for-how-the-app-works)
 
-### How an image is sent
-
---flow chart
-
-Add documents about how a message is sent
-
-Add documents on how an image is sent
-
-
---- todo change this to mermaid diagram
-APP)
-
-1) Take a photo
-2) Orientate the photo correctly
-3) Save the full image to images/MessengerMvvm
-4) Start the Async task
-5) Save a message row in the database linking to the saved location, which will trigger messages' live data and make the UI reload
-6) Compress the image in the phone - makes it so the API won't be overloaded and run slow
-7) Save compressed photos in a hidden folder (all compressed photos will be deleted on logout)
-8) Update the message created in 5, will get UI to update
-9) API call sending the base64 strings for full image and compressed image
-
-API
-1) Gets high and low res photos
-2) Saves them in folders and links the path to the database (Improves database performance)
-3) Sends push notifications/messages to everyone in the chat that there is a photo ready to be downloaded (the app will only download compressed photo 
-unless the user opens a photo, then another call will be made to get the large photo)
-4) responds ok, with saved message information
-
-APP
-10) Gets the response, and then updates the local message saved in the database
-
-
-
-Todo - documentation
-
-1) Document - overall how the app works
-2) Libraries used
-3) How a message is sent
-4) How photos are sent
-5) How friends work
 
 
 ## Work in progress
