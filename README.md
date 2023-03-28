@@ -23,13 +23,13 @@ Add some explanation
 ```mermaid
 flowchart TD;
     subgraph "Phone 2"
-        Phone2-->RoomDatabase2;
+        Phone2{Phone 2}-->RoomDatabase2{Room Database 2};
     end
     subgraph "Phone 1"
-        Phone1-->RoomDatabase1;
+        Phone1{Phone 1}-->RoomDatabase1{Room Database 1};
     end
         subgraph "Server"
-        PostgresSQLDatabase-->SpringBootAPI;
+        PostgresSQLDatabase{Postgres SQL Database}-->SpringBootAPI{Springboot API};
         SpringBootAPI<-->Phone1;
         SpringBootAPI<-->Phone2;
     end
