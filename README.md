@@ -16,6 +16,12 @@ This app is built using the MVVM design pattern, using a room database for cachi
 
 [Click](http://www.youtube.com/watch?v=E7sOMdqAuEs) on the video above to see a demo of the application adding friends and sending messages/images between two devices
 
+## Set up for running local
+
+1. Set the correct ip address and port of local server - this is the BASE_URL value located in Constants in the util directory
+2. White list the clear text subdomain of this server - this is due to the app not using https - do this in "network_security_config.xml" - this is a resource file
+
+
 ## Project structure
 
 Add some explanation
