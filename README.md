@@ -21,6 +21,8 @@ This app is built using the MVVM design pattern, using a room database for cachi
 1. Set the correct ip address and port of local server - this is the BASE_URL value located in Constants in the util directory
 2. White list the clear text subdomain of this server - this is due to the app not using https - do this in "network_security_config.xml" - this is a resource file
 
+**Note: To get the app to receive notifications in an android emulator, you will need an emulator with play services enabled (the device should be able to access the play store, may need to create a new emulator and select one with the play store arrow)
+
 
 ## Project structure
 
