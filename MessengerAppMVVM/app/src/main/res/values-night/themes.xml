@@ -4,7 +4,7 @@
         <!-- set the screen orientation to portrait mode -->
         <item name="android:screenOrientation">portrait</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/md_theme_dark_secondary</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/md_theme_dark_onTertiary</item>
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/md_theme_dark_primary</item>
         <item name="colorOnPrimary">@color/md_theme_dark_onPrimary</item>
