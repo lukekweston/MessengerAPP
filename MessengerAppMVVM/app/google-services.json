@@ -7,22 +7,14 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:863884490737:android:875688a15923953a807650",
+        "mobilesdk_app_id": "1:863884490737:android:ae417011258780d4807650",
         "android_client_info": {
           "package_name": "weston.luke.messengerappmvvm"
         }
       },
       "oauth_client": [
         {
-          "client_id": "863884490737-oiuf44fq7in6iles86tm745ft462mt67.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "weston.luke.messengerappmvvm",
-            "certificate_hash": "67137e27ce40ed9313183e6ce82c7c2e27d6a96b"
-          }
-        },
-        {
-          "client_id": "863884490737-pmnhnepluced0fou1f7v8h8phl1l99tm.apps.googleusercontent.com",
+          "client_id": "863884490737-tp4ko6egio3k2h4qjbcbhgte50131e5e.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

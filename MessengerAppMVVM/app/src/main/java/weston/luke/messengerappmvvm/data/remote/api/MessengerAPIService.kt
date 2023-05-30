@@ -28,12 +28,12 @@ interface MessengerAPIService{
         @Body fcmRegTokenCheckRequest: fcmRegTokenCheckRequest
     ): SuccessResponse
 
-    @GET(Constants.API_ENDPOINT_GET_CONVERSATIONS_FOR_USER + "{userId}")
+    @GET(Constants.API_ENDPOINT_GET_CONVERSATIONS_FOR_USER)
     suspend fun getAllConversationsForUser(
         @Path("userId") userId: Int
     ): ConversationResponse
 
-    @GET(Constants.API_ENDPOINT_GET_ALL_MESSAGES_FOR_USER + "{userId}")
+    @GET(Constants.API_ENDPOINT_GET_ALL_MESSAGES_FOR_USER)
     suspend fun getAllMessagesForUser(
         @Path("userId") userId: Int
     ): MessageResponseList
@@ -43,12 +43,12 @@ interface MessengerAPIService{
         @Body messageRequest: MessageSendRequest
     ): MessageResponse
 
-    @GET(Constants.API_ENDPOINT_GET_LOW_RES_IMAGE_FOR_MESSAGE + "{messageId}")
+    @GET(Constants.API_ENDPOINT_GET_LOW_RES_IMAGE_FOR_MESSAGE)
     suspend fun getLowResImageForMessage(
         @Path("messageId") messageId: Int
     ): ImageResponse
 
-    @GET(Constants.API_ENDPOINT_GET_FULL_RES_IMAGE_FOR_MESSAGE + "{messageId}")
+    @GET(Constants.API_ENDPOINT_GET_FULL_RES_IMAGE_FOR_MESSAGE)
     suspend fun getFullResImageForMessage(
         @Path("messageId") messageId: Int
     ): ImageResponse
@@ -59,7 +59,7 @@ interface MessengerAPIService{
     ): FriendRequestResponse
 
 
-    @GET(Constants.API_ENDPOINT_GET_ALL_FRIENDS + "{userId}")
+    @GET(Constants.API_ENDPOINT_GET_ALL_FRIENDS)
     suspend fun getAllFriendsForUser(
         @Path("userId") userId: Int
     ): List<FriendResponse>

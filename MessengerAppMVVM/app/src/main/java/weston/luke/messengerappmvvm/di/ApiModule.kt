@@ -6,9 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Cache
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
@@ -62,12 +60,13 @@ object ApiModule {
             logging.level = HttpLoggingInterceptor.Level.BODY
             addNetworkInterceptor(logging)
         }
+            .connectionPool(ConnectionPool(0, 1, TimeUnit.NANOSECONDS)).protocols(listOf( Protocol.HTTP_1_1))
             //.addInterceptor(NetworkConnectionInterceptor(context))
             //Time out the api calls after 30 seconds of no response
-            .callTimeout(30, TimeUnit.SECONDS)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+            .callTimeout(60, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
             .build()
     }
 

@@ -13,5 +13,5 @@ dependencyResolutionManagement {
         maven { url "https://www.jitpack.io" }
     }
 }
-rootProject.name = "Messenger App MVVM"
+rootProject.name = "Banta"
 include ':app'
