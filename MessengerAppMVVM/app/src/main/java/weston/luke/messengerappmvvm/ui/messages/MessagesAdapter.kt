@@ -150,7 +150,7 @@ class SentMessageHolder(
             )
 
 
-        if (message.pathToSavedLowRes != null || message.pathToSavedHighRes != null) {
+        if (!message.pathToSavedLowRes.isNullOrEmpty() || !message.pathToSavedHighRes.isNullOrBlank()) {
             //Prioritise drawing low res over high res
             val imagePath = message.pathToSavedLowRes ?: message.pathToSavedHighRes
             val file = File(imagePath!!)

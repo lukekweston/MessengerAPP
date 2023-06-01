@@ -29,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.databinding.ActivityMessagesBinding
+import weston.luke.messengerappmvvm.ui.conversationsAndFriends.ConversationAndFriendsActivity
 import weston.luke.messengerappmvvm.ui.messages.MessagesAdapter
 import weston.luke.messengerappmvvm.ui.messages.MessagesViewModel
 import weston.luke.messengerappmvvm.util.*
@@ -57,6 +58,8 @@ class MessagesActivity : AppCompatActivity() {
 
     private var conversationId: Int = -1
 
+    private var conversationOpenedFromNotification = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMessagesBinding.inflate(layoutInflater)
@@ -64,6 +67,8 @@ class MessagesActivity : AppCompatActivity() {
 
         //Get conversationId passed in when starting activity
         conversationId = intent.getIntExtra(Constants.CONVERSATION_ID, -1)
+        conversationOpenedFromNotification = intent.getBooleanExtra(Constants.OPEN_CONVERSATION_FROM_NOTIFICATION, false)
+
         if (conversationId == -1) {
             this.toast("Error getting conversation")
             onBackPressed()
@@ -167,7 +172,14 @@ class MessagesActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        super.onBackPressed()
+
+        if (conversationOpenedFromNotification) {
+            val intent = Intent(this, ConversationAndFriendsActivity::class.java)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            startActivity(intent)
+        } else {
+            super.onBackPressed()
+        }
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
@@ -291,7 +303,7 @@ class MessagesActivity : AppCompatActivity() {
         }
     }
 
-    //    Display an alert saying that the user doesn't have the required permissions set
+//    Display an alert saying that the user doesn't have the required permissions set
 //    On positive click go to phone settings to be able to enable permissions - dont need to dismiss this as going to a new display, settings
 //    Negative click - dismiss
     private fun showRationalDialogForPermissions() {

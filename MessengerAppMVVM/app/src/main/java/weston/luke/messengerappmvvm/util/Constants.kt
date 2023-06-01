@@ -19,6 +19,7 @@ object Constants {
 
 
     const val CONVERSATION_ID = "conversationId"
+    const val OPEN_CONVERSATION_FROM_NOTIFICATION = "openConversationFromNotification"
 
     const val IMAGE_ID = "imageId"
     const val IMAGE_BY_USERNAME = "imageByName"

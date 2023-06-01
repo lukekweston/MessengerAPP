@@ -97,7 +97,8 @@ class PushNotificationService : FirebaseMessagingService() {
         //Intent for the notification to go to
         val intent = Intent(applicationContext, MessagesActivity::class.java)
         intent.putExtra(Constants.CONVERSATION_ID, message.conversationId)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        intent.putExtra(Constants.OPEN_CONVERSATION_FROM_NOTIFICATION, true)
+        //No history flag to stop a loop being created
         val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, FLAG_MUTABLE)
 
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)

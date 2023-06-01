@@ -11,11 +11,17 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import weston.luke.messengerappmvvm.R
 import weston.luke.messengerappmvvm.data.remote.api.MessengerAPIService
 import weston.luke.messengerappmvvm.util.Constants
 import java.io.File
+import java.security.KeyStore
+import java.security.SecureRandom
+import java.security.cert.CertificateFactory
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+import javax.net.ssl.*
 
 
 @Module
@@ -43,8 +49,39 @@ object ApiModule {
         }
 
 
+        val certificateFactory = CertificateFactory.getInstance("X.509")
+
+        // This is the certificate file you got from the server
+        val inputStream = context.resources.openRawResource(R.raw.server_certificate)
+        val certificate = certificateFactory.generateCertificate(inputStream)
+
+        val keyStore = KeyStore.getInstance(KeyStore.getDefaultType())
+        keyStore.load(null, null)
+        keyStore.setCertificateEntry("my_server", certificate)
+
+        val trustManagerFactory = TrustManagerFactory.getInstance(
+            TrustManagerFactory.getDefaultAlgorithm()
+        )
+        trustManagerFactory.init(keyStore)
+
+        val trustManagers = trustManagerFactory.trustManagers
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, trustManagers, SecureRandom())
+
+        if (trustManagers.size != 1 || trustManagers[0] !is X509TrustManager) {
+            throw IllegalStateException("Unexpected default trust managers: ${Arrays.toString(trustManagers)}")
+        }
+
+        val trustManager = trustManagers[0] as X509TrustManager
+
+
+        val trustAllHosts = HostnameVerifier { _, _ -> true }
+
         val logging = HttpLoggingInterceptor()
-        return OkHttpClient.Builder().apply {
+        return OkHttpClient.Builder()
+            .sslSocketFactory(sslContext.socketFactory, trustManager)
+            .hostnameVerifier(trustAllHosts)
+            .apply {
             addInterceptor(
                 Interceptor { chain ->
                     val builder = chain.request().newBuilder()
@@ -60,7 +97,6 @@ object ApiModule {
             logging.level = HttpLoggingInterceptor.Level.BODY
             addNetworkInterceptor(logging)
         }
-            .connectionPool(ConnectionPool(0, 1, TimeUnit.NANOSECONDS)).protocols(listOf( Protocol.HTTP_1_1))
             //.addInterceptor(NetworkConnectionInterceptor(context))
             //Time out the api calls after 30 seconds of no response
             .callTimeout(60, TimeUnit.SECONDS)

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -92,6 +93,22 @@ class ConversationAndFriendsActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.top_menu_conversations, menu)
         return true
+    }
+
+    //Always close the app when on back pressed
+    override fun onBackPressed() {
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_conversation_and_friends) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        val currentDestination = navController.currentDestination
+
+        if(currentDestination?.id ==  R.id.navigation_friends){
+            super.onBackPressed()
+        }
+        else{
+            finishAffinity()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
